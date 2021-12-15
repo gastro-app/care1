@@ -111,7 +111,7 @@ export default function LandingHugePackElements() {
                 </Typography>
               </MotionInView>
 
-              <MotionInView variants={varFadeInUp}>
+              {/* <MotionInView variants={varFadeInUp}>
                 <Button
                   size="large"
                   color="inherit"
@@ -121,7 +121,7 @@ export default function LandingHugePackElements() {
                 >
                   View All Box contents{' '}
                 </Button>
-              </MotionInView>
+              </MotionInView> */}
             </ContentStyle>
           </Grid>
 

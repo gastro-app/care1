@@ -19,8 +19,20 @@ import countries from '../countries';
 export default function AccountGeneral() {
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar } = useSnackbar();
-  const { user, updateProfile } = useAuth();
-
+  const { updateProfile } = useAuth();
+  const user = {
+    displayName: 'user 01',
+    email: 'user01@gmail.com',
+    photoURL: 'default',
+    phoneNumber: '22 222 222',
+    country: 'Tunisia',
+    address: 'address',
+    state: 'Sfax',
+    city: 'Sfax',
+    zipCode: '6024',
+    about: 'user.about',
+    isPublic: 'user.isPublic'
+  };
   const UpdateUserSchema = Yup.object().shape({
     displayName: Yup.string().required('Name is required')
   });
