@@ -9,9 +9,7 @@ import HeaderBreadcrumbs from '../../../../components/HeaderBreadcrumbs';
 //
 import { Block } from '../../Block';
 import CustomizedStepper from './CustomizedStepper';
-import VerticalLinearStepper from './VerticalLinearStepper';
-import LinearAlternativeLabel from './LinearAlternativeLabel';
-import HorizontalLinearStepper from './HorizontalLinearStepper';
+import useSettings from '../../../../hooks/useSettings';
 
 // ----------------------------------------------------------------------
 
@@ -23,64 +21,13 @@ const RootStyle = styled(Page)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function StepperComponent() {
+  const { themeStretch } = useSettings();
+
   return (
-    <RootStyle title="Components: StepperView | Minimal-UI">
-      <Box
-        sx={{
-          pt: 6,
-          pb: 1,
-          mb: 10,
-          bgcolor: (theme) => (theme.palette.mode === 'light' ? 'grey.200' : 'grey.800')
-        }}
-      >
-        <Container maxWidth="lg">
-          <HeaderBreadcrumbs
-            heading="Stepper"
-            links={[{ name: 'Components', href: PATH_PAGE.components }, { name: 'Stepper' }]}
-            moreLink="https://mui.com/components/steppers"
-          />
-        </Container>
-      </Box>
-
-      <Container maxWidth="lg">
+    <Page title="General: Banking | Minimal-UI">
+      <Container maxWidth={themeStretch ? false : 'xl'}>
         <Stack spacing={5}>
-          <Block title="Horizontal Linear Stepper">
-            <Paper
-              sx={{
-                p: 3,
-                width: '100%',
-                boxShadow: (theme) => theme.customShadows.z8
-              }}
-            >
-              <HorizontalLinearStepper />
-            </Paper>
-          </Block>
-
-          <Block title="Linear Alternative Label">
-            <Paper
-              sx={{
-                p: 3,
-                width: '100%',
-                boxShadow: (theme) => theme.customShadows.z8
-              }}
-            >
-              <LinearAlternativeLabel />
-            </Paper>
-          </Block>
-
-          <Block title="Vertical Linear Stepper">
-            <Paper
-              sx={{
-                p: 3,
-                width: '100%',
-                boxShadow: (theme) => theme.customShadows.z8
-              }}
-            >
-              <VerticalLinearStepper />
-            </Paper>
-          </Block>
-
-          <Block title="Customized Stepper">
+          <Block title="Rapport">
             <Paper
               sx={{
                 p: 3,
@@ -93,6 +40,6 @@ export default function StepperComponent() {
           </Block>
         </Stack>
       </Container>
-    </RootStyle>
+    </Page>
   );
 }

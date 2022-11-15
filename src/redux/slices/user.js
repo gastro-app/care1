@@ -245,18 +245,6 @@ export function getAddressBook() {
   };
 }
 
-export function getOrders() {
-  return async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await axios.get('/api/user/account/address-book');
-      dispatch(slice.actions.getOrdersSuccess(response.data.orders));
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
-
 // ----------------------------------------------------------------------
 
 export function getInvoices() {

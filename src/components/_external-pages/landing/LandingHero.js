@@ -14,7 +14,7 @@ import { varFadeIn, varFadeInUp, varWrapEnter, varFadeInRight } from '../../anim
 
 const RootStyle = styled(motion.div)(({ theme }) => ({
   position: 'relative',
-  backgroundColor: 'theme.palette.grey[300]',
+  backgroundColor: theme.palette.grey[400],
   [theme.breakpoints.up('md')]: {
     top: 0,
     left: 0,
@@ -59,7 +59,7 @@ const HeroImgStyle = styled(motion.img)(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     right: '8%',
     width: 'auto',
-    height: '72vh'
+    height: '48vh'
   }
 }));
 
@@ -77,27 +77,22 @@ export default function LandingHero() {
           <ContentStyle>
             <motion.div variants={varFadeInRight}>
               <Typography variant="h1" sx={{ color: 'common.white' }}>
-                Get your <br /> FRESH
+                Start a <br />
+                new project <br /> with
                 <Typography component="span" variant="h1" sx={{ color: 'primary.main' }}>
-                  K
+                  &nbsp;Minimal
                 </Typography>
-                &nbsp; BOX now !
               </Typography>
             </motion.div>
 
             <motion.div variants={varFadeInRight}>
               <Typography sx={{ color: 'common.white' }}>
-                Here at FRESH
-                <Typography component="span" sx={{ color: 'primary.main' }}>
-                  K
-                </Typography>{' '}
-                we’ve made it easy for you to get the freshest hand-cut produces delivered right to your door every
-                week. We offer a variety of subscription plans that will fit any budget or lifestyle, so you can enjoy
-                great tasting fresh produces whenever you want
+                The starting point for your next project based on easy-to-customize Material-UI © helps you build apps
+                faster and better.
               </Typography>
             </motion.div>
 
-            {/* <Stack
+            <Stack
               component={motion.div}
               variants={varFadeInRight}
               direction="row"
@@ -115,28 +110,27 @@ export default function LandingHero() {
               >
                 Preview in Sketch Cloud
               </Link>
-            </Stack> */}
+            </Stack>
 
             <motion.div variants={varFadeInRight}>
               <Button
                 size="large"
                 variant="contained"
                 component={RouterLink}
-                to="/dashboard/e-commerce/shop"
-                startIcon={<Icon icon="fa-solid:box-open" width={20} height={20} />}
+                to={PATH_DASHBOARD.root}
+                startIcon={<Icon icon={flashFill} width={20} height={20} />}
               >
-                Explore our boxes{' '}
+                Live Preview
               </Button>
             </motion.div>
 
             <Stack direction="row" spacing={1.5} justifyContent={{ xs: 'center', md: 'flex-start' }}>
-              <motion.img variants={varFadeInRight} src="/static/home/Asset 1.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/Asset 5.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/Asset 6.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/Asset 7.svg" />{' '}
-              <motion.img variants={varFadeInRight} src="/static/home/Asset 2.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/Asset 3.svg" />
-              {/* <motion.img variants={varFadeInRight} src="/static/home/Asset 4.svg" /> */}
+              <motion.img variants={varFadeInRight} src="/static/home/ic_sketch.svg" />
+              <motion.img variants={varFadeInRight} src="/static/home/ic_figma.svg" />
+              <motion.img variants={varFadeInRight} src="/static/home/ic_material.svg" />
+              <motion.img variants={varFadeInRight} src="/static/home/ic_react.svg" />
+              <motion.img variants={varFadeInRight} src="/static/home/ic_js.svg" />
+              <motion.img variants={varFadeInRight} src="/static/home/ic_ts.svg" />
             </Stack>
           </ContentStyle>
         </Container>

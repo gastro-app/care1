@@ -50,8 +50,8 @@ export default function AboutHero() {
                 fontWeight: 'fontWeightMedium'
               }}
             >
-              Our FRESHK team experts work hard
-              <br /> to deliver the freshest produces
+              Let's work together and
+              <br /> make awesome site easily
             </Typography>
           </motion.div>
         </ContentStyle>

@@ -88,15 +88,14 @@ export default function LandingHugePackElements() {
             <ContentStyle>
               <MotionInView variants={varFadeInUp}>
                 <Typography component="p" variant="overline" sx={{ mb: 2, color: 'text.secondary' }}>
-                  Fresh produces{' '}
+                  Interface Starter Kit
                 </Typography>
               </MotionInView>
 
               <MotionInView variants={varFadeInUp}>
                 <Typography variant="h2" sx={{ mb: 3 }}>
-                  Our Boxes
-                  <br />
-                  Produces
+                  Huge pack <br />
+                  of elements
                 </Typography>
               </MotionInView>
 
@@ -107,11 +106,11 @@ export default function LandingHugePackElements() {
                     color: isLight ? 'text.secondary' : 'common.white'
                   }}
                 >
-                  We work closely with our suppliers to source only the finest sustainable produces.{' '}
+                  We collected most popular elements. Menu, sliders, buttons, inputs etc. are all here. Just dive in!
                 </Typography>
               </MotionInView>
 
-              {/* <MotionInView variants={varFadeInUp}>
+              <MotionInView variants={varFadeInUp}>
                 <Button
                   size="large"
                   color="inherit"
@@ -119,9 +118,9 @@ export default function LandingHugePackElements() {
                   component={RouterLink}
                   to={PATH_PAGE.components}
                 >
-                  View All Box contents{' '}
+                  View All Components
                 </Button>
-              </MotionInView> */}
+              </MotionInView>
             </ContentStyle>
           </Grid>
 
@@ -161,7 +160,10 @@ export default function LandingHugePackElements() {
                     })
                   }}
                 >
-                  <img alt={`screen ${index + 1}`} src={`/static/home/screen_${index + 1}.png`} />
+                  <img
+                    alt={`screen ${index + 1}`}
+                    src={`/static/home/screen_${isLight ? 'light' : 'dark'}_${index + 1}.png`}
+                  />
                 </ScreenStyle>
               ))}
             </Box>

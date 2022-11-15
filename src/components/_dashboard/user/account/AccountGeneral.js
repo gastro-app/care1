@@ -19,20 +19,8 @@ import countries from '../countries';
 export default function AccountGeneral() {
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar } = useSnackbar();
-  const { updateProfile } = useAuth();
-  const user = {
-    displayName: 'user 01',
-    email: 'user01@gmail.com',
-    photoURL: 'default',
-    phoneNumber: '22 222 222',
-    country: 'Tunisia',
-    address: 'address',
-    state: 'Sfax',
-    city: 'Sfax',
-    zipCode: '6024',
-    about: 'user.about',
-    isPublic: 'user.isPublic'
-  };
+  const { user, updateProfile } = useAuth();
+
   const UpdateUserSchema = Yup.object().shape({
     displayName: Yup.string().required('Name is required')
   });
@@ -117,6 +105,13 @@ export default function AccountGeneral() {
               <FormHelperText error sx={{ px: 2, textAlign: 'center' }}>
                 {touched.photoURL && errors.photoURL}
               </FormHelperText>
+
+              <FormControlLabel
+                control={<Switch {...getFieldProps('isPublic')} color="primary" />}
+                labelPlacement="start"
+                label="Public Profile"
+                sx={{ mt: 5 }}
+              />
             </Card>
           </Grid>
 
@@ -159,7 +154,7 @@ export default function AccountGeneral() {
                   <TextField fullWidth label="Zip/Code" {...getFieldProps('zipCode')} />
                 </Stack>
 
-                {/* <TextField {...getFieldProps('about')} fullWidth multiline minRows={4} maxRows={4} label="About" /> */}
+                <TextField {...getFieldProps('about')} fullWidth multiline minRows={4} maxRows={4} label="About" />
               </Stack>
 
               <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>

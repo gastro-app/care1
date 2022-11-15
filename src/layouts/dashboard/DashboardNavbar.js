@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
-// router
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
@@ -14,16 +11,13 @@ import { MHidden } from '../../components/@material-extend';
 import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
-import Logo from '../../components/Logo';
-
 import ContactsPopover from './ContactsPopover';
 import NotificationsPopover from './NotificationsPopover';
-import SettingMode from '../../components/settings/SettingMode';
-import CartWidget from '../../components/_dashboard/e-commerce/CartWidgetNavbar';
+
 // ----------------------------------------------------------------------
 
-const DRAWER_WIDTH = 0;
-const COLLAPSE_WIDTH = 0;
+const DRAWER_WIDTH = 280;
+const COLLAPSE_WIDTH = 102;
 
 const APPBAR_MOBILE = 64;
 const APPBAR_DESKTOP = 92;
@@ -64,29 +58,20 @@ export default function DashboardNavbar({ onOpenSidebar }) {
       }}
     >
       <ToolbarStyle>
-        <Stack direction="row" alignItems="left" justifyContent="space-between">
-          <Box component={RouterLink} to="/" sx={{ display: 'inline-flex' }}>
-            <Logo />
-          </Box>
-        </Stack>
-
-        {/* <MHidden width="lgUp">
+        <MHidden width="lgUp">
           <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
             <Icon icon={menu2Fill} />
           </IconButton>
-        </MHidden> */}
+        </MHidden>
 
-        {/* <Searchbar /> */}
+        <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <SettingMode />
-
-          {/* <LanguagePopover />
+          <LanguagePopover />
           <NotificationsPopover />
-          <ContactsPopover /> */}
+          <ContactsPopover />
           <AccountPopover />
-          <CartWidget />
         </Stack>
       </ToolbarStyle>
     </RootStyle>

@@ -10,14 +10,7 @@ import roundAccountBox from '@iconify/icons-ic/round-account-box';
 import { Container, Tab, Box, Tabs, Stack } from '@mui/material';
 // redux
 import { useDispatch } from '../../redux/store';
-import {
-  getCards,
-  getProfile,
-  getInvoices,
-  getAddressBook,
-  getNotifications,
-  getOrders
-} from '../../redux/slices/user';
+import { getCards, getProfile, getInvoices, getAddressBook, getNotifications } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
@@ -32,7 +25,6 @@ import {
   AccountNotifications,
   AccountChangePassword
 } from '../../components/_dashboard/user/account';
-import AccountOrders from '../../components/_dashboard/user/account/AccountOrders';
 
 // ----------------------------------------------------------------------
 
@@ -44,7 +36,6 @@ export default function UserAccount() {
   useEffect(() => {
     dispatch(getCards());
     dispatch(getAddressBook());
-    dispatch(getOrders());
     dispatch(getInvoices());
     dispatch(getNotifications());
     dispatch(getProfile());
@@ -57,16 +48,20 @@ export default function UserAccount() {
       component: <AccountGeneral />
     },
     {
-      value: 'my orders',
-      icon: <Icon icon="clarity:list-solid" width={20} height={20} />,
-      component: <AccountOrders />
-    },
-    {
-      value: 'addresses',
-      icon: <Icon icon="entypo:address" width={20} height={20} />,
+      value: 'billing',
+      icon: <Icon icon={roundReceipt} width={20} height={20} />,
       component: <AccountBilling />
     },
-
+    {
+      value: 'notifications',
+      icon: <Icon icon={bellFill} width={20} height={20} />,
+      component: <AccountNotifications />
+    },
+    {
+      value: 'social_links',
+      icon: <Icon icon={shareFill} width={20} height={20} />,
+      component: <AccountSocialLinks />
+    },
     {
       value: 'change_password',
       icon: <Icon icon={roundVpnKey} width={20} height={20} />,
@@ -79,7 +74,7 @@ export default function UserAccount() {
   };
 
   return (
-    <Page title="User: Account Settings | FRESHK">
+    <Page title="User: Account Settings | Minimal-UI">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="Account"

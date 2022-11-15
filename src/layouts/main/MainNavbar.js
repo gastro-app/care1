@@ -12,7 +12,6 @@ import { MHidden } from '../../components/@material-extend';
 import MenuDesktop from './MenuDesktop';
 import MenuMobile from './MenuMobile';
 import navConfig from './MenuConfig';
-import { PATH_AUTH, PATH_DOCS, PATH_PAGE, PATH_DASHBOARD } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -72,17 +71,17 @@ export default function MainNavbar() {
           <RouterLink to="/">
             <Logo />
           </RouterLink>
-          {/* <Label color="info" sx={{ ml: 1 }}>
+          <Label color="info" sx={{ ml: 1 }}>
             v2.6.0
-          </Label> */}
+          </Label>
           <Box sx={{ flexGrow: 1 }} />
 
           <MHidden width="mdDown">
             <MenuDesktop isOffset={isOffset} isHome={isHome} navConfig={navConfig} />
           </MHidden>
 
-          <Button variant="contained" target="_blank" href={PATH_AUTH.loginUnprotected}>
-            Login
+          <Button variant="contained" target="_blank" href="https://material-ui.com/store/items/minimal-dashboard/">
+            Purchase Now
           </Button>
 
           <MHidden width="mdUp">

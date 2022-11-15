@@ -8,22 +8,20 @@ import { varFadeInUp, MotionInView, varFadeInDown } from '../../animate';
 
 const CARDS = [
   {
-    icon: '/static/icons/1.svg',
-    title: 'SELECT YOUR BOX',
+    icon: '/static/icons/ic_design.svg',
+    title: 'UI & UX Design',
     description:
-      'Our diverse selection of premium quality, sustainable produces is carefully selected and perfectly portioned for you.'
-  },
-
-  {
-    icon: '/static/icons/2.svg',
-    title: 'CHOOSE HOW OFTEN',
-    description: 'Purchase a one time box, or enroll in our flexible subscription plans. Pause, skip or cancel anytime'
+      'The set is built on the principles of the atomic design system. It helps you to create projects fastest and easily customized packages for your projects.'
   },
   {
-    icon: '/static/icons/3.svg',
-    title: 'CHECKOUT & ENJOY',
-    description:
-      'Get ready to experience the freshest produces you’ve ever tasted sent in a eco-friendly, biodegradable, non-toxic package.'
+    icon: '/static/icons/ic_code.svg',
+    title: 'Development',
+    description: 'Easy to customize and extend each component, saving you time and money.'
+  },
+  {
+    icon: '/static/brand/logo_single.svg',
+    title: 'Branding',
+    description: 'Consistent design in colors, fonts ... makes brand recognition easy.'
   }
 ];
 
@@ -82,10 +80,10 @@ const CardStyle = styled(Card)(({ theme }) => {
 });
 
 const CardIconStyle = styled('img')(({ theme }) => ({
-  width: 150,
-  height: 150,
+  width: 40,
+  height: 40,
   margin: 'auto',
-  marginBottom: theme.spacing(1),
+  marginBottom: theme.spacing(10),
   filter: shadowIcon(theme.palette.primary.main)
 }));
 
@@ -102,12 +100,12 @@ export default function LandingMinimalHelps() {
         <Box sx={{ mb: { xs: 10, md: 25 } }}>
           <MotionInView variants={varFadeInUp}>
             <Typography component="p" variant="overline" sx={{ mb: 2, color: 'text.secondary', textAlign: 'center' }}>
-              3 EASY STEPS
+              Minimal
             </Typography>
           </MotionInView>
           <MotionInView variants={varFadeInDown}>
             <Typography variant="h2" sx={{ textAlign: 'center' }}>
-              How It Works ?
+              What minimal helps you?
             </Typography>
           </MotionInView>
         </Box>

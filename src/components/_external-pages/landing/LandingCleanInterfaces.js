@@ -34,15 +34,15 @@ export default function LandingCleanInterfaces() {
     <RootStyle>
       <Container maxWidth="lg">
         <ContentStyle>
-          {/* <MotionInView variants={varFadeInUp}>
+          <MotionInView variants={varFadeInUp}>
             <Typography component="p" variant="overline" sx={{ mb: 2, color: 'text.secondary' }}>
               clean & clear
             </Typography>
-          </MotionInView> */}
+          </MotionInView>
 
           <MotionInView variants={varFadeInUp}>
             <Typography
-              variant="h3"
+              variant="h2"
               paragraph
               sx={{
                 ...(!isLight && {
@@ -50,7 +50,7 @@ export default function LandingCleanInterfaces() {
                 })
               }}
             >
-              There are plenty of produces in the farms, but there’s only one FRESHK Market.
+              Beautiful, modern and clean user interfaces
             </Typography>
           </MotionInView>
         </ContentStyle>

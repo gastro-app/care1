@@ -63,7 +63,7 @@ export default function FaqsHero() {
             <TextAnimate text="you?" />
           </Box>
 
-          {/* <MotionInView variants={varFadeInUp} sx={{ mt: 5 }}>
+          <MotionInView variants={varFadeInUp} sx={{ mt: 5 }}>
             <SearchStyle
               placeholder="Search support"
               startAdornment={
@@ -72,7 +72,7 @@ export default function FaqsHero() {
                 </InputAdornment>
               }
             />
-          </MotionInView> */}
+          </MotionInView>
         </ContentStyle>
       </Container>
     </RootStyle>

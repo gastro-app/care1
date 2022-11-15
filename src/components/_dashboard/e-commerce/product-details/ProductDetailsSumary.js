@@ -227,7 +227,7 @@ export default function ProductDetailsSumary() {
           <Divider sx={{ borderStyle: 'dashed' }} />
 
           <Stack spacing={3} sx={{ my: 3 }}>
-            {/* <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="subtitle1" sx={{ mt: 0.5 }}>
                 Color
               </Typography>
@@ -241,11 +241,11 @@ export default function ProductDetailsSumary() {
                   })
                 }}
               />
-            </Stack> */}
+            </Stack>
 
             <Stack direction="row" justifyContent="space-between">
               <Typography variant="subtitle1" sx={{ mt: 0.5 }}>
-                Frequency
+                Size
               </Typography>
               <TextField
                 select
@@ -259,15 +259,15 @@ export default function ProductDetailsSumary() {
                     mt: 1
                   }
                 }}
-                // helperText={
-                //   <Link href="#" underline="always" color="text.primary">
-                //     Size Chart
-                //   </Link>
-                // }
+                helperText={
+                  <Link href="#" underline="always" color="text.primary">
+                    Size Chart
+                  </Link>
+                }
               >
-                {['Every week', 'Every other week'].map((frequency) => (
-                  <option key={frequency} value={frequency}>
-                    {frequency}
+                {sizes.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
                   </option>
                 ))}
               </TextField>

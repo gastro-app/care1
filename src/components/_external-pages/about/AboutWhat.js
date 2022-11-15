@@ -13,7 +13,7 @@ import { varFadeInUp, varFadeInRight, MotionInView } from '../../animate';
 
 // ----------------------------------------------------------------------
 
-const LABEL = ['Fishmen', 'Farmers', 'Marketing'];
+const LABEL = ['Development', 'Design', 'Marketing'];
 
 const MOCK_SKILLS = [...Array(3)].map((_, index) => ({
   label: LABEL[index],
@@ -96,7 +96,7 @@ export default function AboutWhat() {
           <Grid item xs={12} md={6} lg={5}>
             <MotionInView variants={varFadeInRight}>
               <Typography variant="h2" sx={{ mb: 3 }}>
-                What is FRESHK?
+                What is minimal?
               </Typography>
             </MotionInView>
 
@@ -106,9 +106,10 @@ export default function AboutWhat() {
                   color: (theme) => (theme.palette.mode === 'light' ? 'text.secondary' : 'common.white')
                 }}
               >
-                we’ve made it easy for you to get the freshest hand-cut produces delivered right to your door every
-                week. We offer a variety of subscription plans that will fit any budget or lifestyle, so you can enjoy
-                great tasting fresh produces whenever you want.
+                Our theme is the most advanced and user-friendly theme you will find on the market, we have
+                documentation and video to help set your site really easily, pre-installed demos you can import in one
+                click and everything from the theme options to page content can be edited from the front-end. This is
+                the theme you are looking for.
               </Typography>
             </MotionInView>
 
@@ -120,7 +121,7 @@ export default function AboutWhat() {
               ))}
             </Box>
 
-            {/* <MotionInView variants={varFadeInRight}>
+            <MotionInView variants={varFadeInRight}>
               <Button
                 variant="outlined"
                 color="inherit"
@@ -129,7 +130,7 @@ export default function AboutWhat() {
               >
                 Check out our work
               </Button>
-            </MotionInView> */}
+            </MotionInView>
           </Grid>
         </Grid>
       </Container>

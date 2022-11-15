@@ -29,15 +29,15 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 export default function LandingPage() {
   return (
-    <RootStyle title="FRESHK | landing page" id="move_top">
+    <RootStyle title="The starting point for your next project | Minimal-UI" id="move_top">
       <LandingHero />
       <ContentStyle>
         <LandingMinimal />
         <LandingHugePackElements />
-        {/* <LandingDarkMode />
-        <LandingThemeColor /> */}
+        <LandingDarkMode />
+        <LandingThemeColor />
         <LandingCleanInterfaces />
-        {/* <LandingPricingPlans /> */}
+        <LandingPricingPlans />
         <LandingAdvertisement />
       </ContentStyle>
     </RootStyle>

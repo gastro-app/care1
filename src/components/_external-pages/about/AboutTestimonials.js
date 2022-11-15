@@ -14,13 +14,13 @@ const TESTIMONIALS = [
   {
     name: 'Jenny Wilson',
     rating: 5,
-    dateCreate: 'September 19, 2021',
+    dateCreate: 'April 19, 2021',
     content: `Excellent Work! Thanks a lot!`
   },
   {
     name: 'Cody Fisher',
     rating: 5,
-    dateCreate: 'October 19, 2021',
+    dateCreate: 'April 19, 2021',
     content: `It's a very good dashboard and we are really liking the product . We've done some things, like migrate to TS and implementing a react useContext api, to fit our job methodology but the product is one of the best in terms of design and application architecture. The team did a really good job.`
   },
   {
@@ -33,7 +33,7 @@ const TESTIMONIALS = [
     name: 'Darrell Steward',
     rating: 5,
     dateCreate: 'April 19, 2021',
-    content: `Amazing, really good  quality and gives you a lot of fresh produces.`
+    content: `Amazing, really good code quality and gives you a lot of examples for implementations.`
   },
   {
     name: 'Jacob Jones',
@@ -45,7 +45,7 @@ const TESTIMONIALS = [
     name: 'Bessie Cooper',
     rating: 5,
     dateCreate: 'April 19, 2021',
-    content: `Fresh produces. Thanks!`
+    content: `CEO of Codealy.io here. We’ve built a developer assessment platform that makes sense - tasks are based on git repositories and run in virtual machines. We automate the pain points - storing candidates code, running it and sharing test results with the whole team, remotely. Bought this template as we need to provide an awesome dashboard for our early customers. I am super happy with purchase. The code is just as good as the design. Thanks!`
   }
 ];
 
@@ -144,13 +144,13 @@ export default function AboutTestimonials() {
                 </Typography>
               </MotionInView>
 
-              {/* <MHidden width="mdUp">
+              <MHidden width="mdUp">
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
                   <MotionInView variants={varFadeInUp}>
                     <TestimonialLink />
                   </MotionInView>
                 </Box>
-              </MHidden> */}
+              </MHidden>
             </Box>
           </Grid>
 
@@ -184,13 +184,13 @@ export default function AboutTestimonials() {
           </Grid>
         </Grid>
 
-        {/* <MHidden width="mdDown">
+        <MHidden width="mdDown">
           <Box sx={{ bottom: 60, position: 'absolute' }}>
             <MotionInView variants={varFadeInLeft}>
               <TestimonialLink />
             </MotionInView>
           </Box>
-        </MHidden> */}
+        </MHidden>
       </Container>
     </RootStyle>
   );

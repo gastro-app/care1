@@ -95,7 +95,7 @@ export default function EcommerceInvoice() {
         <Card sx={{ pt: 5, px: 5 }}>
           <Grid container>
             <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
-              <Box component="img" alt="logo" src="/static/brand/logo_full.jpg" sx={{ height: 72 }} />
+              <Box component="img" alt="logo" src="/static/brand/logo_full.svg" sx={{ height: 48 }} />
             </Grid>
 
             <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
@@ -221,7 +221,7 @@ export default function EcommerceInvoice() {
             </Grid>
             <Grid item xs={12} md={3} sx={{ py: 3, textAlign: 'right' }}>
               <Typography variant="subtitle2">Have a Question?</Typography>
-              <Typography variant="body2">support@FRESHK.com</Typography>
+              <Typography variant="body2">support@minimals.cc</Typography>
             </Grid>
           </Grid>
         </Card>

@@ -3,9 +3,11 @@ import { useState } from 'react';
 // material
 import { styled } from '@mui/material/styles';
 import Check from '@mui/icons-material/Check';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
+
+import PersonIcon from '@mui/icons-material/Person';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import BiotechIcon from '@mui/icons-material/Biotech';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import {
   Box,
   Step,
@@ -15,36 +17,17 @@ import {
   StepLabel,
   Typography,
   StepConnector,
-  stepConnectorClasses
+  stepConnectorClasses,
+  Divider
 } from '@mui/material';
+import PatientPersoData from './PatientPersoData';
+import Indications from './Indications';
+import Conclusion from './Conclusion';
+import ExamenEndoscopique from './ExamenEndoscopique';
 
 // ----------------------------------------------------------------------
 
-const STEPS = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
-
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 10,
-    left: 'calc(-50% + 16px)',
-    right: 'calc(50% + 16px)'
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: theme.palette.success.main
-    }
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: theme.palette.success.main
-    }
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderRadius: 1,
-    borderTopWidth: 3,
-    borderColor: theme.palette.divider
-  }
-}));
-
+const STEPS = ['Données personelles du patient', 'Indications', 'Examen Endoscopique', 'Conclusions'];
 const QontoStepIconRoot = styled('div')(({ theme, ownerState }) => ({
   height: 22,
   display: 'flex',
@@ -132,9 +115,10 @@ function ColorlibStepIcon(props) {
   const { active, completed } = props;
 
   const icons = {
-    1: <SettingsIcon />,
-    2: <GroupAddIcon />,
-    3: <VideoLabelIcon />
+    1: <PersonIcon />,
+    2: <DragIndicatorIcon />,
+    3: <BiotechIcon />,
+    4: <AssignmentIcon />
   };
 
   return <ColorlibStepIconRoot ownerState={{ completed, active }}>{icons[String(props.icon)]}</ColorlibStepIconRoot>;
@@ -143,13 +127,13 @@ function ColorlibStepIcon(props) {
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return 'Select campaign settings...';
+      return <PatientPersoData />;
     case 1:
-      return 'What is an ad group anyways?';
+      return <Indications />;
     case 2:
-      return 'This is the bit I really care about!';
+      return <ExamenEndoscopique />;
     default:
-      return 'Unknown step';
+      return <Conclusion />;
   }
 }
 
@@ -170,14 +154,6 @@ export default function CustomizedSteppers() {
 
   return (
     <>
-      <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>
-        {STEPS.map((label) => (
-          <Step key={label}>
-            <StepLabel StepIconComponent={QontoStepIcon}>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-
       <Box sx={{ mb: 5 }} />
 
       <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
@@ -208,7 +184,10 @@ export default function CustomizedSteppers() {
       ) : (
         <>
           <Paper sx={{ p: 3, my: 3, minHeight: 120, bgcolor: 'grey.50012' }}>
-            <Typography sx={{ my: 1 }}>{getStepContent(activeStep)}</Typography>
+            <Typography variant="h4">{STEPS[activeStep]}</Typography> <Divider variant="middle" />
+            <br />
+            <br />
+            {getStepContent(activeStep)}
           </Paper>
 
           <Box sx={{ textAlign: 'right' }}>
@@ -216,7 +195,7 @@ export default function CustomizedSteppers() {
               Back
             </Button>
             <Button variant="contained" onClick={handleNext} sx={{ mr: 1 }}>
-              {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'}
+              {activeStep === STEPS.length - 1 ? 'Génerer le rapport' : 'Suivant'}
             </Button>
           </Box>
         </>

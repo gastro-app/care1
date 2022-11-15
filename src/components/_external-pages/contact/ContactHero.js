@@ -7,7 +7,7 @@ import { varFadeIn, varWrapEnter, varFadeInRight, TextAnimate } from '../../anim
 
 // ----------------------------------------------------------------------
 
-const CONTACTS1 = [
+const CONTACTS = [
   {
     country: 'Bali',
     address: '508 Bridle Avenue Newnan, GA 30263',
@@ -29,23 +29,7 @@ const CONTACTS1 = [
     phoneNumber: '(307) 555-0133'
   }
 ];
-const CONTACTS = [
-  {
-    country: 'Sousse',
-    address: '262 Rue Azerbaidjan, 4054 Sahloul, Sousse',
-    phoneNumber: '(216) 73-555-010'
-  },
-  {
-    country: 'Sfax',
-    address: '508 Bridle Avenue Newnan, GA 30263',
-    phoneNumber: '(216) 74-555-015'
-  },
-  {
-    country: 'USA',
-    address: '508 Bridle Avenue Newnan, GA 30263',
-    phoneNumber: '(252) 555-0126'
-  }
-];
+
 const RootStyle = styled(motion.div)(({ theme }) => ({
   backgroundSize: 'cover',
   backgroundPosition: 'center',
@@ -83,7 +67,7 @@ export default function ContactHero() {
 
           <Grid container spacing={5} sx={{ mt: 5, color: 'common.white' }}>
             {CONTACTS.map((contact) => (
-              <Grid key={contact.country} item xs={12} sm={6} md={3} lg={3} sx={{ pr: { md: 5 } }}>
+              <Grid key={contact.country} item xs={12} sm={6} md={3} lg={2} sx={{ pr: { md: 5 } }}>
                 <motion.div variants={varFadeIn}>
                   <Typography variant="h6" paragraph>
                     {contact.country}

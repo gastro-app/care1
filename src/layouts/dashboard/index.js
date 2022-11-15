@@ -41,8 +41,8 @@ export default function DashboardLayout() {
 
   return (
     <RootStyle>
-      <DashboardNavbar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} onOpenSidebar={() => setOpen(true)} />
-      {/* <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} /> */}
+      <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
+      <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
       <MainStyle
         sx={{
           transition: theme.transitions.create('margin', {

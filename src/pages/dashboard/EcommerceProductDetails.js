@@ -31,17 +31,17 @@ import CartWidget from '../../components/_dashboard/e-commerce/CartWidget';
 
 const PRODUCT_DESCRIPTION = [
   {
-    title: '100% Fresh',
+    title: '100% Original',
     description: 'Chocolate bar candy canes ice cream toffee cookie halvah.',
     icon: roundVerified
   },
   {
-    title: 'Delivery every week',
+    title: '10 Day Replacement',
     description: 'Marshmallow biscuit donut dragée fruitcake wafer.',
     icon: clockFill
   },
   {
-    title: 'Refund Warranty',
+    title: 'Year Warranty',
     description: 'Cotton candy gingerbread cake I love sugar sweet.',
     icon: roundVerifiedUser
   }
@@ -169,7 +169,7 @@ export default function EcommerceProductDetails() {
 
         {!product && SkeletonLoad}
 
-        {/* {error && <Typography variant="h6">404 Product not found</Typography>} */}
+        {error && <Typography variant="h6">404 Product not found</Typography>}
       </Container>
     </Page>
   );

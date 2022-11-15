@@ -1,6 +1,7 @@
 import { sum } from 'lodash';
 import { Icon } from '@iconify/react';
 import { Link as RouterLink } from 'react-router-dom';
+import shoppingCartFill from '@iconify/icons-eva/shopping-cart-fill';
 // material
 import { styled } from '@mui/material/styles';
 import { Badge } from '@mui/material';
@@ -41,7 +42,7 @@ export default function CartWidget() {
   return (
     <RootStyle to={PATH_DASHBOARD.eCommerce.checkout}>
       <Badge showZero badgeContent={totalItems} color="error" max={99}>
-        <Icon icon="fa-solid:box-open" width={24} height={24} />
+        <Icon icon={shoppingCartFill} width={24} height={24} />
       </Badge>
     </RootStyle>
   );

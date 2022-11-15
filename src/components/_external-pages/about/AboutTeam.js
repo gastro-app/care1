@@ -26,38 +26,7 @@ const MOCK_MEMBERS = [...Array(5)].map((_, index) => ({
 }));
 
 // ----------------------------------------------------------------------
-const MOCK_MEMBERS1 = [
-  {
-    id: mockData.id(100),
-    name: 'Khatib CHAKCHOUK',
-    role: 'Business Manager',
-    avatar: mockData.image.avatar(0)
-  },
-  {
-    id: mockData.id(101),
-    name: 'Mansour AJROUD',
-    role: 'Logistics Manager',
-    avatar: mockData.image.avatar(0)
-  },
-  {
-    id: mockData.id(102),
-    name: 'Ramzi ZELFANI',
-    role: 'CTO',
-    avatar: mockData.image.avatar(0)
-  },
-  {
-    id: mockData.id(103),
-    name: 'Houcem TESTOURI',
-    role: 'Software Engineer',
-    avatar: mockData.image.avatar(0)
-  },
-  {
-    id: mockData.id(100),
-    name: 'Khatib CHAKCHOUK',
-    role: 'Business Manager',
-    avatar: mockData.image.avatar(0)
-  }
-];
+
 MemberCard.propTypes = {
   member: PropTypes.shape({
     id: PropTypes.string,
@@ -95,7 +64,7 @@ export default function AboutTeam() {
 
   const settings = {
     slidesToShow: 4,
-    centerMode: false,
+    centerMode: true,
     centerPadding: '0 80px',
     rtl: Boolean(theme.direction === 'rtl'),
     responsive: [
@@ -136,7 +105,7 @@ export default function AboutTeam() {
         </Typography>
       </MotionInView>
 
-      {/* <MotionInView variants={varFadeInUp}>
+      <MotionInView variants={varFadeInUp}>
         <Typography
           sx={{
             mb: 10,
@@ -148,11 +117,11 @@ export default function AboutTeam() {
           Minimal will provide you support if you have any problems, our support team will reply within a day and we
           also have detailed documentation.
         </Typography>
-      </MotionInView> */}
+      </MotionInView>
 
       <Box sx={{ position: 'relative' }}>
         <Slider ref={carouselRef} {...settings}>
-          {MOCK_MEMBERS1.map((member) => (
+          {MOCK_MEMBERS.map((member) => (
             <MotionInView key={member.id} variants={varFadeIn}>
               <MemberCard member={member} />
             </MotionInView>
@@ -164,6 +133,15 @@ export default function AboutTeam() {
           sx={{ transform: 'translateY(-64px)' }}
         />
       </Box>
+      <Button
+        variant="outlined"
+        color="inherit"
+        size="large"
+        endIcon={<Icon icon={roundArrowRightAlt} width={24} height={24} />}
+        sx={{ mx: 'auto' }}
+      >
+        View all team members
+      </Button>
     </Container>
   );
 }

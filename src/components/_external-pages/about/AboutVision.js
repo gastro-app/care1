@@ -8,7 +8,7 @@ import { varFadeInUp, varFadeIn, MotionInView } from '../../animate';
 export default function AboutVision() {
   return (
     <Container maxWidth="lg" sx={{ mt: 10 }}>
-      {/* <Box
+      <Box
         sx={{
           mb: 10,
           position: 'relative',
@@ -42,13 +42,13 @@ export default function AboutVision() {
             </MotionInView>
           ))}
         </Box>
-      </Box> */}
+      </Box>
 
       <Grid container justifyContent="center">
         <Grid item xs={12} sm={8}>
           <MotionInView variants={varFadeInUp}>
             <Typography variant="h3" sx={{ textAlign: 'center' }}>
-              Our vision is offering the best product to our customer
+              Our vision offering the best product nulla vehicula tortor scelerisque ultrices malesuada.
             </Typography>
           </MotionInView>
         </Grid>

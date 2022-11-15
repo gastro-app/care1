@@ -12,8 +12,7 @@ import MainFooter from './MainFooter';
 
 export default function MainLayout() {
   const { pathname } = useLocation();
-  //  const isHome = pathname === '/';
-  const isHome = false;
+  const isHome = pathname === '/';
 
   return (
     <>

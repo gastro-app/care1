@@ -27,8 +27,8 @@ const MENU_OPTIONS = [
     linkTo: '/'
   },
   {
-    label: 'My orders',
-    icon: 'clarity:list-solid',
+    label: 'Profile',
+    icon: personFill,
     linkTo: PATH_DASHBOARD.user.profile
   },
   {
@@ -96,12 +96,10 @@ export default function AccountPopover() {
       <MenuPopover open={open} onClose={handleClose} anchorEl={anchorRef.current} sx={{ width: 220 }}>
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            user01
-            {/* {user.displayName} */}
+            {user.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            user01@gmail.com
-            {/* {user.email} */}
+            {user.email}
           </Typography>
         </Box>
 

@@ -80,7 +80,7 @@ export default function InvoicePDF({ invoice }) {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={[styles.gridContainer, styles.mb40]}>
-          <Image source="/static/brand/logo_full.jpg" style={{ height: 64 }} />
+          <Image source="/static/brand/logo_full.jpg" style={{ height: 32 }} />
           <View style={{ alignItems: 'right', flexDirection: 'column' }}>
             <Text style={styles.h3}>{status}</Text>
             <Text>INV-{id}</Text>
@@ -204,7 +204,7 @@ export default function InvoicePDF({ invoice }) {
           </View>
           <View style={[styles.col4, styles.alignRight]}>
             <Text style={styles.subtitle2}>Have a Question?</Text>
-            <Text>support@Freshk.com</Text>
+            <Text>support@abcapp.com</Text>
           </View>
         </View>
       </Page>

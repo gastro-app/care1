@@ -59,9 +59,9 @@ export default function Register() {
       <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Subscribe now and get your weekly produces boxes{' '}
+            Manage the job more effectively with Minimal
           </Typography>
-          <img alt="register" src="/static/illustrations/illustration_login.png" />
+          <img alt="register" src="/static/illustrations/illustration_register.png" />
         </SectionStyle>
       </MHidden>
 
@@ -70,9 +70,9 @@ export default function Register() {
           <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
             <Box sx={{ flexGrow: 1 }}>
               <Typography variant="h4" gutterBottom>
-                Get started now.
+                Get started absolutely free.
               </Typography>
-              <Typography sx={{ color: 'text.secondary' }}>Signup</Typography>
+              <Typography sx={{ color: 'text.secondary' }}>Free forever. No credit card needed.</Typography>
             </Box>
             <Tooltip title={capitalCase(method)}>
               <Box component="img" src={`/static/auth/ic_${method}.png`} sx={{ width: 32, height: 32 }} />
@@ -84,7 +84,7 @@ export default function Register() {
           <RegisterForm />
 
           <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-            By registering, I agree to FRESHK&nbsp;
+            By registering, I agree to Minimal&nbsp;
             <Link underline="always" color="text.primary" href="#">
               Terms of Service
             </Link>

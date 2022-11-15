@@ -24,7 +24,7 @@ const SOCIALS = [
 
 const LINKS = [
   {
-    headline: 'FRESHK',
+    headline: 'Minimal',
     children: [
       { name: 'About us', href: PATH_PAGE.about },
       { name: 'Contact us', href: PATH_PAGE.contact },
@@ -41,8 +41,8 @@ const LINKS = [
   {
     headline: 'Contact',
     children: [
-      { name: 'support@freshk.tn', href: '#' },
-      { name: '262 Rue Azerbaidjan 4054 Sahloul, Tunisia', href: '#' }
+      { name: 'support@minimals.cc', href: '#' },
+      { name: 'Los Angeles, 359  Hidden Valley Road', href: '#' }
     ]
   }
 ];
@@ -71,13 +71,8 @@ export default function MainFooter() {
           </Grid>
           <Grid item xs={8} md={3}>
             <Typography variant="body2" sx={{ pr: { md: 5 } }}>
-              Here at FRESH
-              <Typography component="span" sx={{ color: 'primary.main' }}>
-                K
-              </Typography>{' '}
-              we’ve made it easy for you to get the freshest hand-cut produces delivered right to your door every week.
-              We offer a variety of subscription plans that will fit any budget or lifestyle, so you can enjoy great
-              tasting fresh produces whenever you want
+              The starting point for your next project with Minimal UI Kit, built on the newest version of Material-UI
+              ©, ready to be customized to your style.
             </Typography>
 
             <Stack

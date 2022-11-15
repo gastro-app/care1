@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles';
 import { Button, Box, Container, Typography } from '@mui/material';
 //
 import { varFadeInDown, varFadeInUp, MotionInView } from '../../animate';
-import { PATH_DASHBOARD } from '../../../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +37,7 @@ export default function LandingAdvertisement() {
           }}
         >
           <motion.div animate={{ y: [-20, 0, -20] }} transition={{ duration: 4, repeat: Infinity }}>
-            <Box component="img" alt="rocket" src="/static/home/hero11.png" sx={{ maxWidth: 460, width: 1 }} />
+            <Box component="img" alt="rocket" src="/static/home/rocket.png" sx={{ maxWidth: 460, width: 1 }} />
           </motion.div>
         </MotionInView>
 
@@ -50,8 +49,8 @@ export default function LandingAdvertisement() {
         >
           <MotionInView variants={varFadeInDown} sx={{ color: 'common.white', mb: 5 }}>
             <Typography variant="h2">
-              So what are you
-              <br /> waiting for ?
+              Get started with
+              <br /> minimal kit today
             </Typography>
           </MotionInView>
           <MotionInView variants={varFadeInDown}>
@@ -59,7 +58,7 @@ export default function LandingAdvertisement() {
               size="large"
               variant="contained"
               target="_blank"
-              href={PATH_DASHBOARD.root}
+              href="https://material-ui.com/store/items/minimal-dashboard/"
               sx={{
                 whiteSpace: 'nowrap',
                 boxShadow: (theme) => theme.customShadows.z8,
@@ -68,7 +67,7 @@ export default function LandingAdvertisement() {
                 '&:hover': { bgcolor: 'grey.300' }
               }}
             >
-              get your Box Now !{' '}
+              Purchase Now
             </Button>
           </MotionInView>
         </Box>
