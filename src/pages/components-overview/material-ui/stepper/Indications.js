@@ -310,6 +310,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
               <Stack spacing={3}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
+                    multiline
                     fullWidth
                     label="indications"
                     {...getFieldProps('indications')}

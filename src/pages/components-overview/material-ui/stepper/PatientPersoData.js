@@ -371,6 +371,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
                 </Stack>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
+                    multiline
                     fullWidth
                     label="antecedents"
                     {...getFieldProps('antecedents')}

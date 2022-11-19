@@ -58,7 +58,7 @@ function ExploredItem({ label, formik }) {
             fullWidth
             multiline
             label={label}
-            {...getFieldProps(label)}
+            // {...getFieldProps(label)}
             error={Boolean(touched.email && errors.email)}
             helperText={touched.email && errors.email}
           />
@@ -159,7 +159,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
         <TextField
           fullWidth
           label="materials"
-          {...getFieldProps('materials')}
+          // {...getFieldProps('materials')}
           error={Boolean(touched.city && errors.city)}
           helperText={touched.city && errors.city}
         />
@@ -168,7 +168,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
         <TextField
           fullWidth
           label="oesophage"
-          {...getFieldProps('oesophage')}
+          // {...getFieldProps('oesophage')}
           error={Boolean(touched.name && errors.name)}
           helperText={touched.name && errors.name}
         />
@@ -177,7 +177,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
         <TextField
           fullWidth
           label="cardia"
-          {...getFieldProps('cardia')}
+          // {...getFieldProps('cardia')}
           error={Boolean(touched.email && errors.email)}
           helperText={touched.email && errors.email}
         />
@@ -195,7 +195,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
             <TextField
               fullWidth
               label="fundus"
-              {...getFieldProps('fundus')}
+              // {...getFieldProps('fundus')}
               error={Boolean(touched.email && errors.email)}
               helperText={touched.email && errors.email}
             />
@@ -204,7 +204,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
             <TextField
               fullWidth
               label="antre"
-              {...getFieldProps('antre')}
+              // {...getFieldProps('antre')}
               error={Boolean(touched.email && errors.email)}
               helperText={touched.email && errors.email}
             />
@@ -225,7 +225,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
         <TextField
           fullWidth
           label="materials"
-          {...getFieldProps('materials')}
+          // {...getFieldProps('materials')}
           error={Boolean(touched.city && errors.city)}
           helperText={touched.city && errors.city}
         />
@@ -237,7 +237,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
           fullWidth
           label="Colon gauche"
           placeholder="Colon gauche"
-          {...getFieldProps('Colon gauche')}
+          // {...getFieldProps('Colon gauche')}
           SelectProps={{ native: true }}
           error={Boolean(touched.country && errors.country)}
           helperText={touched.country && errors.country}
@@ -256,7 +256,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
           fullWidth
           label="Colon Transverse"
           placeholder="Colon Transverse"
-          {...getFieldProps('Colon Transverse')}
+          // {...getFieldProps('Colon Transverse')}
           SelectProps={{ native: true }}
           error={Boolean(touched.country && errors.country)}
           helperText={touched.country && errors.country}
@@ -275,7 +275,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
           fullWidth
           label="Colon droit"
           placeholder="Colon droit"
-          {...getFieldProps('Colon droit')}
+          // {...getFieldProps('Colon droit')}
           SelectProps={{ native: true }}
           error={Boolean(touched.country && errors.country)}
           helperText={touched.country && errors.country}
@@ -294,7 +294,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
           fullWidth
           label="Préparation"
           placeholder="Préparation"
-          {...getFieldProps('Préparation')}
+          // {...getFieldProps('Préparation')}
           SelectProps={{ native: true }}
           error={Boolean(touched.country && errors.country)}
           helperText={touched.country && errors.country}
