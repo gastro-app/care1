@@ -369,6 +369,15 @@ export default function UserNewForm({ isEdit, currentUser }) {
                     helperText={touched.city && errors.city}
                   />
                 </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="antecedents"
+                    {...getFieldProps('antecedents')}
+                    error={Boolean(touched.city && errors.city)}
+                    helperText={touched.city && errors.city}
+                  />
+                </Stack>
               </Stack>
             </Card>
           </Grid>

@@ -10,7 +10,6 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
@@ -39,11 +38,10 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../../components/_d
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'nom', label: 'Nom', alignRight: false },
+  { id: 'prénom', label: 'Prénom', alignRight: false },
+  { id: 'numeroDossier', label: 'Numero de dossier', alignRight: false },
+  { id: 'etablissement', label: 'Etablissement', alignRight: false },
   { id: '' }
 ];
 
@@ -151,20 +149,20 @@ export default function UserList() {
     <Page title="User: List | Minimal-UI">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="User List"
+          heading="Liste des rapports"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'List' }
+            { name: "Page d'acceuil", href: PATH_DASHBOARD.root },
+            { name: 'Rapport', href: PATH_DASHBOARD.user.root },
+            { name: 'Liste' }
           ]}
           action={
             <Button
               variant="contained"
               component={RouterLink}
-              to={PATH_DASHBOARD.user.newUser}
+              to={PATH_DASHBOARD.general.newReport}
               startIcon={<Icon icon={plusFill} />}
             >
-              New User
+              Nouveau rapport
             </Button>
           }
         />
@@ -186,8 +184,8 @@ export default function UserList() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
+                    const { id, nom, prenom, etablissement, nbDossier, avatarUrl, isVerified } = row;
+                    const isItemSelected = selected.indexOf(nom) !== -1;
 
                     return (
                       <TableRow
@@ -199,30 +197,20 @@ export default function UserList() {
                         aria-checked={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, nom)} />
                         </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
                             <Typography variant="subtitle2" noWrap>
-                              {name}
+                              {nom}
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{company}</TableCell>
-                        <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={(status === 'banned' && 'error') || 'success'}
-                          >
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell>
-
+                        <TableCell align="left">{prenom}</TableCell>
+                        <TableCell align="left">{nbDossier}</TableCell>
+                        <TableCell align="left">{etablissement}</TableCell>
                         <TableCell align="right">
-                          <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={name} />
+                          <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={nom} />
                         </TableCell>
                       </TableRow>
                     );

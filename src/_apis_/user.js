@@ -50,9 +50,10 @@ mock.onGet('/api/user/manage-users').reply(() => {
   const users = [...Array(24)].map((_, index) => ({
     id: mockData.id(index),
     avatarUrl: mockData.image.avatar(index),
-    name: mockData.name.fullName(index),
-    email: mockData.email(index),
-    phoneNumber: mockData.phoneNumber(index),
+    nom: mockData.name.firstName(index),
+    prenom: mockData.name.lastName(index),
+    etablissement: mockData.email(index),
+    nbDossier: mockData.phoneNumber(index),
     address: '908 Jack Locks',
     country: mockData.address.country(index),
     state: 'Virginia',

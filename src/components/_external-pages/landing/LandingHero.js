@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import flashFill from '@iconify/icons-eva/flash-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
+import styled1 from 'styled-components';
+
 import { styled } from '@mui/material/styles';
 import { Button, Box, Link, Container, Typography, Stack } from '@mui/material';
 // routes
@@ -48,7 +50,7 @@ const HeroOverlayStyle = styled(motion.img)({
   position: 'absolute'
 });
 
-const HeroImgStyle = styled(motion.img)(({ theme }) => ({
+const HeroImgStyle = styled(motion.video)(({ theme }) => ({
   top: 0,
   right: 0,
   bottom: 0,
@@ -63,75 +65,65 @@ const HeroImgStyle = styled(motion.img)(({ theme }) => ({
   }
 }));
 
-// ----------------------------------------------------------------------
+// -------
+
+const HeroBG = styled1.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`;
+
+const VideoBG = styled1.video`
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  background: #232a34;
+`;
 
 export default function LandingHero() {
   return (
     <>
       <RootStyle initial="initial" animate="animate" variants={varWrapEnter}>
-        <HeroOverlayStyle alt="overlay" src="/static/overlay.svg" variants={varFadeIn} />
-
-        <HeroImgStyle alt="hero" src="/static/home/hero.png" variants={varFadeInUp} />
+        {/* <HeroOverlayStyle alt="overlay" src="/static/overlay.svg" variants={varFadeIn} /> */}
+        <HeroBG>
+          <VideoBG autoPlay loop muted src="/static/home/video.mp4" type="video/mp4" />
+        </HeroBG>
 
         <Container maxWidth="lg">
           <ContentStyle>
             <motion.div variants={varFadeInRight}>
               <Typography variant="h1" sx={{ color: 'common.white' }}>
-                Start a <br />
-                new project <br /> with
+                Les rapports sont devenus Plus facile <br /> avec
                 <Typography component="span" variant="h1" sx={{ color: 'primary.main' }}>
-                  &nbsp;Minimal
+                  &nbsp;Gastro App
                 </Typography>
               </Typography>
             </motion.div>
 
             <motion.div variants={varFadeInRight}>
               <Typography sx={{ color: 'common.white' }}>
-                The starting point for your next project based on easy-to-customize Material-UI © helps you build apps
-                faster and better.
+                Facilite le reportage pour le docteur et assure un bon service et des résultats détaillées pour le
+                patient.
               </Typography>
             </motion.div>
-
-            <Stack
-              component={motion.div}
-              variants={varFadeInRight}
-              direction="row"
-              spacing={1}
-              justifyContent={{ xs: 'center', md: 'flex-start' }}
-            >
-              <img alt="sketch icon" src="/static/home/ic_sketch_small.svg" width={20} height={20} />
-
-              <Link
-                underline="always"
-                href="https://www.sketch.com/s/0fa4699d-a3ff-4cd5-a3a7-d851eb7e17f0"
-                target="_blank"
-                color="common.white"
-                sx={{ typography: 'body2' }}
-              >
-                Preview in Sketch Cloud
-              </Link>
-            </Stack>
 
             <motion.div variants={varFadeInRight}>
               <Button
                 size="large"
                 variant="contained"
                 component={RouterLink}
-                to={PATH_DASHBOARD.root}
-                startIcon={<Icon icon={flashFill} width={20} height={20} />}
+                to={PATH_DASHBOARD.general.newReport}
+                startIcon={<Icon icon="eva:file-text-outline" width={30} height={30} />}
               >
-                Live Preview
+                Nouveau rapport
               </Button>
             </motion.div>
-
-            <Stack direction="row" spacing={1.5} justifyContent={{ xs: 'center', md: 'flex-start' }}>
-              <motion.img variants={varFadeInRight} src="/static/home/ic_sketch.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/ic_figma.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/ic_material.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/ic_react.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/ic_js.svg" />
-              <motion.img variants={varFadeInRight} src="/static/home/ic_ts.svg" />
-            </Stack>
           </ContentStyle>
         </Container>
       </RootStyle>

@@ -309,7 +309,13 @@ export default function UserNewForm({ isEdit, currentUser }) {
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <FixedTags label="Anticidents" />
+                  <TextField
+                    fullWidth
+                    label="indications"
+                    {...getFieldProps('indications')}
+                    error={Boolean(touched.city && errors.city)}
+                    helperText={touched.city && errors.city}
+                  />
                 </Stack>
 
                 <Box sx={{ flexGrow: 1 }}>

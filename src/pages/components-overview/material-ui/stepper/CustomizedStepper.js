@@ -184,7 +184,7 @@ export default function CustomizedSteppers() {
       ) : (
         <>
           <Paper sx={{ p: 3, my: 3, minHeight: 120, bgcolor: 'grey.50012' }}>
-            <Typography variant="h4">{STEPS[activeStep]}</Typography> <Divider variant="middle" />
+            <Typography variant="h3">{STEPS[activeStep]}</Typography> <Divider variant="middle" />
             <br />
             <br />
             {getStepContent(activeStep)}

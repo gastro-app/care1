@@ -136,48 +136,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             {!isCollapse && <IconCollapse onToggleCollapse={onToggleCollapse} collapseClick={collapseClick} />}
           </MHidden>
         </Stack>
-
-        {isCollapse ? (
-          <MyAvatar sx={{ mx: 'auto', mb: 2 }} />
-        ) : (
-          <Link underline="none" component={RouterLink} to={PATH_DASHBOARD.user.account}>
-            <AccountStyle>
-              <MyAvatar />
-              <Box sx={{ ml: 2 }}>
-                <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                  {user?.displayName}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {user?.role}
-                </Typography>
-              </Box>
-            </AccountStyle>
-          </Link>
-        )}
       </Stack>
 
       <NavSection navConfig={sidebarConfig} isShow={!isCollapse} />
 
       <Box sx={{ flexGrow: 1 }} />
-
-      {!isCollapse && (
-        <Stack spacing={3} alignItems="center" sx={{ px: 5, pb: 5, mt: 10, width: 1, textAlign: 'center' }}>
-          <DocIllustration sx={{ width: 1 }} />
-
-          <div>
-            <Typography gutterBottom variant="subtitle1">
-              Hi, {user?.displayName}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Need help?
-              <br /> Please check our docs
-            </Typography>
-          </div>
-          <Button href={PATH_DOCS} target="_blank" variant="contained">
-            Documentation
-          </Button>
-        </Stack>
-      )}
     </Scrollbar>
   );
 
