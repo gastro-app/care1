@@ -36,31 +36,36 @@ ExploredItem.propTypes = {
   label: PropTypes.string,
   formik: PropTypes.object
 };
-function ExploredItem({ label, formik }) {
+function ExploredItem({ labelExplored, value, label, formik }) {
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
-  const [alignment, setAlignment] = useState('Non Exploré');
 
   const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
+    formik.setFieldValue(label, newAlignment);
   };
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <Typography variant="h5">{label}</Typography>
-        <ToggleButtonGroup color="primary" value={alignment} exclusive onChange={handleChange} aria-label="Platform">
+        <ToggleButtonGroup
+          color="primary"
+          value={values[labelExplored]}
+          exclusive
+          onChange={handleChange}
+          aria-label="Platform"
+        >
           <ToggleButton value="Exploré">Exploré</ToggleButton>
           <ToggleButton value="Non Exploré">Non Exploré</ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      {alignment === 'Exploré' && (
+      {values[labelExplored] === 'Exploré' && (
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
           <TextField
             fullWidth
             multiline
             label={label}
-            // {...getFieldProps(label)}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
+            {...getFieldProps(value)}
+            error={Boolean(touched[value] && errors[value])}
+            helperText={touched[value] && errors[value]}
           />
         </Stack>
       )}
@@ -70,283 +75,237 @@ function ExploredItem({ label, formik }) {
 
 UserNewForm.propTypes = {
   isEdit: PropTypes.bool,
-  currentUser: PropTypes.object
+  formik: PropTypes.object
 };
 
-export default function UserNewForm({ isEdit, currentUser }) {
+export default function UserNewForm({ isEdit, formik }) {
   const [alignment, setAlignment] = useState('Non Exploré');
 
   const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
+    formik.setFieldValue('FOGDEstomac', newAlignment);
   };
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
-  const [preview, setPreview] = useState(false);
-  const [files, setFiles] = useState([]);
-
-  const handleDropMultiFile = useCallback(
-    (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file)
-          })
-        )
-      );
-    },
-    [setFiles]
-  );
-
-  const handleRemoveAll = () => {
-    setFiles([]);
-  };
-
-  const handleRemove = (file) => {
-    const filteredItems = files.filter((_file) => _file !== file);
-    setFiles(filteredItems);
-  };
-  const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email(),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role Number is required'),
-    avatarUrl: Yup.mixed().required('Avatar is required')
-  });
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
-      phoneNumber: currentUser?.phoneNumber || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      isVerified: currentUser?.isVerified || true,
-      status: currentUser?.status,
-      company: currentUser?.company || '',
-      role: currentUser?.role || ''
-    },
-    validationSchema: NewUserSchema,
-    onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
-      try {
-        await fakeRequest(500);
-        resetForm();
-        setSubmitting(false);
-        enqueueSnackbar(!isEdit ? 'Create success' : 'Update success', { variant: 'success' });
-        navigate(PATH_DASHBOARD.user.list);
-      } catch (error) {
-        console.error(error);
-        setSubmitting(false);
-        setErrors(error);
-      }
-    }
-  });
-
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
-  const FOGD = () => (
-    <>
-      {' '}
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          fullWidth
-          label="materials"
-          // {...getFieldProps('materials')}
-          error={Boolean(touched.city && errors.city)}
-          helperText={touched.city && errors.city}
-        />
-      </Stack>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          fullWidth
-          label="oesophage"
-          // {...getFieldProps('oesophage')}
-          error={Boolean(touched.name && errors.name)}
-          helperText={touched.name && errors.name}
-        />
-      </Stack>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          fullWidth
-          label="cardia"
-          // {...getFieldProps('cardia')}
-          error={Boolean(touched.email && errors.email)}
-          helperText={touched.email && errors.email}
-        />
-      </Stack>
-      <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="h5">Estomac</Typography>
-        <ToggleButtonGroup color="primary" value={alignment} exclusive onChange={handleChange} aria-label="Platform">
-          <ToggleButton value="Exploré">Exploré</ToggleButton>
-          <ToggleButton value="Non Exploré">Non Exploré</ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
-      {alignment === 'Exploré' && (
-        <>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-            <TextField
-              fullWidth
-              label="fundus"
-              // {...getFieldProps('fundus')}
-              error={Boolean(touched.email && errors.email)}
-              helperText={touched.email && errors.email}
-            />
-          </Stack>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-            <TextField
-              fullWidth
-              label="antre"
-              // {...getFieldProps('antre')}
-              error={Boolean(touched.email && errors.email)}
-              helperText={touched.email && errors.email}
-            />
-          </Stack>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-            <FormControlLabel control={<Switch />} label="Biopsie" labelPlacement="start" />
-          </Stack>
-        </>
-      )}
-      <ExploredItem label="pylore" formik={formik} />
-      <ExploredItem label="DI/DII" formik={formik} />
-    </>
-  );
-  const Coloscopie = () => (
-    <>
-      {' '}
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          fullWidth
-          label="materials"
-          // {...getFieldProps('materials')}
-          error={Boolean(touched.city && errors.city)}
-          helperText={touched.city && errors.city}
-        />
-      </Stack>
-      <Typography variant="h5">BOSTON</Typography>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          select
-          fullWidth
-          label="Colon gauche"
-          placeholder="Colon gauche"
-          // {...getFieldProps('Colon gauche')}
-          SelectProps={{ native: true }}
-          error={Boolean(touched.country && errors.country)}
-          helperText={touched.country && errors.country}
-        >
-          <option value="" />
-          {['1', '2', '3'].map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </TextField>
-      </Stack>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          select
-          fullWidth
-          label="Colon Transverse"
-          placeholder="Colon Transverse"
-          // {...getFieldProps('Colon Transverse')}
-          SelectProps={{ native: true }}
-          error={Boolean(touched.country && errors.country)}
-          helperText={touched.country && errors.country}
-        >
-          <option value="" />
-          {['1', '2', '3'].map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </TextField>
-      </Stack>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          select
-          fullWidth
-          label="Colon droit"
-          placeholder="Colon droit"
-          // {...getFieldProps('Colon droit')}
-          SelectProps={{ native: true }}
-          error={Boolean(touched.country && errors.country)}
-          helperText={touched.country && errors.country}
-        >
-          <option value="" />
-          {['1', '2', '3'].map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </TextField>
-      </Stack>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-        <TextField
-          select
-          fullWidth
-          label="Préparation"
-          placeholder="Préparation"
-          // {...getFieldProps('Préparation')}
-          SelectProps={{ native: true }}
-          error={Boolean(touched.country && errors.country)}
-          helperText={touched.country && errors.country}
-        >
-          <option value="" />
-          {['bonne', 'moyenne', 'mauvaise'].map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </TextField>
-      </Stack>
-      <ExploredItem label="Iléon" formik={formik} />
-      <ExploredItem label="Bas fond caecal" formik={formik} />
-      <ExploredItem label="Colon droit" formik={formik} />
-      <ExploredItem label="Colon Transverse" formik={formik} />
-      <ExploredItem label="Colon gauche" formik={formik} />
-      <ExploredItem label="Rectum" formik={formik} />
-    </>
-  );
   return (
-    <FormikProvider value={formik}>
-      <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={12}>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                <Typography variant="h4">FOGD</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Card sx={{ p: 3 }}>
-                  <Stack spacing={3}>
-                    <FOGD />
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={12}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+            <Typography variant="h4">FOGD</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Card sx={{ p: 3 }}>
+              <Stack spacing={3}>
+                <>
+                  {' '}
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      label="Materials"
+                      {...getFieldProps('FOGDmaterials')}
+                      error={Boolean(touched.FOGDmaterials && errors.FOGDmaterials)}
+                      helperText={touched.FOGDmaterials && errors.FOGDmaterials}
+                    />
                   </Stack>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                <Typography variant="h4">Coloscopie</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Card sx={{ p: 3 }}>
-                  <Stack spacing={3}>
-                    <Coloscopie />
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      label="Oesophage"
+                      {...getFieldProps('FOGDoesophage')}
+                      error={Boolean(touched.FOGDoesophage && errors.FOGDoesophage)}
+                      helperText={touched.FOGDoesophage && errors.FOGDoesophage}
+                    />
                   </Stack>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-        </Grid>
-      </Form>
-    </FormikProvider>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      label="Cardia"
+                      {...getFieldProps('FOGDcardia')}
+                      error={Boolean(touched.FOGDcardia && errors.FOGDcardia)}
+                      helperText={touched.FOGDcardia && errors.FOGDcardia}
+                    />
+                  </Stack>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography variant="h5">Estomac</Typography>
+                    <ToggleButtonGroup
+                      color="primary"
+                      value={values.FOGDEstomac}
+                      exclusive
+                      onChange={handleChange}
+                      aria-label="Platform"
+                    >
+                      <ToggleButton value="Exploré">Exploré</ToggleButton>
+                      <ToggleButton value="Non Exploré">Non Exploré</ToggleButton>
+                    </ToggleButtonGroup>
+                  </Box>
+                  {values.FOGDEstomac === 'Exploré' && (
+                    <>
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                        <TextField
+                          fullWidth
+                          label="fundus"
+                          {...getFieldProps('FOGDfundus')}
+                          error={Boolean(touched.FOGDfundus && errors.FOGDfundus)}
+                          helperText={touched.FOGDfundus && errors.FOGDfundus}
+                        />
+                      </Stack>
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                        <TextField
+                          fullWidth
+                          label="antre"
+                          {...getFieldProps('FOGDantre')}
+                          error={Boolean(touched.FOGDantre && errors.FOGDantre)}
+                          helperText={touched.FOGDantre && errors.FOGDantre}
+                        />
+                      </Stack>
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                        <FormControlLabel control={<Switch />} label="Biopsie" labelPlacement="start" />
+                      </Stack>
+                    </>
+                  )}
+                  <ExploredItem labelExplored="FOGDpyloreExplored" label="FOGDpylore" formik={formik} />
+                  <ExploredItem labelExplored="FOGDdidiiExplored" label="FOGDdidii" formik={formik} />
+                </>
+              </Stack>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+            <Typography variant="h4">Coloscopie</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Card sx={{ p: 3 }}>
+              <Stack spacing={3}>
+                <>
+                  {' '}
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      label="materials"
+                      {...getFieldProps('ColoscopieMaterials')}
+                      error={Boolean(touched.ColoscopieMaterials && errors.ColoscopieMaterials)}
+                      helperText={touched.ColoscopieMaterials && errors.ColoscopieMaterials}
+                    />
+                  </Stack>
+                  <Typography variant="h5">BOSTON</Typography>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Colon gauche"
+                      placeholder="Colon gauche"
+                      {...getFieldProps('ColoscopieColonGauche')}
+                      SelectProps={{ native: true }}
+                      error={Boolean(touched.ColoscopieColonGauche && errors.ColoscopieColonGauche)}
+                      helperText={touched.ColoscopieColonGauche && errors.ColoscopieColonGauche}
+                    >
+                      <option value="" />
+                      {['1', '2', '3'].map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Colon Transverse"
+                      placeholder="Colon Transverse"
+                      {...getFieldProps('ColoscopieColonTansverse')}
+                      SelectProps={{ native: true }}
+                      error={Boolean(touched.ColoscopieColonTansverse && errors.ColoscopieColonTansverse)}
+                      helperText={touched.ColoscopieColonTansverse && errors.ColoscopieColonTansverse}
+                    >
+                      <option value="" />
+                      {['1', '2', '3'].map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Colon droit"
+                      placeholder="Colon droit"
+                      {...getFieldProps('ColoscopieColonDroit')}
+                      SelectProps={{ native: true }}
+                      error={Boolean(touched.ColoscopieColonDroit && errors.ColoscopieColonDroit)}
+                      helperText={touched.ColoscopieColonDroit && errors.ColoscopieColonDroit}
+                    >
+                      <option value="" />
+                      {['1', '2', '3'].map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Préparation"
+                      placeholder="Préparation"
+                      {...getFieldProps('ColoscopiePreparation')}
+                      SelectProps={{ native: true }}
+                      error={Boolean(touched.ColoscopiePreparation && errors.ColoscopiePreparation)}
+                      helperText={touched.ColoscopiePreparation && errors.ColoscopiePreparation}
+                    >
+                      <option value="" />
+                      {['bonne', 'moyenne', 'mauvaise'].map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Stack>
+                  <ExploredItem
+                    labelExplored="ColoscopieIleonExplored"
+                    value="ColoscopieIleon"
+                    label="Iléon"
+                    formik={formik}
+                  />
+                  <ExploredItem
+                    labelExplored="ColoscopieBasFondCaecalExplored"
+                    value="ColoscopieBasFondCaecal"
+                    label="Bas fond caecal"
+                    formik={formik}
+                  />
+                  <ExploredItem
+                    labelExplored="ColoscopieColonDroitTextExplored"
+                    value="ColoscopieColonDroitText"
+                    label="Colon droit"
+                    formik={formik}
+                  />
+                  <ExploredItem
+                    labelExplored="ColoscopieColonTansverseTextExplored"
+                    value="ColoscopieColonTansverseText"
+                    label="Colon Transverse"
+                    formik={formik}
+                  />
+                  <ExploredItem
+                    labelExplored="ColoscopieColonGaucheTextExplored"
+                    value="ColoscopieColonGaucheText"
+                    label="Colon gauche"
+                    formik={formik}
+                  />
+                  <ExploredItem
+                    labelExplored="ColoscopieRectumExplored"
+                    value="ColoscopieRectum"
+                    label="Rectum"
+                    formik={formik}
+                  />
+                </>
+              </Stack>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      </Grid>
+    </Grid>
   );
 }

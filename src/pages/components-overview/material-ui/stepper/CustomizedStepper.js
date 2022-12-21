@@ -3,7 +3,8 @@ import { useState } from 'react';
 // material
 import { styled } from '@mui/material/styles';
 import Check from '@mui/icons-material/Check';
-
+import { Form, FormikProvider, useFormik } from 'formik';
+import * as Yup from 'yup';
 import PersonIcon from '@mui/icons-material/Person';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -124,20 +125,107 @@ function ColorlibStepIcon(props) {
   return <ColorlibStepIconRoot ownerState={{ completed, active }}>{icons[String(props.icon)]}</ColorlibStepIconRoot>;
 }
 
-function getStepContent(step) {
+function getStepContent(step, formik) {
   switch (step) {
     case 0:
-      return <PatientPersoData />;
+      return <PatientPersoData formik={formik} />;
     case 1:
-      return <Indications />;
+      return <Indications formik={formik} />;
     case 2:
-      return <ExamenEndoscopique />;
+      return <ExamenEndoscopique formik={formik} />;
     default:
-      return <Conclusion />;
+      return <Conclusion formik={formik} />;
   }
 }
 
-export default function CustomizedSteppers() {
+export default function CustomizedSteppers({ isEdit, currentReport }) {
+  const NewReportSchema = Yup.object().shape({
+    nom: Yup.string().required('Le nom est requis'),
+    prenom: Yup.string().required('Le prénom est requis'),
+    age: Yup.string().required('age est requis'),
+    sexe: Yup.string().required('sexe est requis'),
+    numDoss: Yup.string().required('numero de dossier est requis'),
+    etab: Yup.string().required('établissement sanitaire est requis'),
+    antecedents: Yup.string().required('antecedents est requis'),
+    indications: Yup.string().required('indications est requis'),
+    FOGDmaterials: Yup.string().required('materials est requis'),
+    FOGDoesophage: Yup.string().required('oesophage est requis'),
+    FOGDcardia: Yup.string().required('cardia est requis'),
+    FOGDfundus: Yup.string().required('fundus est requis'),
+    FOGDantre: Yup.string().required('antre est requis'),
+    FOGDpylore: Yup.string().required('pylore est requis'),
+    FOGDdidii: Yup.string().required('DIDII est requis'),
+    ColoscopieMaterials: Yup.string().required('Materials est requis'),
+    ColoscopieColonGauche: Yup.string().required('Colon Gauche est requis'),
+    ColoscopieColonTansverse: Yup.string().required('Colon Tansverse est requis'),
+    ColoscopieColonDroit: Yup.string().required('Colon Droit est requis'),
+    ColoscopiePreparation: Yup.string().required('Preparation est requis'),
+    ColoscopieBasFondCaecal: Yup.string().required('Bas Fond Caecal est requis'),
+    ColoscopieColonGaucheText: Yup.string().required('Colon Gauche est requis'),
+    ColoscopieColonTansverseText: Yup.string().required('Colon Tansverse est requis'),
+    ColoscopieColonDroitText: Yup.string().required('Colon Droit est requis'),
+    conclusion: Yup.string().required('conclusion est requis')
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      nom: currentReport?.nom || '',
+      prenom: currentReport?.prenom || '',
+      age: currentReport?.age || '',
+      sexe: currentReport?.sexe || '',
+      numDoss: currentReport?.numDoss || '',
+      etab: currentReport?.etab || '',
+      antecedents: currentReport?.antecedents || '',
+      indications: currentReport?.indications || '',
+      FOGDmaterials: currentReport?.FOGDmaterials || '',
+      FOGDoesophage: currentReport?.FOGDoesophage || '',
+      FOGDcardia: currentReport?.FOGDcardia || '',
+      FOGDEstomac: currentReport?.FOGDEstomac || 'Non Exploré',
+      FOGDBiopsie: currentReport?.FOGDBiopsie || false,
+      FOGDfundus: currentReport?.FOGDfundus || '',
+      FOGDantre: currentReport?.FOGDantre || '',
+      FOGDpyloreExplored: currentReport?.FOGDpylore || 'Non Exploré',
+      FOGDpylore: currentReport?.FOGDpylore || '',
+      FOGDdidii: currentReport?.FOGDdidii || '',
+      FOGDdidiiExplored: currentReport?.FOGDdidiiExplored || 'Non Exploré',
+      ColoscopieMaterials: currentReport?.ColoscopieMaterials || '',
+      ColoscopieColonGauche: currentReport?.ColoscopieColonGauche || '',
+      ColoscopieColonTansverse: currentReport?.ColoscopieColonTansverse || '',
+      ColoscopieColonDroit: currentReport?.ColoscopieColonDroit || '',
+      ColoscopiePreparation: currentReport?.ColoscopiePreparation || '',
+      ColoscopieIleon: currentReport?.ColoscopieIleon || '',
+      ColoscopieBasFondCaecal: currentReport?.ColoscopieBasFondCaecal || '',
+      ColoscopieColonGaucheText: currentReport?.ColoscopieColonGaucheText || '',
+      ColoscopieColonTansverseText: currentReport?.ColoscopieColonTansverseText || '',
+      ColoscopieColonDroitText: currentReport?.ColoscopieColonDroitText || '',
+      ColoscopieRectum: currentReport?.ColoscopieRectum || '',
+      ColoscopieIleonExplored: currentReport?.ColoscopieIleonExplored || '',
+      ColoscopieBasFondCaecalExplored: currentReport?.ColoscopieBasFondCaecalExplored || '',
+      ColoscopieColonGaucheTextExplored: currentReport?.ColoscopieColonGaucheTextExplored || '',
+      ColoscopieColonTansverseTextExplored: currentReport?.ColoscopieColonTansverseTextExplored || '',
+      ColoscopieColonDroitTextExplored: currentReport?.ColoscopieColonDroitTextExplored || '',
+      ColoscopieRectumExplored: currentReport?.ColoscopieRectumExplored || '',
+      conclusion: currentReport?.conclusion || ''
+    },
+    validationSchema: NewReportSchema,
+    onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
+      try {
+        // await fakeRequest(500);
+        resetForm();
+        setSubmitting(false);
+        // enqueueSnackbar(!isEdit ? 'Create success' : 'Update success', { variant: 'success' });
+        // navigate(PATH_DASHBOARD.user.list);
+      } catch (error) {
+        console.error(error);
+        setSubmitting(false);
+        setErrors(error);
+      }
+    }
+  });
+
+  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
@@ -187,7 +275,12 @@ export default function CustomizedSteppers() {
             <Typography variant="h3">{STEPS[activeStep]}</Typography> <Divider variant="middle" />
             <br />
             <br />
-            {getStepContent(activeStep)}
+            <FormikProvider value={formik}>
+              {' '}
+              <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
+                {getStepContent(activeStep, formik)}
+              </Form>
+            </FormikProvider>
           </Paper>
 
           <Box sx={{ textAlign: 'right' }}>
