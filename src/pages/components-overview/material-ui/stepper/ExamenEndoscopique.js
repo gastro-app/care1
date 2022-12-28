@@ -40,7 +40,7 @@ function ExploredItem({ labelExplored, value, label, formik }) {
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
   const handleChange = (event, newAlignment) => {
-    formik.setFieldValue(label, newAlignment);
+    formik.setFieldValue(labelExplored, newAlignment);
   };
   return (
     <>
@@ -79,8 +79,6 @@ UserNewForm.propTypes = {
 };
 
 export default function UserNewForm({ isEdit, formik }) {
-  const [alignment, setAlignment] = useState('Non Exploré');
-
   const handleChange = (event, newAlignment) => {
     formik.setFieldValue('FOGDEstomac', newAlignment);
   };
@@ -162,8 +160,18 @@ export default function UserNewForm({ isEdit, formik }) {
                       </Stack>
                     </>
                   )}
-                  <ExploredItem labelExplored="FOGDpyloreExplored" label="FOGDpylore" formik={formik} />
-                  <ExploredItem labelExplored="FOGDdidiiExplored" label="FOGDdidii" formik={formik} />
+                  <ExploredItem
+                    labelExplored="FOGDpyloreExplored"
+                    label="FOGD pylore"
+                    value="FOGDpylore"
+                    formik={formik}
+                  />
+                  <ExploredItem
+                    labelExplored="FOGDdidiiExplored"
+                    label="FOGD DIDII"
+                    value="FOGDdidii"
+                    formik={formik}
+                  />
                 </>
               </Stack>
             </Card>

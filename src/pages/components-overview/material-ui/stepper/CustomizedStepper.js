@@ -9,6 +9,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+
 import {
   Box,
   Step,
@@ -21,6 +22,7 @@ import {
   stepConnectorClasses,
   Divider
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import PatientPersoData from './PatientPersoData';
 import Indications from './Indications';
 import Conclusion from './Conclusion';
@@ -166,6 +168,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     ColoscopieColonDroitText: Yup.string().required('Colon Droit est requis'),
     conclusion: Yup.string().required('conclusion est requis')
   });
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -208,13 +211,12 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       ColoscopieRectumExplored: currentReport?.ColoscopieRectumExplored || '',
       conclusion: currentReport?.conclusion || ''
     },
-    validationSchema: NewReportSchema,
+    // validationSchema: NewReportSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
-        // await fakeRequest(500);
         resetForm();
         setSubmitting(false);
-        // enqueueSnackbar(!isEdit ? 'Create success' : 'Update success', { variant: 'success' });
+        enqueueSnackbar('Report generated', { variant: 'success' });
         // navigate(PATH_DASHBOARD.user.list);
       } catch (error) {
         console.error(error);
@@ -287,7 +289,11 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
             <Button disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
               Back
             </Button>
-            <Button variant="contained" onClick={handleNext} sx={{ mr: 1 }}>
+            <Button
+              variant="contained"
+              onClick={activeStep === STEPS.length - 1 ? handleSubmit : handleNext}
+              sx={{ mr: 1 }}
+            >
               {activeStep === STEPS.length - 1 ? 'Génerer le rapport' : 'Suivant'}
             </Button>
           </Box>

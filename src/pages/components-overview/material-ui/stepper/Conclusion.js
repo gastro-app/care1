@@ -66,112 +66,31 @@ function ExploredItem({ label, formik }) {
 
 UserNewForm.propTypes = {
   isEdit: PropTypes.bool,
-  currentUser: PropTypes.object
+  formik: PropTypes.object
 };
 
-export default function UserNewForm({ isEdit, currentUser }) {
-  const [alignment, setAlignment] = useState('explorer');
-
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
-  const [preview, setPreview] = useState(false);
-  const [files, setFiles] = useState([]);
-
-  const handleDropMultiFile = useCallback(
-    (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file)
-          })
-        )
-      );
-    },
-    [setFiles]
-  );
-
-  const handleRemoveAll = () => {
-    setFiles([]);
-  };
-
-  const handleRemove = (file) => {
-    const filteredItems = files.filter((_file) => _file !== file);
-    setFiles(filteredItems);
-  };
-  const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email(),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role Number is required'),
-    avatarUrl: Yup.mixed().required('Avatar is required')
-  });
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
-      phoneNumber: currentUser?.phoneNumber || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      isVerified: currentUser?.isVerified || true,
-      status: currentUser?.status,
-      company: currentUser?.company || '',
-      role: currentUser?.role || ''
-    },
-    validationSchema: NewUserSchema,
-    onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
-      try {
-        await fakeRequest(500);
-        resetForm();
-        setSubmitting(false);
-        enqueueSnackbar(!isEdit ? 'Create success' : 'Update success', { variant: 'success' });
-        navigate(PATH_DASHBOARD.user.list);
-      } catch (error) {
-        console.error(error);
-        setSubmitting(false);
-        setErrors(error);
-      }
-    }
-  });
-
+export default function UserNewForm({ isEdit, formik }) {
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
   return (
-    <FormikProvider value={formik}>
-      <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={12}>
-            <Card sx={{ p: 3 }}>
-              <Stack spacing={3}>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    multiline
-                    minRows={4}
-                    label="Conclusion"
-                    {...getFieldProps('Conclusion')}
-                    error={Boolean(touched.email && errors.email)}
-                    helperText={touched.email && errors.email}
-                  />
-                </Stack>
-              </Stack>
-            </Card>
-          </Grid>
-        </Grid>
-      </Form>
-    </FormikProvider>
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={12}>
+        <Card sx={{ p: 3 }}>
+          <Stack spacing={3}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+              <TextField
+                fullWidth
+                multiline
+                minRows={4}
+                label="Conclusion"
+                {...getFieldProps('conclusion')}
+                error={Boolean(touched.conclusion && errors.conclusion)}
+                helperText={touched.conclusion && errors.conclusion}
+              />
+            </Stack>
+          </Stack>
+        </Card>
+      </Grid>
+    </Grid>
   );
 }
