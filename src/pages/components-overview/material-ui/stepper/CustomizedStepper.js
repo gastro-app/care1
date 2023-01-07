@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+/* eslint-disable react/button-has-type */
+/* eslint-disable new-cap */
+import jsPDF from 'jspdf';
 // material
 import { styled } from '@mui/material/styles';
 import Check from '@mui/icons-material/Check';
@@ -214,10 +217,20 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     // validationSchema: NewReportSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
-        resetForm();
+        fetch('http://localhost:5000/api/reports', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(values)
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            generatePDF(data);
+          });
+        // resetForm();
         setSubmitting(false);
         enqueueSnackbar('Report generated', { variant: 'success' });
-        // navigate(PATH_DASHBOARD.user.list);
       } catch (error) {
         console.error(error);
         setSubmitting(false);
@@ -302,3 +315,188 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     </>
   );
 }
+
+const generatePDF = (rapport) => {
+  const {
+    nom,
+    prenom,
+    age,
+    sexe,
+    numDoss,
+    etab,
+    antecedents,
+    indications,
+    FOGDmaterials,
+    FOGDoesophage,
+    FOGDcardia,
+    FOGDEstomac,
+    FOGDBiopsie,
+    FOGDfundus,
+    FOGDantre,
+    FOGDpyloreExplored,
+    FOGDpylore,
+    FOGDdidii,
+    FOGDdidiiExplored,
+    ColoscopieMaterials,
+    ColoscopieColonGauche,
+    ColoscopieColonTansverse,
+    ColoscopieColonDroit,
+    ColoscopiePreparation,
+    ColoscopieIleon,
+    ColoscopieBasFondCaecal,
+    ColoscopieColonGaucheText,
+    ColoscopieColonTansverseText,
+    ColoscopieColonDroitText,
+    ColoscopieRectum,
+    ColoscopieIleonExplored,
+    ColoscopieBasFondCaecalExplored,
+    ColoscopieColonGaucheTextExplored,
+    ColoscopieColonTansverseTextExplored,
+    ColoscopieColonDroitTextExplored,
+    ColoscopieRectumExplored,
+    conclusion,
+    _id,
+    createdAt
+  } = rapport;
+  // Create the document
+  const pageWidth = 210; // 210mm
+  const pageHeight = 297; // 297mm
+
+  // Create the document
+  const doc = new jsPDF({
+    unit: 'mm',
+    format: [pageWidth, pageHeight]
+  });
+  // Set the font and text size
+  doc.setFont('helvetica');
+  doc.setFontSize(12);
+  doc.setFontStyle('bold');
+  doc.text(`Compte Rendu d'examen endoscopique`, pageWidth / 2, 20, {
+    align: 'center'
+  });
+  let x = 10;
+  // Add the hospital name to the top left corner
+  doc.text('Rapport Medical', 10, x, { align: 'left', fontStyle: 'bold' });
+
+  // Add the doctor name to the top right corner
+  doc.text(etab, 190, x, { align: 'right' });
+  doc.setFontStyle('normal');
+
+  // Add patient information
+  doc.text(`Patient : ${nom} ${prenom}`, 14, (x += 40), { maxWidth: 190 });
+  doc.text(`Age: ${age} ans`, 14, (x += 10), { maxWidth: 190 });
+  doc.text(`Numero de dossier : ${numDoss}`, 14, (x += 10), { maxWidth: 190 });
+  doc.text(`Antecedents: ${antecedents}`, 14, (x += 10), { maxWidth: 190 });
+  doc.text(`Indications: ${indications}`, 14, (x += 10), { maxWidth: 190 });
+  doc.line(20, (x += 10), 180, x);
+  if (FOGDmaterials !== '' || FOGDoesophage !== '') {
+    doc.setFontStyle('bold');
+    doc.text("Type d'examen endoscopique: FOGD", pageWidth / 2, (x += 10), {
+      align: 'center'
+    });
+    doc.setFontStyle('normal');
+
+    // doc.text('sous anesthesie generale: lorem ipsum', 14, (x += 10)); ToDo
+    // doc.text('heure de debut: 1/6/2023 20:38', 14, (x += 10), { align: 'left' });
+    // doc.text("durée de l'examen: 60 minutes", 190, x, { align: 'right' });
+
+    const materials = FOGDmaterials.split(',');
+    doc.text(`material: ${materials[0]}`, 14, (x += 10));
+    for (let i = 1; i < materials.length; i += 1) doc.text(`${materials[i]}`, 32, (x += 5));
+
+    doc.text(`Oesophage: ${FOGDoesophage}`, 14, (x += 10), { maxWidth: 190 });
+    doc.text(`Cardia: ${FOGDcardia}`, 14, (x += 10), { maxWidth: 190 });
+    doc.text(`Estomac: ${FOGDEstomac === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+
+    if (FOGDEstomac === 'Exploré') {
+      doc.text(`Fundus: ${FOGDfundus}`, 20, (x += 10), { maxWidth: 190 });
+      doc.text(`Antre: ${FOGDantre}`, 20, (x += 10), { maxWidth: 190 });
+      doc.text(`Biopsie: ${FOGDBiopsie === true ? 'Oui' : 'Non'}`, 20, (x += 10));
+    }
+
+    doc.text(`Pylore: ${FOGDpyloreExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+
+    if (FOGDpyloreExplored === 'Exploré') {
+      doc.text(FOGDpylore, 20, (x += 10), { maxWidth: 190 });
+    }
+
+    doc.text(`DIDII: ${FOGDdidiiExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+
+    if (FOGDdidiiExplored === 'Exploré') {
+      doc.text(FOGDdidii, 20, (x += 10), { maxWidth: 190 });
+    }
+  }
+
+  if (ColoscopieMaterials !== '') {
+    x = 15;
+    doc.addPage();
+    doc.line(20, (x += 10), 180, x);
+    doc.setFontStyle('bold');
+    doc.text("Type d'examen endoscopique: Coloscopie", pageWidth / 2, (x += 10), {
+      align: 'center'
+    });
+    doc.setFontStyle('normal');
+
+    // doc.text('sous anesthesie generale: lorem ipsum', 14, (x += 10)); ToDo
+    // doc.text('heure de debut: 1/6/2023 20:38', 14, (x += 10), { align: 'left' });
+    // doc.text("durée de l'examen: 60 minutes", 190, x, { align: 'right' });
+
+    const materials = ColoscopieMaterials.split(',');
+    doc.text(`material: ${materials[0]}`, 14, (x += 10));
+    for (let i = 1; i < materials.length; i += 1) doc.text(`${materials[i]}`, 32, (x += 5));
+
+    doc.text(`BOSTON:`, 14, (x += 10));
+    doc.text(`Colon Gauche: ${ColoscopieColonGauche}`, 20, (x += 10), { maxWidth: 190 });
+    doc.text(`Colon Tansverse: ${ColoscopieColonTansverse}`, 20, (x += 10), { maxWidth: 190 });
+    doc.text(`Colon Droit: ${ColoscopieColonDroit}`, 20, (x += 10), { maxWidth: 190 });
+    doc.text(`Preparation: ${ColoscopiePreparation}`, 20, (x += 10), { maxWidth: 190 });
+
+    doc.text(`Ileon: ${ColoscopieIleonExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+    if (ColoscopieIleonExplored === 'Exploré') {
+      doc.text(ColoscopieIleon, 20, (x += 10), { maxWidth: 190 });
+    }
+
+    doc.text(
+      `Bas fond caecal: ${ColoscopieBasFondCaecalExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
+      14,
+      (x += 10)
+    );
+    if (ColoscopieBasFondCaecalExplored === 'Exploré') {
+      doc.text(ColoscopieBasFondCaecal, 20, (x += 10), { maxWidth: 190 });
+    }
+  }
+
+  doc.text(`Colon droit: ${ColoscopieColonDroitTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  if (ColoscopieColonDroitTextExplored === 'Exploré') {
+    doc.text(ColoscopieColonDroitText, 20, (x += 10), { maxWidth: 190 });
+  }
+
+  doc.text(
+    `Colon gauche: ${ColoscopieColonGaucheTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
+    14,
+    (x += 10)
+  );
+  if (ColoscopieColonGaucheTextExplored === 'Exploré') {
+    doc.text(ColoscopieColonGaucheText, 20, (x += 10), { maxWidth: 190 });
+  }
+
+  doc.text(
+    `Colon Transverse: ${ColoscopieColonTansverseTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
+    14,
+    (x += 10)
+  );
+  if (ColoscopieColonTansverseTextExplored === 'Exploré') {
+    doc.text(ColoscopieColonTansverseText, 20, (x += 10), { maxWidth: 190 });
+  }
+
+  doc.text(`Rectum: ${ColoscopieColonTansverseTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  if (ColoscopieColonTansverseTextExplored === 'Exploré') {
+    doc.text(ColoscopieColonTansverseText, 20, (x += 10), { maxWidth: 190 });
+  }
+
+  // Add a section for the conclusion
+  doc.text(`Conclusion: ${conclusion}`, 14, (x += 10), { maxWidth: 185 });
+
+  // Save the PDF
+  doc.save(`medical-report-${numDoss}.pdf`);
+};

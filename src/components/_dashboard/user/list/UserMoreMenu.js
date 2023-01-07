@@ -41,8 +41,8 @@ export default function UserMoreMenu({ onDelete, userName }) {
       >
         {' '}
         <MenuItem
-          component={RouterLink}
-          to={`${PATH_DASHBOARD.user.root}/${paramCase(userName)}/pdf`}
+          // component={RouterLink}
+          // to={`${PATH_DASHBOARD.user.root}/${paramCase(userName)}/pdf`}
           sx={{ color: 'text.secondary' }}
         >
           <ListItemIcon>
@@ -50,16 +50,16 @@ export default function UserMoreMenu({ onDelete, userName }) {
           </ListItemIcon>
           <ListItemText primary="Génerer PDF" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        <MenuItem
-          component={RouterLink}
-          to={`${PATH_DASHBOARD.user.root}/${paramCase(userName)}/edit`}
+        {/* <MenuItem
+          // component={RouterLink}
+          // to={`${PATH_DASHBOARD.user.root}/${paramCase(userName)}/edit`}
           sx={{ color: 'text.secondary' }}
         >
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />

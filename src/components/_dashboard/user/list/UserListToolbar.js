@@ -37,7 +37,7 @@ UserListToolbar.propTypes = {
   onFilterName: PropTypes.func
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserListToolbar({ numSelected, filterName, onFilterName, filterNumDoss, onFilterNumDoss }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
 
@@ -59,7 +59,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
           <SearchStyle
             value={filterName}
             fullWidth
-            // onChange={onFilterName}
+            onChange={onFilterName}
             placeholder="nom du patient..."
             startAdornment={
               <InputAdornment position="start">
@@ -68,9 +68,9 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
             }
           />
           <SearchStyle
-            value={filterName}
+            value={filterNumDoss}
             fullWidth
-            // onChange={onFilterName}
+            onChange={onFilterNumDoss}
             placeholder="numero de dossier..."
             startAdornment={
               <InputAdornment position="start">
@@ -81,16 +81,10 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
         </>
       )}
 
-      {numSelected > 0 ? (
+      {numSelected > 0 && (
         <Tooltip title="Delete">
           <IconButton>
             <Icon icon={trash2Fill} />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Icon icon={roundFilterList} />
           </IconButton>
         </Tooltip>
       )}

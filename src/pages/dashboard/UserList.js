@@ -60,7 +60,7 @@ function descendingComparator(a, b, orderBy) {
 function getComparator(order, orderBy) {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+    : (a, b) => descendingComparator(b, a, orderBy);
 }
 
 function applySortFilter(array, comparator, query) {
@@ -71,7 +71,20 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.nom.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+  }
+  return stabilizedThis.map((el) => el[0]);
+}
+
+function applySortFilter1(array, comparator, query) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  if (query) {
+    return filter(array, (_user) => _user.numDoss.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -80,17 +93,14 @@ export default function UserList() {
   const { themeStretch } = useSettings();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { userList } = useSelector((state) => state.user);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('nom');
   const [filterName, setFilterName] = useState('');
+  const [filterNumDoss, setFilterNumDoss] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  useEffect(() => {
-    dispatch(getUserList());
-  }, [dispatch]);
+  const [userList, setReports] = useState([]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -100,18 +110,18 @@ export default function UserList() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = userList.map((n) => n.name);
+      const newSelecteds = userList.map((n) => n.nom);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, nom) => {
+    const selectedIndex = selected.indexOf(nom);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, nom);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -135,16 +145,26 @@ export default function UserList() {
     setFilterName(event.target.value);
   };
 
+  const handleFilterByNumDoss = (event) => {
+    setFilterNumDoss(event.target.value);
+  };
+
   const handleDeleteUser = (userId) => {
     dispatch(deleteUser(userId));
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
 
-  const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
-
+  let filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
+  filteredUsers = applySortFilter1(filteredUsers, getComparator(order, orderBy), filterNumDoss);
   const isUserNotFound = filteredUsers.length === 0;
-
+  useEffect(() => {
+    fetch('http://localhost:5000/api/reports')
+      .then((response) => response.json())
+      .then((data) => {
+        setReports(data);
+      });
+  }, []);
   return (
     <Page title="User: List | Minimal-UI">
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -152,7 +172,7 @@ export default function UserList() {
           heading="Liste des rapports"
           links={[
             { name: "Page d'acceuil", href: PATH_DASHBOARD.root },
-            { name: 'Rapport', href: PATH_DASHBOARD.user.root },
+            { name: 'Rapport', href: PATH_DASHBOARD.general.reportList },
             { name: 'Liste' }
           ]}
           action={
@@ -168,7 +188,13 @@ export default function UserList() {
         />
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar
+            numSelected={selected.length}
+            filterName={filterName}
+            onFilterName={handleFilterByName}
+            filterNumDoss={filterNumDoss}
+            onFilterNumDoss={handleFilterByNumDoss}
+          />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -184,7 +210,7 @@ export default function UserList() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, nom, prenom, etablissement, nbDossier, avatarUrl, isVerified } = row;
+                    const { id, nom, prenom, etab, numDoss } = row;
                     const isItemSelected = selected.indexOf(nom) !== -1;
 
                     return (
@@ -207,10 +233,10 @@ export default function UserList() {
                           </Stack>
                         </TableCell>
                         <TableCell align="left">{prenom}</TableCell>
-                        <TableCell align="left">{nbDossier}</TableCell>
-                        <TableCell align="left">{etablissement}</TableCell>
+                        <TableCell align="left">{numDoss}</TableCell>
+                        <TableCell align="left">{etab}</TableCell>
                         <TableCell align="right">
-                          <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={nom} />
+                          <UserMoreMenu userName={nom} />
                         </TableCell>
                       </TableRow>
                     );

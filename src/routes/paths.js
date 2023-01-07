@@ -21,16 +21,8 @@ export const PATH_DASHBOARD = {
   root: ROOTS_DASHBOARD,
   general: {
     newReport: path(ROOTS_DASHBOARD, '/new'),
-    reportList: path(ROOTS_DASHBOARD, '/list')
-  },
-  user: {
-    root: path(ROOTS_DASHBOARD, '/user'),
-    profile: path(ROOTS_DASHBOARD, '/user/profile'),
-    cards: path(ROOTS_DASHBOARD, '/user/cards'),
-    list: path(ROOTS_DASHBOARD, '/user/list'),
-    newUser: path(ROOTS_DASHBOARD, '/user/new'),
-    editById: path(ROOTS_DASHBOARD, `/user/reece-chung/edit`),
-    account: path(ROOTS_DASHBOARD, '/user/account')
+    reportList: path(ROOTS_DASHBOARD, '/list'),
+    pdfPage: path(ROOTS_DASHBOARD, '/pdf')
   }
 };
 
