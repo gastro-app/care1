@@ -88,6 +88,17 @@ export default function UserNewForm({ isEdit, formik }) {
                 helperText={touched.conclusion && errors.conclusion}
               />
             </Stack>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+              <TextField
+                fullWidth
+                multiline
+                minRows={4}
+                label="nom des operateurs"
+                {...getFieldProps('nomsOps')}
+                error={Boolean(touched.nomsOps && errors.nomsOps)}
+                helperText={touched.nomsOps && errors.nomsOps}
+              />
+            </Stack>
           </Stack>
         </Card>
       </Grid>

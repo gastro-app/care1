@@ -181,13 +181,16 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       age: currentReport?.age || '',
       sexe: currentReport?.sexe || '',
       numDoss: currentReport?.numDoss || '',
+      numTel: currentReport?.numTel || '',
       etab: currentReport?.etab || '',
       antecedents: currentReport?.antecedents || '',
       indications: currentReport?.indications || '',
       FOGDmaterials: currentReport?.FOGDmaterials || '',
+      FOGDEstomac: currentReport?.FOGDEstomac || 'Non',
       FOGDoesophage: currentReport?.FOGDoesophage || '',
       FOGDcardia: currentReport?.FOGDcardia || '',
-      FOGDEstomac: currentReport?.FOGDEstomac || 'Non Exploré',
+      FOGDsag: currentReport?.FOGDsag || 'Non',
+      FOGDDureExam: currentReport?.FOGDDureExam || 0,
       FOGDBiopsie: currentReport?.FOGDBiopsie || false,
       FOGDfundus: currentReport?.FOGDfundus || '',
       FOGDantre: currentReport?.FOGDantre || '',
@@ -195,6 +198,8 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       FOGDpylore: currentReport?.FOGDpylore || '',
       FOGDdidii: currentReport?.FOGDdidii || '',
       FOGDdidiiExplored: currentReport?.FOGDdidiiExplored || 'Non Exploré',
+      Coloscopiesag: currentReport?.Coloscopiesag || 'Non',
+      ColoscopieDureExam: currentReport?.ColoscopieDureExam || 0,
       ColoscopieMaterials: currentReport?.ColoscopieMaterials || '',
       ColoscopieColonGauche: currentReport?.ColoscopieColonGauche || '',
       ColoscopieColonTansverse: currentReport?.ColoscopieColonTansverse || '',
@@ -212,7 +217,8 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       ColoscopieColonTansverseTextExplored: currentReport?.ColoscopieColonTansverseTextExplored || '',
       ColoscopieColonDroitTextExplored: currentReport?.ColoscopieColonDroitTextExplored || '',
       ColoscopieRectumExplored: currentReport?.ColoscopieRectumExplored || '',
-      conclusion: currentReport?.conclusion || ''
+      conclusion: currentReport?.conclusion || '',
+      nomsOps: currentReport?.nomsOps || ''
     },
     // validationSchema: NewReportSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
@@ -323,6 +329,7 @@ const generatePDF = (rapport) => {
     age,
     sexe,
     numDoss,
+    numTel,
     etab,
     antecedents,
     indications,
@@ -385,6 +392,7 @@ const generatePDF = (rapport) => {
   // Add patient information
   doc.text(`Patient : ${nom} ${prenom}`, 14, (x += 40), { maxWidth: 190 });
   doc.text(`Age: ${age} ans`, 14, (x += 10), { maxWidth: 190 });
+  doc.text(`Numero de telephone : ${numTel}`, 14, (x += 10), { maxWidth: 190 });
   doc.text(`Numero de dossier : ${numDoss}`, 14, (x += 10), { maxWidth: 190 });
   doc.text(`Antecedents: ${antecedents}`, 14, (x += 10), { maxWidth: 190 });
   doc.text(`Indications: ${indications}`, 14, (x += 10), { maxWidth: 190 });
@@ -400,7 +408,7 @@ const generatePDF = (rapport) => {
     // doc.text('heure de debut: 1/6/2023 20:38', 14, (x += 10), { align: 'left' });
     // doc.text("durée de l'examen: 60 minutes", 190, x, { align: 'right' });
 
-    const materials = FOGDmaterials.split(',');
+    const materials = FOGDmaterials.split('\n');
     doc.text(`material: ${materials[0]}`, 14, (x += 10));
     for (let i = 1; i < materials.length; i += 1) doc.text(`${materials[i]}`, 32, (x += 5));
 

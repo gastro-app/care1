@@ -5,7 +5,6 @@ import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
 // material
-import { LoadingButton } from '@mui/lab';
 import {
   Chip,
   Card,
@@ -20,9 +19,12 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   FormControlLabel,
-  Switch
+  Switch,
+  DatePicker
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { DateTimePicker, MobileDateTimePicker, DesktopDateTimePicker } from '@mui/lab';
+
 // utils
 import fakeRequest from '../../../../utils/fakeRequest';
 // routes
@@ -94,34 +96,92 @@ export default function UserNewForm({ isEdit, formik }) {
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
                 <>
-                  {' '}
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Typography variant="h5">Information générale</Typography>
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography variant="h5">sous anesthésie générale</Typography>
+                      <ToggleButtonGroup
+                        color="primary"
+                        exclusive
+                        value={values.FOGDsag}
+                        onChange={(event, newAlignment) => {
+                          formik.setFieldValue('FOGDsag', newAlignment);
+                        }}
+                        aria-label="Platform"
+                      >
+                        <ToggleButton value="Oui">Oui</ToggleButton>
+                        <ToggleButton value="Non">Non</ToggleButton>
+                      </ToggleButtonGroup>
+                    </Box>
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <DateTimePicker
+                      label="date de l'examen"
+                      value={values.FOGDDateExam}
+                      onChange={(event, newAlignment) => {
+                        formik.setFieldValue('FOGDDateExam', newAlignment);
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Stack>
+
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField
                       fullWidth
-                      label="Materials"
-                      {...getFieldProps('FOGDmaterials')}
-                      error={Boolean(touched.FOGDmaterials && errors.FOGDmaterials)}
-                      helperText={touched.FOGDmaterials && errors.FOGDmaterials}
+                      multiline
+                      label="Durée de l'examen"
+                      {...getFieldProps('FOGDDureExam')}
+                      error={Boolean(touched.FOGDDureExam && errors.FOGDDureExam)}
+                      helperText={touched.FOGDDureExam && errors.FOGDDureExam}
+                    />
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Typography variant="h5">Materials</Typography>
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      multiline
+                      label="endoscope"
+                      {...getFieldProps('FOGDendoscope')}
+                      error={Boolean(touched.FOGDendoscope && errors.FOGDendoscope)}
+                      helperText={touched.FOGDendoscope && errors.FOGDendoscope}
                     />
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField
                       fullWidth
-                      label="Oesophage"
-                      {...getFieldProps('FOGDoesophage')}
-                      error={Boolean(touched.FOGDoesophage && errors.FOGDoesophage)}
-                      helperText={touched.FOGDoesophage && errors.FOGDoesophage}
+                      multiline
+                      label="pince"
+                      {...getFieldProps('FOGDpince')}
+                      error={Boolean(touched.FOGDpince && errors.FOGDpince)}
+                      helperText={touched.FOGDpince && errors.FOGDpince}
                     />
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField
                       fullWidth
-                      label="Cardia"
-                      {...getFieldProps('FOGDcardia')}
-                      error={Boolean(touched.FOGDcardia && errors.FOGDcardia)}
-                      helperText={touched.FOGDcardia && errors.FOGDcardia}
+                      multiline
+                      label="autres"
+                      {...getFieldProps('FOGDautres')}
+                      error={Boolean(touched.FOGDautres && errors.FOGDautres)}
+                      helperText={touched.FOGDautres && errors.FOGDautres}
                     />
                   </Stack>
+                  <ExploredItem
+                    labelExplored="FOGDOesophageExplored"
+                    label="FOGD Oesophage"
+                    value="FOGDOesophage"
+                    formik={formik}
+                  />
+                  <ExploredItem
+                    labelExplored="FOGDCardiaExplored"
+                    label="FOGD Cardia"
+                    value="FOGDCardia"
+                    formik={formik}
+                  />
                   <Box sx={{ flexGrow: 1 }}>
                     <Typography variant="h5">Estomac</Typography>
                     <ToggleButtonGroup
@@ -156,7 +216,13 @@ export default function UserNewForm({ isEdit, formik }) {
                         />
                       </Stack>
                       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <FormControlLabel control={<Switch />} label="Biopsie" labelPlacement="start" />
+                        <FormControlLabel
+                          checked={values.biopsie}
+                          onChange={(e, newValue) => formik.setFieldValue('FOGDBiopsie', newValue)}
+                          control={<Switch />}
+                          label="Biopsie"
+                          labelPlacement="start"
+                        />
                       </Stack>
                     </>
                   )}
@@ -187,12 +253,36 @@ export default function UserNewForm({ isEdit, formik }) {
                 <>
                   {' '}
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Typography variant="h5">Materials</Typography>
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField
                       fullWidth
-                      label="materials"
-                      {...getFieldProps('ColoscopieMaterials')}
-                      error={Boolean(touched.ColoscopieMaterials && errors.ColoscopieMaterials)}
-                      helperText={touched.ColoscopieMaterials && errors.ColoscopieMaterials}
+                      multiline
+                      label="endoscope"
+                      {...getFieldProps('Coloscopieendoscope')}
+                      error={Boolean(touched.Coloscopieendoscope && errors.Coloscopieendoscope)}
+                      helperText={touched.Coloscopieendoscope && errors.Coloscopieendoscope}
+                    />
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      multiline
+                      label="pince"
+                      {...getFieldProps('Coloscopiepince')}
+                      error={Boolean(touched.Coloscopiepince && errors.Coloscopiepince)}
+                      helperText={touched.Coloscopiepince && errors.Coloscopiepince}
+                    />
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      multiline
+                      label="autres"
+                      {...getFieldProps('Coloscopieautres')}
+                      error={Boolean(touched.Coloscopieautres && errors.Coloscopieautres)}
+                      helperText={touched.Coloscopieautres && errors.Coloscopieautres}
                     />
                   </Stack>
                   <Typography variant="h5">BOSTON</Typography>

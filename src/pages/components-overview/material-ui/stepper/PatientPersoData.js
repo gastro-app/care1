@@ -110,7 +110,7 @@ export default function PatientPersoData({ isEdit, formik }) {
                 fullWidth
                 label="Sexe"
                 placeholder="Sexe"
-                {...getFieldProps('Sexe')}
+                {...getFieldProps('sexe')}
                 SelectProps={{ native: true }}
                 error={Boolean(touched.Sexe && errors.Sexe)}
                 helperText={touched.Sexe && errors.Sexe}
@@ -138,6 +138,15 @@ export default function PatientPersoData({ isEdit, formik }) {
                 {...getFieldProps('etab')}
                 error={Boolean(touched.etab && errors.etab)}
                 helperText={touched.etab && errors.etab}
+              />
+            </Stack>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+              <TextField
+                fullWidth
+                label="Numero de téléphone"
+                {...getFieldProps('numTel')}
+                error={Boolean(touched.numTel && errors.numTel)}
+                helperText={touched.numTel && errors.numTel}
               />
             </Stack>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
