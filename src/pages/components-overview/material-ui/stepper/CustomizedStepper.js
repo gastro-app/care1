@@ -33,7 +33,12 @@ import ExamenEndoscopique from './ExamenEndoscopique';
 
 // ----------------------------------------------------------------------
 
-const STEPS = ['Données personelles du patient', 'Indications', 'Examen Endoscopique', 'Conclusions'];
+const STEPS = [
+  'Données personelles du patient',
+  'Phase I : Pré-endoscopie',
+  'Phase II : Per-endoscopie',
+  'Phase III : Post-endoscopie'
+];
 const QontoStepIconRoot = styled('div')(({ theme, ownerState }) => ({
   height: 22,
   display: 'flex',
@@ -179,11 +184,13 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       nom: currentReport?.nom || '',
       prenom: currentReport?.prenom || '',
       age: currentReport?.age || '',
-      sexe: currentReport?.sexe || '',
+      genre: currentReport?.genre || '',
       numDoss: currentReport?.numDoss || '',
       numTel: currentReport?.numTel || '',
-      etab: currentReport?.etab || '',
-      antecedents: currentReport?.antecedents || '',
+      adresse: currentReport?.adresse || '',
+      antecedentsFam: currentReport?.antecedentsFam || '',
+      antecedentsPerso: currentReport?.antecedentsPerso || '',
+      descCancerNonDigestif: currentReport?.descCancerNonDigestif || '',
       indications: currentReport?.indications || '',
       FOGDmaterials: currentReport?.FOGDmaterials || '',
       FOGDEstomac: currentReport?.FOGDEstomac || 'Non',
@@ -306,7 +313,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
 
           <Box sx={{ textAlign: 'right' }}>
             <Button disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-              Back
+              Retour
             </Button>
             <Button
               variant="contained"

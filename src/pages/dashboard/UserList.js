@@ -209,14 +209,14 @@ export default function UserList() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     const { id, nom, prenom, etab, numDoss } = row;
                     const isItemSelected = selected.indexOf(nom) !== -1;
 
                     return (
                       <TableRow
                         hover
-                        key={id}
+                        key={id != null ? id : index}
                         tabIndex={-1}
                         role="checkbox"
                         selected={isItemSelected}

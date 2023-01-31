@@ -108,14 +108,14 @@ export default function PatientPersoData({ isEdit, formik }) {
               <TextField
                 select
                 fullWidth
-                label="Sexe"
-                placeholder="Sexe"
-                {...getFieldProps('sexe')}
+                label="Genre"
+                placeholder="Genre"
+                {...getFieldProps('genre')}
                 SelectProps={{ native: true }}
-                error={Boolean(touched.Sexe && errors.Sexe)}
-                helperText={touched.Sexe && errors.Sexe}
+                error={Boolean(touched.genre && errors.genre)}
+                helperText={touched.genre && errors.genre}
               >
-                <option value="" />
+                <option key="0" value="choisir" />
                 {['Homme', 'Femme'].map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -127,29 +127,29 @@ export default function PatientPersoData({ isEdit, formik }) {
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
               <TextField
                 fullWidth
-                label="Numéro de dossier"
-                {...getFieldProps('numDoss')}
-                error={Boolean(touched.numDoss && errors.numDoss)}
-                helperText={touched.numDoss && errors.numDoss}
+                label="Adresse"
+                {...getFieldProps('adresse')}
+                error={Boolean(touched.adresse && errors.adresse)}
+                helperText={touched.adresse && errors.adresse}
               />
               <TextField
                 fullWidth
-                label="etablissement sanitaire"
-                {...getFieldProps('etab')}
-                error={Boolean(touched.etab && errors.etab)}
-                helperText={touched.etab && errors.etab}
-              />
-            </Stack>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-              <TextField
-                fullWidth
-                label="Numero de téléphone"
+                label="Numéro de téléphone"
                 {...getFieldProps('numTel')}
                 error={Boolean(touched.numTel && errors.numTel)}
                 helperText={touched.numTel && errors.numTel}
               />
             </Stack>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+              <TextField
+                fullWidth
+                label="Numéro de dossier médical"
+                {...getFieldProps('numDoss')}
+                error={Boolean(touched.numDoss && errors.numDoss)}
+                helperText={touched.numDoss && errors.numDoss}
+              />
+            </Stack>
+            {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
               <TextField
                 multiline
                 fullWidth
@@ -158,7 +158,7 @@ export default function PatientPersoData({ isEdit, formik }) {
                 error={Boolean(touched.antecedents && errors.antecedents)}
                 helperText={touched.antecedents && errors.antecedents}
               />
-            </Stack>
+            </Stack> */}
           </Stack>
         </Card>
       </Grid>

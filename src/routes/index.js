@@ -40,7 +40,9 @@ export default function Router() {
       path: 'dashboard',
       element: <DashboardLayout />,
       children: [
+        // formulaire
         { path: 'new', element: <Stepper /> },
+        // liste des rapports
         { path: 'list', element: <UserList /> }
       ]
     },
