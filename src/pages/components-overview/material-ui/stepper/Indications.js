@@ -1,11 +1,9 @@
-import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
 // material
-import { LoadingButton } from '@mui/lab';
 import {
   Chip,
   Card,
@@ -28,6 +26,7 @@ import {
   RadioGroup
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { DateTimePicker, MobileDateTimePicker, DesktopDateTimePicker } from '@mui/lab';
 // utils
 import fakeRequest from '../../../../utils/fakeRequest';
 // routes
@@ -132,6 +131,7 @@ export default function UserNewForm({ isEdit, formik }) {
   //   const filteredItems = files.filter((_file) => _file !== file);
   //   setFiles(filteredItems);
   // };
+  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
   const indications = [
     'Prise en charge d’une hémorragie digestive',
     'Extraction d’un corps étranger',
@@ -154,10 +154,16 @@ export default function UserNewForm({ isEdit, formik }) {
     'Colle biologique de varices gastriques',
     'Ligature élastique d’ectasies veineuses antrales gastriques',
     'Exploration d’une diarrhée chronique',
-    'Bilan d’une polypose-adénomateurse-familiale'
+    'Bilan d’une polypose-adénomateurse-familiale',
+    'Mise en place d’une gastro/jéjunostomie d’alimentation'
   ];
+  const [indicationIndex, setIndicationIndex] = useState('0');
 
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  const handleChangeRadioGroup = (event) => {
+    console.log('value', event.target.value);
+    setIndicationIndex(event.target.value);
+    setFieldValue('indications', event.target.value, false);
+  };
 
   return (
     <Grid container spacing={3}>
@@ -336,12 +342,128 @@ export default function UserNewForm({ isEdit, formik }) {
             <Typography variant="h4">Indications</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Stack>
-              <RadioGroup>
+            <Stack spacing={3}>
+              <RadioGroup value={indicationIndex} onChange={handleChangeRadioGroup}>
                 {indications.map((item, index) => (
                   <FormControlLabel key={index} value={index} control={<Radio />} label={item} />
                 ))}
               </RadioGroup>
+            </Stack>
+
+            {indicationIndex === '0' && (
+              <Stack spacing={3} style={{ marginTop: 20 }}>
+                <Typography variant="h5">Indication choisie: {indications[0]}</Typography>
+                <DateTimePicker
+                  label="Date et heure de survenue"
+                  value={values.dateHémoragieDigestive}
+                  onChange={(event, newAlignment) => {
+                    formik.setFieldValue('dateHémoragieDigestive', newAlignment);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+                <Typography variant="h5">Prise en charge</Typography>
+                <Stack spacing={{ xs: 3, sm: 2 }} style={{}}>
+                  <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="ippHD" label="IPP" />
+                  {values.ippHD && (
+                    <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                      <TextField fullWidth label="Protocole IPP" {...getFieldProps('ippProtocolHD')} />
+                    </Stack>
+                  )}
+                  <ExploredItem
+                    noLabel="Non"
+                    yesLabel="Oui"
+                    formik={formik}
+                    field="suspicionCirrhoseHD"
+                    label="Suspicion de cirrhose"
+                  />
+                  {values.suspicionCirrhoseHD && (
+                    <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="vasoactifHD"
+                        label="Traitement vasoactif"
+                      />
+                      {values.vasoactifHD && (
+                        <TextField
+                          fullWidth
+                          label="Traitement vasoactif: lequel/protocole/depuis"
+                          {...getFieldProps('vasoactifDescHD')}
+                        />
+                      )}
+
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="antibioprophylaxieHD"
+                        label="Antibioprophylaxie"
+                      />
+                      {values.antibioprophylaxieHD && (
+                        <TextField
+                          fullWidth
+                          label="Antibioprophylaxie: lequel/dose/depuis"
+                          {...getFieldProps('antibioprophylaxieDescHD')}
+                        />
+                      )}
+                    </Stack>
+                  )}
+                  <ExploredItem
+                    noLabel="Non"
+                    yesLabel="Oui"
+                    formik={formik}
+                    field="transfusionHD"
+                    label="Transfusion"
+                  />
+                  {values.transfusionHD && (
+                    <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                      <TextField
+                        fullWidth
+                        label="Nombre de CGR Hémoglobine avant l’endoscopie"
+                        {...getFieldProps('cgrHD')}
+                      />
+                    </Stack>
+                  )}
+                </Stack>
+              </Stack>
+            )}
+
+            {indicationIndex === '22' && (
+              <Stack spacing={{ xs: 3, sm: 2 }}>
+                <ExploredItem
+                  noLabel="Non"
+                  yesLabel="Oui"
+                  formik={formik}
+                  field="antibioprophylaxieJJA"
+                  label="Antibioprophyaxie"
+                />
+                {values.antibioprophylaxieJJA && (
+                  <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      label="Antibioprophyaxie: lequel/dose/depuis"
+                      {...getFieldProps('antibioprophylaxieDescJJA')}
+                    />
+                  </Stack>
+                )}
+              </Stack>
+            )}
+            <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }} style={{ marginTop: 20 }}>
+              <Typography variant="h6">Autres indications</Typography>
+              <TextField fullWidth label="Autres indications" {...getFieldProps('autresIndications')} />
+              <ExploredItem
+                noLabel="Non"
+                yesLabel="Oui"
+                formik={formik}
+                field="prémédicationIndication"
+                label="Pré médication"
+              />
+              {values.prémédicationIndication && (
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField fullWidth label="Pré médication" {...getFieldProps('prémédicationIndicationDesc')} />
+                </Stack>
+              )}
             </Stack>
           </AccordionDetails>
         </Accordion>
