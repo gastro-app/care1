@@ -38,57 +38,365 @@ ExploredItem.propTypes = {
   label: PropTypes.string,
   formik: PropTypes.object
 };
-function ExploredItem({ labelExplored, value, label, formik }) {
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+// function ExploredItem({ labelExplored, value, label, formik }) {
+//   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
-  const handleChange = (event, newAlignment) => {
-    formik.setFieldValue(labelExplored, newAlignment);
+//   const handleChange = (event, newAlignment) => {
+//     formik.setFieldValue(labelExplored, newAlignment);
+//   };
+//   return (
+//     <>
+//       <Box sx={{ flexGrow: 1 }}>
+//         <Typography variant="h5">{label}</Typography>
+//         <ToggleButtonGroup
+//           color="primary"
+//           value={values[labelExplored]}
+//           exclusive
+//           onChange={handleChange}
+//           aria-label="Platform"
+//         >
+//           <ToggleButton value="Exploré">Exploré</ToggleButton>
+//           <ToggleButton value="Non Exploré">Non Exploré</ToggleButton>
+//         </ToggleButtonGroup>
+//       </Box>
+//       {values[labelExplored] === 'Exploré' && (
+//         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+//           <TextField
+//             fullWidth
+//             multiline
+//             label={label}
+//             {...getFieldProps(value)}
+//             error={Boolean(touched[value] && errors[value])}
+//             helperText={touched[value] && errors[value]}
+//           />
+//         </Stack>
+//       )}
+//     </>
+//   );
+// }
+function ExploredItem({ label, field, formik, yesLabel, noLabel }) {
+  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleChange = (event, checked) => {
+    setIsChecked(checked);
+    setFieldValue(field, checked, false);
   };
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="h5">{label}</Typography>
+      <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+        <Typography variant="h6">{label}</Typography>
         <ToggleButtonGroup
+          name={field}
           color="primary"
-          value={values[labelExplored]}
+          value={isChecked}
           exclusive
           onChange={handleChange}
           aria-label="Platform"
         >
-          <ToggleButton value="Exploré">Exploré</ToggleButton>
-          <ToggleButton value="Non Exploré">Non Exploré</ToggleButton>
+          <ToggleButton value={false}>{noLabel}</ToggleButton>
+          <ToggleButton value>{yesLabel}</ToggleButton>
         </ToggleButtonGroup>
-      </Box>
-      {values[labelExplored] === 'Exploré' && (
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-          <TextField
-            fullWidth
-            multiline
-            label={label}
-            {...getFieldProps(value)}
-            error={Boolean(touched[value] && errors[value])}
-            helperText={touched[value] && errors[value]}
-          />
-        </Stack>
-      )}
+      </Stack>
     </>
   );
 }
-
 UserNewForm.propTypes = {
   isEdit: PropTypes.bool,
   formik: PropTypes.object
 };
 
 export default function UserNewForm({ isEdit, formik }) {
+  // const handleChange = (event, newAlignment) => {
+  //   formik.setFieldValue('FOGDEstomac', newAlignment);
+  // };
+
+  const [alignment, setAlignment] = useState('explorer');
+
   const handleChange = (event, newAlignment) => {
-    formik.setFieldValue('FOGDEstomac', newAlignment);
+    setAlignment(newAlignment);
+  };
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [preview, setPreview] = useState(false);
+  const [files, setFiles] = useState([]);
+
+  const handleDropMultiFile = useCallback(
+    (acceptedFiles) => {
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file)
+          })
+        )
+      );
+    },
+    [setFiles]
+  );
+
+  const handleRemoveAll = () => {
+    setFiles([]);
+  };
+
+  const handleRemove = (file) => {
+    const filteredItems = files.filter((_file) => _file !== file);
+    setFiles(filteredItems);
   };
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
         <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+            <Typography variant="h4">Avant Examen</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+              <TextField
+                fullWidth
+                multiline
+                label="Délai entre la demande de l’examen et sa réalisation "
+                {...getFieldProps('délaiExamen')}
+              />
+              <DateTimePicker
+                label="Date et heure de l'examen"
+                value={values.dateExamen}
+                onChange={(event, newAlignment) => {
+                  formik.setFieldValue('dateExamen', newAlignment);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+              <ExploredItem
+                noLabel="Non"
+                yesLabel="Oui"
+                formik={formik}
+                field="consentementExamen"
+                label="Consentement éclairé signé par le patient"
+              />
+              <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="jeuneExamen" label="Patient à jeune" />
+              {values.jeuneExamen && (
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="Depuis combien d'heures pour les solides"
+                    {...getFieldProps('duréeJeuneSolide')}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Depuis combien d'heures pour les liquides"
+                    {...getFieldProps('duréeJeuneLiquide')}
+                  />
+                </Stack>
+              )}
+              <ExploredItem
+                noLabel="Non"
+                yesLabel="Oui"
+                formik={formik}
+                field="consoTabacAvantExamen"
+                label="Consommation de tabac avant l’endoscopie"
+              />
+              <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="sédationExamen" label="Sous sédation" />
+              {values.sédationExamen && (
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <ExploredItem
+                    noLabel="Sans anomalies"
+                    yesLabel="Avec anomalies"
+                    formik={formik}
+                    field="anomaliesAvantSédation"
+                    label="Examen avant sédation"
+                  />
+                  {values.anomaliesAvantSédation && (
+                    <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                      <TextField
+                        fullWidth
+                        label="Description des anomalies"
+                        {...getFieldProps('anomaliesAvantSédationDesc')}
+                      />
+                      <TextField
+                        fullWidth
+                        label="Protocole examen avant sédation"
+                        {...getFieldProps('protocoleAvantSédation')}
+                      />
+                    </Stack>
+                  )}
+                </Stack>
+              )}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+            <Typography variant="h4">Matériel</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack direction={{ xs: 'column' }} spacing={{ xs: 3 }}>
+              <TextField select fullWidth {...getFieldProps('antecedentsFam')} SelectProps={{ native: true }}>
+                <option key="0" value="">
+                  Choisir type de l'endoscope
+                </option>
+                {[
+                  'Olympus GIF-Q150 2206251',
+                  'Olympus GIF-Q150 2620604',
+                  'Olympus GIF-H180',
+                  'Olympus GIF-H170 (EXERA III)'
+                ].map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </TextField>
+              <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="pince" label="Pince" />
+              {values.pince && (
+                <ExploredItem noLabel="Unique" yesLabel="Multiple" formik={formik} field="usagePince" label="Usage" />
+              )}
+              <TextField fullWidth label="Autres Materiels" {...getFieldProps('autresMateriels')} />
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+            <Typography variant="h4">Examen</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+              <ExploredItem
+                noLabel="Non exploré"
+                yesLabel="Exploré"
+                formik={formik}
+                field="osophage"
+                label="Œsophage"
+              />
+              {values.osophage && (
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField fullWidth label="Exploration Œsophage" {...getFieldProps('osophageDesc')} />
+                  <ExploredItem
+                    noLabel="Non"
+                    yesLabel="Oui"
+                    formik={formik}
+                    field="osoBiopsies"
+                    label="Biopsises Œsophage"
+                  />
+                  {values.osoBiopsies && (
+                    <TextField
+                      fullWidth
+                      label="Biopsises Œsophage: nombre de biopsies, nombre de tubes, selon le 
+                  Protocole de seattle si EBO"
+                      {...getFieldProps('osoBiopsiesDesc')}
+                    />
+                  )}
+                </Stack>
+              )}
+
+              <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="cardia" label="Cardia" />
+              {values.cardia && <TextField fullWidth label="Exploration Cardia" {...getFieldProps('cardiaDesc')} />}
+
+              <Typography variant="h4">Estomac</Typography>
+              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="fundus" label="Fundus" />
+                {values.fundus && <TextField fullWidth label="Exploration Fundus" {...getFieldProps('fundusDesc')} />}
+                <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="antre" label="Antre" />
+                {values.antre && <TextField fullWidth label="Exploration Antre" {...getFieldProps('antreDesc')} />}
+
+                <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="pylore" label="Pylore" />
+                {values.pylore && <TextField fullWidth label="Exploration Pylore" {...getFieldProps('pyloreDesc')} />}
+
+                <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="estoBiopsies" label="Biopsies" />
+                {values.estoBiopsies && (
+                  <TextField
+                    fullWidth
+                    label="Biopsies estomac: nombre et localisation, nombre de tubes"
+                    {...getFieldProps('estoBiopsiesDesc')}
+                  />
+                )}
+
+                <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="bulbe" label="Bulbe" />
+                {values.bulbe && (
+                  <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField fullWidth label="Exploration bulbe" {...getFieldProps('bulbeDesc')} />
+                    <ExploredItem
+                      noLabel="Non"
+                      yesLabel="Oui"
+                      formik={formik}
+                      field="bulbeBiopsies"
+                      label="Biopsies bulbe"
+                    />
+                    {values.bulbeBiopsies && (
+                      <TextField fullWidth label="Biopsies bulbe: nombre " {...getFieldProps('bulbeBiopsiesDesc')} />
+                    )}
+                  </Stack>
+                )}
+
+                <ExploredItem
+                  noLabel="Non exploré"
+                  yesLabel="Exploré"
+                  formik={formik}
+                  field="duodénum"
+                  label="Duodénum"
+                />
+                {values.duodénum && (
+                  <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField fullWidth label="Exploration duodénum" {...getFieldProps('duodénumDesc')} />
+                    <ExploredItem
+                      noLabel="Non"
+                      yesLabel="Oui"
+                      formik={formik}
+                      field="duodénumBiopsies"
+                      label="Biopsies duodénum"
+                    />
+                    {values.duodénumBiopsies && (
+                      <TextField
+                        fullWidth
+                        label="Biopsies duodénum: nombre "
+                        {...getFieldProps('duodénumBiopsiesDesc')}
+                      />
+                    )}
+                  </Stack>
+                )}
+                <ExploredItem
+                  noLabel="Non"
+                  yesLabel="Oui"
+                  formik={formik}
+                  field="zoneMalExploré"
+                  label="Y a-t-il des zones non ou mal explorées?"
+                />
+                {values.zoneMalExploré && (
+                  <TextField select fullWidth {...getFieldProps('indexZoneMalExploré')} SelectProps={{ native: true }}>
+                    <option key="0" value="">
+                      Choisir zone mal exploré
+                    </option>
+                    {[
+                      'Œsophage supérieur',
+                      'Œsophage inférieur',
+                      'Ligne Z et sommet des plis gastriques',
+                      'Cardia, fundus et la petite courbure en rétroversion',
+                      'Antre',
+                      'L’angle de la petite  courbure en rétrovision',
+                      'Bulbe',
+                      'DI, DII'
+                    ].map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </TextField>
+                )}
+              </Stack>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="subtitle2">Images prises durant l’examen endoscopiques</Typography>
+                <UploadMultiFile
+                  showPreview={preview}
+                  files={files}
+                  onDrop={handleDropMultiFile}
+                  onRemove={handleRemove}
+                  onRemoveAll={handleRemoveAll}
+                />
+              </Box>
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+        {/* */}
+        {/* <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
             <Typography variant="h4">FOGD</Typography>
           </AccordionSummary>
@@ -251,7 +559,6 @@ export default function UserNewForm({ isEdit, formik }) {
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
                 <>
-                  {' '}
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                     <Typography variant="h5">Materials</Typography>
                   </Stack>
@@ -402,7 +709,7 @@ export default function UserNewForm({ isEdit, formik }) {
               </Stack>
             </Card>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
       </Grid>
     </Grid>
   );

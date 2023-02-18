@@ -98,14 +98,6 @@ export default function PatientPersoData({ isEdit, formik }) {
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
               <TextField
-                fullWidth
-                label="Age"
-                {...getFieldProps('age')}
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                error={Boolean(touched.age && errors.age)}
-                helperText={touched.age && errors.age}
-              />
-              <TextField
                 select
                 fullWidth
                 label="Genre"
@@ -122,6 +114,14 @@ export default function PatientPersoData({ isEdit, formik }) {
                   </option>
                 ))}
               </TextField>
+              <TextField
+                fullWidth
+                label="Age"
+                {...getFieldProps('age')}
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                error={Boolean(touched.age && errors.age)}
+                helperText={touched.age && errors.age}
+              />
             </Stack>
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
