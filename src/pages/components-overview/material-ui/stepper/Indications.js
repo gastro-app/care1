@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
+import ReactModal from 'react-modal';
+
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
@@ -23,7 +25,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Radio,
-  RadioGroup
+  RadioGroup,
+  Button
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DateTimePicker, MobileDateTimePicker, DesktopDateTimePicker } from '@mui/lab';
@@ -131,6 +134,7 @@ export default function UserNewForm({ isEdit, formik }) {
   //   const filteredItems = files.filter((_file) => _file !== file);
   //   setFiles(filteredItems);
   // };
+  const [modalVisible, setModalVisible] = useState(false);
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
   const indications = [
     'Prise en charge d’une hémorragie digestive',
@@ -157,114 +161,172 @@ export default function UserNewForm({ isEdit, formik }) {
     'Bilan d’une polypose-adénomateurse-familiale',
     'Mise en place d’une gastro/jéjunostomie d’alimentation'
   ];
-  const [indicationIndex, setIndicationIndex] = useState('0');
 
-  const handleChangeRadioGroup = (event) => {
+  const FGDOdiagnostique = [
+    'Symptômes digestifs hauts persistants malgré une épreuve thérapeutique',
+    'Symptômes digestifs hauts avec signes d’alarmes ou âge >45ans',
+    'Dysphagie, odynophagie',
+    'RGO persistant ou récidivant après traitement',
+    'Surveillance d’une lésion prénéoplasique (exp : endobrachy œsophage)',
+    'Vomissements persistants',
+    'Pathologies au cours desquelles la FOGD peut modifier la prise en charge (exemple : ATCDs d’ulcère et indication d’une anticoagulation)',
+    'Polypose adénomateuse familiale',
+    'Explorer une lésion de découverte radiologique (lésion d’allure néoplasique, ulcère œsophagien ou gastrique, sténose)',
+    'Suspicion d’une spoliation sanguine et anémie ferriprive',
+    'Nécessité de faire des biopsies ou de prélever un liquide',
+    'Bilan d’une hypertension portale',
+    'Evaluation d’une reconstruction anatomique (Exp : fundoplicature, chirurgie bariatrique)'
+  ];
+
+  const FGDOthérapeutique = [
+    'Hémorragie digestive active actuelle ou récente',
+    'Traitement d’une lésion qui saigne',
+    'Ligature ou sclérothérapie pour varices œsophagiennes',
+    'Ingestion de caustique',
+    'Extraction de corps étranger',
+    'Résection d’un polype',
+    'Mise en place d’un drainage ou d’une stomie (exp : gastrostomie)',
+    'Dilatation d’une sténose',
+    'Prise en charge d’une achalasie',
+    'Prise en charge palliative d’une sténose d’origine néoplasique',
+    'Traitement d’une métaplasie intestinale',
+    'Prise en charge de complications (exp : fistule)'
+  ];
+  const [indicationIndex, setIndicationIndex] = useState('0');
+  const [diagnostiqueIndex, setDiagnostiqueIndex] = useState('0');
+  const [thérapeutiqueIndex, setThérapeutiqueIndex] = useState('0');
+  const handleChangeRadioGroupDiagnostique = (event) => {
     console.log('value', event.target.value);
-    setIndicationIndex(event.target.value);
-    setFieldValue('indications', event.target.value, false);
+    setDiagnostiqueIndex(event.target.value);
+    setFieldValue('diagnostiqueIndex', event.target.value, false);
+  };
+  const handleChangeRadioGroupThérapeutique = (event) => {
+    console.log('value', event.target.value);
+    setThérapeutiqueIndex(event.target.value);
+    setFieldValue('thérapeutiqueIndex', event.target.value, false);
   };
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={12}>
-        {/* <Card sx={{ py: 3 }}> */}
-        <Stack spacing={3}>
-          <ExploredItem
-            formik={formik}
-            field="consentement"
-            label="Consentement éclairé signé par le patient "
-            noLabel="Non"
-            yesLabel="Oui"
-          />
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-              <Typography variant="h4">Antécédents</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                <Typography variant="h6">Antécédents familiaux</Typography>
-                <TextField
-                  select
-                  fullWidth
-                  {...getFieldProps('antecedentsFam')}
-                  SelectProps={{ native: true }}
-                  error={Boolean(touched.antecedentsFam && errors.antecedentsFam)}
-                  helperText={touched.antecedentsFam && errors.antecedentsFam}
-                >
-                  <option key="0" value="">
-                    Pas d'antécédent familiale
-                  </option>
-                  {[
-                    'Cancer digestif',
-                    'Cancer non digestif',
-                    'Maladie de crohn',
-                    'Polypose adénomateuse familiale',
-                    'Maladie coeliaque'
-                  ].map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </TextField>
-                {values.antecedentsFam === 'Cancer non digestif' && (
-                  <TextField
-                    fullWidth
-                    label="Description du cancer non digestif"
-                    {...getFieldProps('descAntecedentFam')}
-                  />
-                )}
+    <>
+      <ReactModal
+        isOpen={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        style={{
+          content: {
+            // height: '50vh', width: '50vw',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)'
+          }
+          // content: { height: '100%', width: '100%' }
+        }}
+      >
+        <p>hello</p>
 
-                <Typography variant="h6">Antécédents personnels</Typography>
-                <TextField select fullWidth {...getFieldProps('antecedentsPerso')} SelectProps={{ native: true }}>
-                  <option key="0" value="">
-                    Pas d'antécédent personnel
-                  </option>
-                  {[
-                    'Cancer digestif',
-                    'Cancer non digestif',
-                    'Maladie de crohn',
-                    'Polypose adénomateuse familiale',
-                    'Maladie coeliaque'
-                  ].map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+        <Button variant="contained" title="Close" onClick={() => setModalVisible(false)}>
+          <Typography>Close</Typography>
+        </Button>
+      </ReactModal>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={12}>
+          <Stack spacing={3}>
+            <ExploredItem
+              formik={formik}
+              field="consentement"
+              label="Consentement éclairé signé par le patient "
+              noLabel="Non"
+              yesLabel="Oui"
+            />
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                <Typography variant="h4">Antécédents</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <Typography variant="h6">Antécédents familiaux</Typography>
+                  <TextField
+                    select
+                    fullWidth
+                    {...getFieldProps('antecedentsFam')}
+                    SelectProps={{ native: true }}
+                    error={Boolean(touched.antecedentsFam && errors.antecedentsFam)}
+                    helperText={touched.antecedentsFam && errors.antecedentsFam}
+                  >
+                    <option key="0" value="">
+                      Pas d'antécédent familiale
                     </option>
-                  ))}
-                </TextField>
-                {values.antecedentsPerso === 'Cancer non digestif' && (
-                  <TextField
-                    fullWidth
-                    label="Description du cancer non digestif"
-                    {...getFieldProps('descAntecedentPerso')}
-                  />
-                )}
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-              <Typography variant="h4">Habitudes</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                <Typography variant="h6">Consommation du tabac</Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    inputMode="numeric"
-                    label="Nombre de packets par année"
-                    {...getFieldProps('nombrePacketTabac')}
-                  />
+                    {[
+                      'Cancer digestif',
+                      'Cancer non digestif',
+                      'Maladie de crohn',
+                      'Polypose adénomateuse familiale',
+                      'Maladie coeliaque'
+                    ].map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </TextField>
+                  {values.antecedentsFam === 'Cancer non digestif' && (
+                    <TextField
+                      fullWidth
+                      label="Description du cancer non digestif"
+                      {...getFieldProps('descAntecedentFam')}
+                    />
+                  )}
+                  <Typography variant="h6">Antécédents personnels</Typography>
+                  <TextField select fullWidth {...getFieldProps('antecedentsPerso')} SelectProps={{ native: true }}>
+                    <option key="0" value="">
+                      Pas d'antécédent personnel
+                    </option>
+                    {[
+                      'Cancer digestif',
+                      'Cancer non digestif',
+                      'Maladie de crohn',
+                      'Polypose adénomateuse familiale',
+                      'Maladie coeliaque'
+                    ].map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </TextField>
+                  {values.antecedentsPerso === 'Cancer non digestif' && (
+                    <TextField
+                      fullWidth
+                      label="Description du cancer non digestif"
+                      {...getFieldProps('descAntecedentPerso')}
+                    />
+                  )}
                 </Stack>
-                <ExploredItem
-                  formik={formik}
-                  field="consoAlcool"
-                  label="Consommation du l'alcool"
-                  noLabel="Occasionnel"
-                  yesLabel="Fréquent"
-                />
-                {/* {values.consoAlcool && (
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                <Typography variant="h4">Habitudes</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <Typography variant="h6">Consommation du tabac</Typography>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      fullWidth
+                      inputMode="numeric"
+                      label="Nombre de packets par année"
+                      {...getFieldProps('nombrePacketTabac')}
+                    />
+                  </Stack>
+                  <ExploredItem
+                    formik={formik}
+                    field="consoAlcool"
+                    label="Consommation du l'alcool"
+                    noLabel="Occasionnel"
+                    yesLabel="Fréquent"
+                  />
+                  {/* {values.consoAlcool && (
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField
                       fullWidth
@@ -280,55 +342,59 @@ export default function UserNewForm({ isEdit, formik }) {
                     />
                   </Stack>
                 )} */}
-                <Typography variant="h6">Autres</Typography>
-                <TextField fullWidth label="Autres habitudes" {...getFieldProps('autresHabitudes')} />
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-              <Typography variant="h4">Traitements en cours</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                <ExploredItem
-                  formik={formik}
-                  field="antiCoagulants"
-                  label="Anticoagulants"
-                  yesLabel="Oui"
-                  noLabel="Non"
-                />
-                {values.antiCoagulants && (
-                  <>
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                      <TextField fullWidth label="Classe" {...getFieldProps('antiCoagulantsClasse')} />
-                      <TextField fullWidth label="Dose" {...getFieldProps('antiCoagulantsDose')} />
-                      <TextField fullWidth label="Nombre de prise" {...getFieldProps('antiCoagulantsNb')} />
-                    </Stack>
-                    <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                      <Typography variant="h6">Gestion des anticoagulants</Typography>
-                      <TextField
-                        fullWidth
-                        inputMode="numeric"
-                        label="Arrêté depuis quand ?"
-                        {...getFieldProps('antiCoagulantsGestionDebut')}
-                      />
-                      <TextField
-                        fullWidth
-                        inputMode="numeric"
-                        label="A
+                  <Typography variant="h6">Autres</Typography>
+                  <TextField fullWidth label="Autres habitudes" {...getFieldProps('autresHabitudes')} />
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                <Typography variant="h4">Traitements en cours</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <ExploredItem
+                    formik={formik}
+                    field="antiCoagulants"
+                    label="Anticoagulants"
+                    yesLabel="Oui"
+                    noLabel="Non"
+                  />
+                  {values.antiCoagulants && (
+                    <>
+                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                        <TextField fullWidth label="Classe" {...getFieldProps('antiCoagulantsClasse')} />
+                        <TextField fullWidth label="Dose" {...getFieldProps('antiCoagulantsDose')} />
+                        <TextField fullWidth label="Nombre de prise" {...getFieldProps('antiCoagulantsNb')} />
+                      </Stack>
+                      <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                        <Typography variant="h6">Gestion des anticoagulants</Typography>
+                        <TextField
+                          fullWidth
+                          inputMode="numeric"
+                          label="Arrêté depuis quand ?"
+                          {...getFieldProps('antiCoagulantsGestionDebut')}
+                        />
+                        <TextField
+                          fullWidth
+                          inputMode="numeric"
+                          label="A
                   reprendre quand après l’examen endoscopique ?"
-                        {...getFieldProps('antiCoagulantsGestionFin')}
-                      />
-                    </Stack>
-                  </>
-                )}
-                <Typography variant="h6">Autres</Typography>
-                <TextField fullWidth label="Autres traitements" {...getFieldProps('autresTraitements')} />
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-          {/* <Box sx={{ flexGrow: 1 }}>
+                          {...getFieldProps('antiCoagulantsGestionFin')}
+                        />
+                      </Stack>
+                    </>
+                  )}
+
+                  <Button sx={{ width: '30%' }} variant="contained" onClick={() => setModalVisible(true)}>
+                    BSG_ESGE : Antiplatelets and anticoagulation update 2021
+                  </Button>
+                  <Typography variant="h6">Autres</Typography>
+                  <TextField fullWidth label="Autres traitements" {...getFieldProps('autresTraitements')} />
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
+            {/* <Box sx={{ flexGrow: 1 }}>
               <Typography variant="subtitle2">Piéces a joindre</Typography>
               <UploadMultiFile
                 showPreview={preview}
@@ -338,140 +404,156 @@ export default function UserNewForm({ isEdit, formik }) {
                 onRemoveAll={handleRemoveAll}
               />
             </Box> */}
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-              <Typography variant="h4">Indications</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack spacing={3}>
-                <RadioGroup value={indicationIndex} onChange={handleChangeRadioGroup}>
-                  {indications.map((item, index) => (
-                    <FormControlLabel key={index} value={index} control={<Radio />} label={item} />
-                  ))}
-                </RadioGroup>
-              </Stack>
-
-              {indicationIndex === '0' && (
-                <Stack spacing={3} style={{ marginTop: 20 }}>
-                  <Typography variant="h5">Indication choisie: {indications[0]}</Typography>
-                  <DateTimePicker
-                    label="Date et heure de survenue"
-                    value={values.dateHémoragieDigestive}
-                    onChange={(event, newAlignment) => {
-                      formik.setFieldValue('dateHémoragieDigestive', newAlignment);
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                <Typography variant="h4">Indications</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stack spacing={3}>
+                  <ExploredItem
+                    noLabel="FOGD thérapeutique"
+                    yesLabel="FOGD diagnostique"
+                    formik={formik}
+                    field="typeIndication"
+                    label="Catégorie d'indications"
                   />
-                  <Typography variant="h5">Prise en charge</Typography>
-                  <Stack spacing={{ xs: 3, sm: 2 }} style={{}}>
-                    <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="ippHD" label="IPP" />
-                    {values.ippHD && (
-                      <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                        <TextField fullWidth label="Protocole IPP" {...getFieldProps('ippProtocolHD')} />
-                      </Stack>
-                    )}
-                    <ExploredItem
-                      noLabel="Non"
-                      yesLabel="Oui"
-                      formik={formik}
-                      field="suspicionCirrhoseHD"
-                      label="Suspicion de cirrhose"
+                  {values.typeIndication ? (
+                    <RadioGroup value={diagnostiqueIndex} onChange={handleChangeRadioGroupDiagnostique}>
+                      {FGDOdiagnostique.map((item, index) => (
+                        <FormControlLabel key={index} value={index} control={<Radio />} label={item} />
+                      ))}
+                    </RadioGroup>
+                  ) : (
+                    <RadioGroup value={thérapeutiqueIndex} onChange={handleChangeRadioGroupThérapeutique}>
+                      {FGDOthérapeutique.map((item, index) => (
+                        <FormControlLabel key={index} value={index} control={<Radio />} label={item} />
+                      ))}
+                    </RadioGroup>
+                  )}
+                </Stack>
+                <Typography variant="h5">
+                  Indication choisie:{' '}
+                  {values.typeIndication ? FGDOdiagnostique[diagnostiqueIndex] : FGDOthérapeutique[thérapeutiqueIndex]}
+                </Typography>
+                {!values.typeIndication && thérapeutiqueIndex === '0' && (
+                  <Stack spacing={3} style={{ marginTop: 20 }}>
+                    <DateTimePicker
+                      label="Date et heure de survenue"
+                      value={values.dateHémoragieDigestive}
+                      onChange={(event, newAlignment) => {
+                        formik.setFieldValue('dateHémoragieDigestive', newAlignment);
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
                     />
-                    {values.suspicionCirrhoseHD && (
-                      <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                        <ExploredItem
-                          noLabel="Non"
-                          yesLabel="Oui"
-                          formik={formik}
-                          field="vasoactifHD"
-                          label="Traitement vasoactif"
-                        />
-                        {values.vasoactifHD && (
-                          <TextField
-                            fullWidth
-                            label="Traitement vasoactif: lequel/protocole/depuis"
-                            {...getFieldProps('vasoactifDescHD')}
+                    <Typography variant="h5">Prise en charge</Typography>
+                    <Stack spacing={{ xs: 3, sm: 2 }} style={{}}>
+                      <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="ippHD" label="IPP" />
+                      {values.ippHD && (
+                        <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                          <TextField fullWidth label="Protocole IPP" {...getFieldProps('ippProtocolHD')} />
+                        </Stack>
+                      )}
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="suspicionCirrhoseHD"
+                        label="Suspicion de cirrhose"
+                      />
+                      {values.suspicionCirrhoseHD && (
+                        <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                          <ExploredItem
+                            noLabel="Non"
+                            yesLabel="Oui"
+                            formik={formik}
+                            field="vasoactifHD"
+                            label="Traitement vasoactif"
                           />
-                        )}
+                          {values.vasoactifHD && (
+                            <TextField
+                              fullWidth
+                              label="Traitement vasoactif: lequel/protocole/depuis"
+                              {...getFieldProps('vasoactifDescHD')}
+                            />
+                          )}
 
-                        <ExploredItem
-                          noLabel="Non"
-                          yesLabel="Oui"
-                          formik={formik}
-                          field="antibioprophylaxieHD"
-                          label="Antibioprophylaxie"
-                        />
-                        {values.antibioprophylaxieHD && (
+                          <ExploredItem
+                            noLabel="Non"
+                            yesLabel="Oui"
+                            formik={formik}
+                            field="antibioprophylaxieHD"
+                            label="Antibioprophylaxie"
+                          />
+                          {values.antibioprophylaxieHD && (
+                            <TextField
+                              fullWidth
+                              label="Antibioprophylaxie: lequel/dose/depuis"
+                              {...getFieldProps('antibioprophylaxieDescHD')}
+                            />
+                          )}
+                        </Stack>
+                      )}
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="transfusionHD"
+                        label="Transfusion"
+                      />
+                      {values.transfusionHD && (
+                        <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                           <TextField
                             fullWidth
-                            label="Antibioprophylaxie: lequel/dose/depuis"
-                            {...getFieldProps('antibioprophylaxieDescHD')}
+                            label="Nombre de CGR Hémoglobine avant l’endoscopie"
+                            {...getFieldProps('cgrHD')}
                           />
-                        )}
-                      </Stack>
-                    )}
+                        </Stack>
+                      )}
+                    </Stack>
+                  </Stack>
+                )}
+                {!values.typeIndication && thérapeutiqueIndex === '6' && (
+                  <Stack spacing={{ xs: 3, sm: 2 }}>
                     <ExploredItem
                       noLabel="Non"
                       yesLabel="Oui"
                       formik={formik}
-                      field="transfusionHD"
-                      label="Transfusion"
+                      field="antibioprophylaxieJJA"
+                      label="Antibioprophyaxie"
                     />
-                    {values.transfusionHD && (
+                    {values.antibioprophylaxieJJA && (
                       <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                         <TextField
                           fullWidth
-                          label="Nombre de CGR Hémoglobine avant l’endoscopie"
-                          {...getFieldProps('cgrHD')}
+                          label="Antibioprophyaxie: lequel/dose/depuis"
+                          {...getFieldProps('antibioprophylaxieDescJJA')}
                         />
                       </Stack>
                     )}
                   </Stack>
-                </Stack>
-              )}
-
-              {indicationIndex === '22' && (
-                <Stack spacing={{ xs: 3, sm: 2 }}>
-                  <Typography variant="h5">Indication choisie: {indications[22]}</Typography>
+                )}
+                <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }} style={{ marginTop: 20 }}>
+                  <Typography variant="h6">Autres indications</Typography>
+                  <TextField fullWidth label="Autres indications" {...getFieldProps('autresIndications')} />
                   <ExploredItem
                     noLabel="Non"
                     yesLabel="Oui"
                     formik={formik}
-                    field="antibioprophylaxieJJA"
-                    label="Antibioprophyaxie"
+                    field="prémédicationIndication"
+                    label="Pré médication"
                   />
-                  {values.antibioprophylaxieJJA && (
+                  {values.prémédicationIndication && (
                     <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                      <TextField
-                        fullWidth
-                        label="Antibioprophyaxie: lequel/dose/depuis"
-                        {...getFieldProps('antibioprophylaxieDescJJA')}
-                      />
+                      <TextField fullWidth label="Pré médication" {...getFieldProps('prémédicationIndicationDesc')} />
                     </Stack>
                   )}
                 </Stack>
-              )}
-              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }} style={{ marginTop: 20 }}>
-                <Typography variant="h6">Autres indications</Typography>
-                <TextField fullWidth label="Autres indications" {...getFieldProps('autresIndications')} />
-                <ExploredItem
-                  noLabel="Non"
-                  yesLabel="Oui"
-                  formik={formik}
-                  field="prémédicationIndication"
-                  label="Pré médication"
-                />
-                {values.prémédicationIndication && (
-                  <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField fullWidth label="Pré médication" {...getFieldProps('prémédicationIndicationDesc')} />
-                  </Stack>
-                )}
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-        </Stack>
-        {/* </Card> */}
+              </AccordionDetails>
+            </Accordion>
+          </Stack>
+          {/* </Card> */}
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }

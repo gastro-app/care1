@@ -149,33 +149,33 @@ function getStepContent(step, formik) {
 }
 
 export default function CustomizedSteppers({ isEdit, currentReport }) {
-  const NewReportSchema = Yup.object().shape({
-    nom: Yup.string().required('Le nom est requis'),
-    prenom: Yup.string().required('Le prénom est requis'),
-    age: Yup.string().required('age est requis'),
-    sexe: Yup.string().required('sexe est requis'),
-    numDoss: Yup.string().required('numero de dossier est requis'),
-    etab: Yup.string().required('établissement sanitaire est requis'),
-    antecedents: Yup.string().required('antecedents est requis'),
-    indications: Yup.string().required('indications est requis'),
-    FOGDmaterials: Yup.string().required('materials est requis'),
-    FOGDoesophage: Yup.string().required('oesophage est requis'),
-    FOGDcardia: Yup.string().required('cardia est requis'),
-    FOGDfundus: Yup.string().required('fundus est requis'),
-    FOGDantre: Yup.string().required('antre est requis'),
-    FOGDpylore: Yup.string().required('pylore est requis'),
-    FOGDdidii: Yup.string().required('DIDII est requis'),
-    ColoscopieMaterials: Yup.string().required('Materials est requis'),
-    ColoscopieColonGauche: Yup.string().required('Colon Gauche est requis'),
-    ColoscopieColonTansverse: Yup.string().required('Colon Tansverse est requis'),
-    ColoscopieColonDroit: Yup.string().required('Colon Droit est requis'),
-    ColoscopiePreparation: Yup.string().required('Preparation est requis'),
-    ColoscopieBasFondCaecal: Yup.string().required('Bas Fond Caecal est requis'),
-    ColoscopieColonGaucheText: Yup.string().required('Colon Gauche est requis'),
-    ColoscopieColonTansverseText: Yup.string().required('Colon Tansverse est requis'),
-    ColoscopieColonDroitText: Yup.string().required('Colon Droit est requis'),
-    conclusion: Yup.string().required('conclusion est requis')
-  });
+  // const NewReportSchema = Yup.object().shape({
+  //   nom: Yup.string().required('Le nom est requis'),
+  //   prenom: Yup.string().required('Le prénom est requis'),
+  //   age: Yup.string().required('age est requis'),
+  //   sexe: Yup.string().required('sexe est requis'),
+  //   numDoss: Yup.string().required('numero de dossier est requis'),
+  //   etab: Yup.string().required('établissement sanitaire est requis'),
+  //   antecedents: Yup.string().required('antecedents est requis'),
+  //   indications: Yup.string().required('indications est requis'),
+  //   FOGDmaterials: Yup.string().required('materials est requis'),
+  //   FOGDoesophage: Yup.string().required('oesophage est requis'),
+  //   FOGDcardia: Yup.string().required('cardia est requis'),
+  //   FOGDfundus: Yup.string().required('fundus est requis'),
+  //   FOGDantre: Yup.string().required('antre est requis'),
+  //   FOGDpylore: Yup.string().required('pylore est requis'),
+  //   FOGDdidii: Yup.string().required('DIDII est requis'),
+  //   ColoscopieMaterials: Yup.string().required('Materials est requis'),
+  //   ColoscopieColonGauche: Yup.string().required('Colon Gauche est requis'),
+  //   ColoscopieColonTansverse: Yup.string().required('Colon Tansverse est requis'),
+  //   ColoscopieColonDroit: Yup.string().required('Colon Droit est requis'),
+  //   ColoscopiePreparation: Yup.string().required('Preparation est requis'),
+  //   ColoscopieBasFondCaecal: Yup.string().required('Bas Fond Caecal est requis'),
+  //   ColoscopieColonGaucheText: Yup.string().required('Colon Gauche est requis'),
+  //   ColoscopieColonTansverseText: Yup.string().required('Colon Tansverse est requis'),
+  //   ColoscopieColonDroitText: Yup.string().required('Colon Droit est requis'),
+  //   conclusion: Yup.string().required('conclusion est requis')
+  // });
   const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
@@ -187,17 +187,14 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       genre: currentReport?.genre || '',
       numDoss: currentReport?.numDoss || '',
       numTel: currentReport?.numTel || '',
-      adresse: currentReport?.adresse || '',
+      serviceOrigine: currentReport?.serviceOrigine || '',
       consentement: currentReport?.consentement || '',
       antecedentsFam: currentReport?.antecedentsFam || '',
       antecedentsPerso: currentReport?.antecedentsPerso || '',
       descAntecedentFam: currentReport?.descAntecedentFam || '',
       descAntecedentPerso: currentReport?.descAntecedentPerso || '',
       nombrePacketTabac: currentReport?.nombrePacketTabac || '',
-      dureeTabac: currentReport?.dureeTabac || '',
       consoAlcool: currentReport?.consoAlcool || false,
-      nombreBiereParJour: currentReport?.nombreBiereParJour || '',
-      nombreDeJourConsoAlcoolParSemaine: currentReport?.nombreDeJourConsoAlcoolParSemaine || '',
       autresHabitudes: currentReport?.autresHabitudes || '',
       antiCoagulants: currentReport?.antiCoagulants || false,
       antiCoagulantsClasse: currentReport?.antiCoagulantsClasse || '',
@@ -206,7 +203,9 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       antiCoagulantsGestionDebut: currentReport?.antiCoagulantsGestionDebut || '',
       antiCoagulantsGestionFin: currentReport?.antiCoagulantsGestionFin || '',
       autresTraitements: currentReport?.autresTraitements || '',
-      indications: currentReport?.indications || '',
+      typeIndication: currentReport?.typeIndication || false,
+      diagnostiqueIndex: currentReport?.diagnostiqueIndex || '',
+      thérapeutiqueIndex: currentReport?.thérapeutiqueIndex || '',
       dateHD: currentReport?.dateHD || '',
       ippHD: currentReport?.ippHD || false,
       ippProtocolHD: currentReport?.ippProtocolHD || '',
@@ -225,7 +224,6 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
 
       délaiExamen: currentReport?.délaiExamen || '',
       dateExamen: currentReport?.dateExamen || '',
-      consentementExamen: currentReport?.consentementExamen || false,
       jeuneExamen: currentReport?.jeuneExamen || false,
       duréeJeuneSolide: currentReport?.duréeJeuneSolide || '',
       duréeJeuneLiquide: currentReport?.duréeJeuneLiquide || '',
@@ -238,6 +236,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
 
       pince: currentReport?.pince || false,
       usagePince: currentReport?.usagePince || false,
+      indexPince: currentReport?.indexPince || '',
       autresMateriels: currentReport?.autresMateriels || '',
       osophage: currentReport?.osophage || false,
       osophageDesc: currentReport?.osophageDesc || '',
@@ -426,43 +425,42 @@ const generatePDF = (rapport) => {
     nom,
     prenom,
     age,
-    sexe,
     numDoss,
-    numTel,
-    etab,
-    antecedents,
-    indications,
-    FOGDmaterials,
-    FOGDoesophage,
-    FOGDcardia,
-    FOGDEstomac,
-    FOGDBiopsie,
-    FOGDfundus,
-    FOGDantre,
-    FOGDpyloreExplored,
-    FOGDpylore,
-    FOGDdidii,
-    FOGDdidiiExplored,
-    ColoscopieMaterials,
-    ColoscopieColonGauche,
-    ColoscopieColonTansverse,
-    ColoscopieColonDroit,
-    ColoscopiePreparation,
-    ColoscopieIleon,
-    ColoscopieBasFondCaecal,
-    ColoscopieColonGaucheText,
-    ColoscopieColonTansverseText,
-    ColoscopieColonDroitText,
-    ColoscopieRectum,
-    ColoscopieIleonExplored,
-    ColoscopieBasFondCaecalExplored,
-    ColoscopieColonGaucheTextExplored,
-    ColoscopieColonTansverseTextExplored,
-    ColoscopieColonDroitTextExplored,
-    ColoscopieRectumExplored,
-    conclusion,
-    _id,
-    createdAt
+    numTel
+    // etab,
+    // antecedents,
+    // indications,
+    // FOGDmaterials,
+    // FOGDoesophage,
+    // FOGDcardia,
+    // FOGDEstomac,
+    // FOGDBiopsie,
+    // FOGDfundus,
+    // FOGDantre,
+    // FOGDpyloreExplored,
+    // FOGDpylore,
+    // FOGDdidii,
+    // FOGDdidiiExplored,
+    // ColoscopieMaterials,
+    // ColoscopieColonGauche,
+    // ColoscopieColonTansverse,
+    // ColoscopieColonDroit,
+    // ColoscopiePreparation,
+    // ColoscopieIleon,
+    // ColoscopieBasFondCaecal,
+    // ColoscopieColonGaucheText,
+    // ColoscopieColonTansverseText,
+    // ColoscopieColonDroitText,
+    // ColoscopieRectum,
+    // ColoscopieIleonExplored,
+    // ColoscopieBasFondCaecalExplored,
+    // ColoscopieColonGaucheTextExplored,
+    // ColoscopieColonTansverseTextExplored,
+    // ColoscopieColonDroitTextExplored,
+    // ColoscopieRectumExplored,
+    // conclusion,
+    // _id,
+    // createdAt
   } = rapport;
   // Create the document
   const pageWidth = 210; // 210mm
@@ -485,7 +483,7 @@ const generatePDF = (rapport) => {
   doc.text('Rapport Medical', 10, x, { align: 'left', fontStyle: 'bold' });
 
   // Add the doctor name to the top right corner
-  doc.text(etab, 190, x, { align: 'right' });
+  // doc.text(etab, 190, x, { align: 'right' });
   doc.setFontStyle('normal');
 
   // Add patient information
@@ -493,116 +491,116 @@ const generatePDF = (rapport) => {
   doc.text(`Age: ${age} ans`, 14, (x += 10), { maxWidth: 190 });
   doc.text(`Numero de telephone : ${numTel}`, 14, (x += 10), { maxWidth: 190 });
   doc.text(`Numero de dossier : ${numDoss}`, 14, (x += 10), { maxWidth: 190 });
-  doc.text(`Antecedents: ${antecedents}`, 14, (x += 10), { maxWidth: 190 });
-  doc.text(`Indications: ${indications}`, 14, (x += 10), { maxWidth: 190 });
-  doc.line(20, (x += 10), 180, x);
-  if (FOGDmaterials !== '' || FOGDoesophage !== '') {
-    doc.setFontStyle('bold');
-    doc.text("Type d'examen endoscopique: FOGD", pageWidth / 2, (x += 10), {
-      align: 'center'
-    });
-    doc.setFontStyle('normal');
+  // doc.text(`Antecedents: ${antecedents}`, 14, (x += 10), { maxWidth: 190 });
+  // doc.text(`Indications: ${indications}`, 14, (x += 10), { maxWidth: 190 });
+  // doc.line(20, (x += 10), 180, x);
+  // if (FOGDmaterials !== '' || FOGDoesophage !== '') {
+  //   doc.setFontStyle('bold');
+  //   doc.text("Type d'examen endoscopique: FOGD", pageWidth / 2, (x += 10), {
+  //     align: 'center'
+  //   });
+  //   doc.setFontStyle('normal');
 
-    // doc.text('sous anesthesie generale: lorem ipsum', 14, (x += 10)); ToDo
-    // doc.text('heure de debut: 1/6/2023 20:38', 14, (x += 10), { align: 'left' });
-    // doc.text("durée de l'examen: 60 minutes", 190, x, { align: 'right' });
+  //   // doc.text('sous anesthesie generale: lorem ipsum', 14, (x += 10)); ToDo
+  //   // doc.text('heure de debut: 1/6/2023 20:38', 14, (x += 10), { align: 'left' });
+  //   // doc.text("durée de l'examen: 60 minutes", 190, x, { align: 'right' });
 
-    const materials = FOGDmaterials.split('\n');
-    doc.text(`material: ${materials[0]}`, 14, (x += 10));
-    for (let i = 1; i < materials.length; i += 1) doc.text(`${materials[i]}`, 32, (x += 5));
+  //   const materials = FOGDmaterials.split('\n');
+  //   doc.text(`material: ${materials[0]}`, 14, (x += 10));
+  //   for (let i = 1; i < materials.length; i += 1) doc.text(`${materials[i]}`, 32, (x += 5));
 
-    doc.text(`Oesophage: ${FOGDoesophage}`, 14, (x += 10), { maxWidth: 190 });
-    doc.text(`Cardia: ${FOGDcardia}`, 14, (x += 10), { maxWidth: 190 });
-    doc.text(`Estomac: ${FOGDEstomac === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  //   doc.text(`Oesophage: ${FOGDoesophage}`, 14, (x += 10), { maxWidth: 190 });
+  //   doc.text(`Cardia: ${FOGDcardia}`, 14, (x += 10), { maxWidth: 190 });
+  //   doc.text(`Estomac: ${FOGDEstomac === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
 
-    if (FOGDEstomac === 'Exploré') {
-      doc.text(`Fundus: ${FOGDfundus}`, 20, (x += 10), { maxWidth: 190 });
-      doc.text(`Antre: ${FOGDantre}`, 20, (x += 10), { maxWidth: 190 });
-      doc.text(`Biopsie: ${FOGDBiopsie === true ? 'Oui' : 'Non'}`, 20, (x += 10));
-    }
+  //   if (FOGDEstomac === 'Exploré') {
+  //     doc.text(`Fundus: ${FOGDfundus}`, 20, (x += 10), { maxWidth: 190 });
+  //     doc.text(`Antre: ${FOGDantre}`, 20, (x += 10), { maxWidth: 190 });
+  //     doc.text(`Biopsie: ${FOGDBiopsie === true ? 'Oui' : 'Non'}`, 20, (x += 10));
+  //   }
 
-    doc.text(`Pylore: ${FOGDpyloreExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  //   doc.text(`Pylore: ${FOGDpyloreExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
 
-    if (FOGDpyloreExplored === 'Exploré') {
-      doc.text(FOGDpylore, 20, (x += 10), { maxWidth: 190 });
-    }
+  //   if (FOGDpyloreExplored === 'Exploré') {
+  //     doc.text(FOGDpylore, 20, (x += 10), { maxWidth: 190 });
+  //   }
 
-    doc.text(`DIDII: ${FOGDdidiiExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  //   doc.text(`DIDII: ${FOGDdidiiExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
 
-    if (FOGDdidiiExplored === 'Exploré') {
-      doc.text(FOGDdidii, 20, (x += 10), { maxWidth: 190 });
-    }
-  }
+  //   if (FOGDdidiiExplored === 'Exploré') {
+  //     doc.text(FOGDdidii, 20, (x += 10), { maxWidth: 190 });
+  //   }
+  // }
 
-  if (ColoscopieMaterials !== '') {
-    x = 15;
-    doc.addPage();
-    doc.line(20, (x += 10), 180, x);
-    doc.setFontStyle('bold');
-    doc.text("Type d'examen endoscopique: Coloscopie", pageWidth / 2, (x += 10), {
-      align: 'center'
-    });
-    doc.setFontStyle('normal');
+  // if (ColoscopieMaterials !== '') {
+  //   x = 15;
+  //   doc.addPage();
+  //   doc.line(20, (x += 10), 180, x);
+  //   doc.setFontStyle('bold');
+  //   doc.text("Type d'examen endoscopique: Coloscopie", pageWidth / 2, (x += 10), {
+  //     align: 'center'
+  //   });
+  //   doc.setFontStyle('normal');
 
-    // doc.text('sous anesthesie generale: lorem ipsum', 14, (x += 10)); ToDo
-    // doc.text('heure de debut: 1/6/2023 20:38', 14, (x += 10), { align: 'left' });
-    // doc.text("durée de l'examen: 60 minutes", 190, x, { align: 'right' });
+  //   // doc.text('sous anesthesie generale: lorem ipsum', 14, (x += 10)); ToDo
+  //   // doc.text('heure de debut: 1/6/2023 20:38', 14, (x += 10), { align: 'left' });
+  //   // doc.text("durée de l'examen: 60 minutes", 190, x, { align: 'right' });
 
-    const materials = ColoscopieMaterials.split(',');
-    doc.text(`material: ${materials[0]}`, 14, (x += 10));
-    for (let i = 1; i < materials.length; i += 1) doc.text(`${materials[i]}`, 32, (x += 5));
+  //   const materials = ColoscopieMaterials.split(',');
+  //   doc.text(`material: ${materials[0]}`, 14, (x += 10));
+  //   for (let i = 1; i < materials.length; i += 1) doc.text(`${materials[i]}`, 32, (x += 5));
 
-    doc.text(`BOSTON:`, 14, (x += 10));
-    doc.text(`Colon Gauche: ${ColoscopieColonGauche}`, 20, (x += 10), { maxWidth: 190 });
-    doc.text(`Colon Tansverse: ${ColoscopieColonTansverse}`, 20, (x += 10), { maxWidth: 190 });
-    doc.text(`Colon Droit: ${ColoscopieColonDroit}`, 20, (x += 10), { maxWidth: 190 });
-    doc.text(`Preparation: ${ColoscopiePreparation}`, 20, (x += 10), { maxWidth: 190 });
+  //   doc.text(`BOSTON:`, 14, (x += 10));
+  //   doc.text(`Colon Gauche: ${ColoscopieColonGauche}`, 20, (x += 10), { maxWidth: 190 });
+  //   doc.text(`Colon Tansverse: ${ColoscopieColonTansverse}`, 20, (x += 10), { maxWidth: 190 });
+  //   doc.text(`Colon Droit: ${ColoscopieColonDroit}`, 20, (x += 10), { maxWidth: 190 });
+  //   doc.text(`Preparation: ${ColoscopiePreparation}`, 20, (x += 10), { maxWidth: 190 });
 
-    doc.text(`Ileon: ${ColoscopieIleonExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
-    if (ColoscopieIleonExplored === 'Exploré') {
-      doc.text(ColoscopieIleon, 20, (x += 10), { maxWidth: 190 });
-    }
+  //   doc.text(`Ileon: ${ColoscopieIleonExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  //   if (ColoscopieIleonExplored === 'Exploré') {
+  //     doc.text(ColoscopieIleon, 20, (x += 10), { maxWidth: 190 });
+  //   }
 
-    doc.text(
-      `Bas fond caecal: ${ColoscopieBasFondCaecalExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
-      14,
-      (x += 10)
-    );
-    if (ColoscopieBasFondCaecalExplored === 'Exploré') {
-      doc.text(ColoscopieBasFondCaecal, 20, (x += 10), { maxWidth: 190 });
-    }
-  }
+  //   doc.text(
+  //     `Bas fond caecal: ${ColoscopieBasFondCaecalExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
+  //     14,
+  //     (x += 10)
+  //   );
+  //   if (ColoscopieBasFondCaecalExplored === 'Exploré') {
+  //     doc.text(ColoscopieBasFondCaecal, 20, (x += 10), { maxWidth: 190 });
+  //   }
+  // }
 
-  doc.text(`Colon droit: ${ColoscopieColonDroitTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
-  if (ColoscopieColonDroitTextExplored === 'Exploré') {
-    doc.text(ColoscopieColonDroitText, 20, (x += 10), { maxWidth: 190 });
-  }
+  // doc.text(`Colon droit: ${ColoscopieColonDroitTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  // if (ColoscopieColonDroitTextExplored === 'Exploré') {
+  //   doc.text(ColoscopieColonDroitText, 20, (x += 10), { maxWidth: 190 });
+  // }
 
-  doc.text(
-    `Colon gauche: ${ColoscopieColonGaucheTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
-    14,
-    (x += 10)
-  );
-  if (ColoscopieColonGaucheTextExplored === 'Exploré') {
-    doc.text(ColoscopieColonGaucheText, 20, (x += 10), { maxWidth: 190 });
-  }
+  // doc.text(
+  //   `Colon gauche: ${ColoscopieColonGaucheTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
+  //   14,
+  //   (x += 10)
+  // );
+  // if (ColoscopieColonGaucheTextExplored === 'Exploré') {
+  //   doc.text(ColoscopieColonGaucheText, 20, (x += 10), { maxWidth: 190 });
+  // }
 
-  doc.text(
-    `Colon Transverse: ${ColoscopieColonTansverseTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
-    14,
-    (x += 10)
-  );
-  if (ColoscopieColonTansverseTextExplored === 'Exploré') {
-    doc.text(ColoscopieColonTansverseText, 20, (x += 10), { maxWidth: 190 });
-  }
+  // doc.text(
+  //   `Colon Transverse: ${ColoscopieColonTansverseTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`,
+  //   14,
+  //   (x += 10)
+  // );
+  // if (ColoscopieColonTansverseTextExplored === 'Exploré') {
+  //   doc.text(ColoscopieColonTansverseText, 20, (x += 10), { maxWidth: 190 });
+  // }
 
-  doc.text(`Rectum: ${ColoscopieColonTansverseTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
-  if (ColoscopieColonTansverseTextExplored === 'Exploré') {
-    doc.text(ColoscopieColonTansverseText, 20, (x += 10), { maxWidth: 190 });
-  }
+  // doc.text(`Rectum: ${ColoscopieColonTansverseTextExplored === 'Exploré' ? 'Exploré' : 'Non Exploré'}`, 14, (x += 10));
+  // if (ColoscopieColonTansverseTextExplored === 'Exploré') {
+  //   doc.text(ColoscopieColonTansverseText, 20, (x += 10), { maxWidth: 190 });
+  // }
 
-  // Add a section for the conclusion
-  doc.text(`Conclusion: ${conclusion}`, 14, (x += 10), { maxWidth: 185 });
+  // // Add a section for the conclusion
+  // doc.text(`Conclusion: ${conclusion}`, 14, (x += 10), { maxWidth: 185 });
 
   // Save the PDF
   doc.save(`medical-report-${numDoss}.pdf`);

@@ -166,13 +166,6 @@ export default function UserNewForm({ isEdit, formik }) {
                 }}
                 renderInput={(params) => <TextField {...params} />}
               />
-              <ExploredItem
-                noLabel="Non"
-                yesLabel="Oui"
-                formik={formik}
-                field="consentementExamen"
-                label="Consentement éclairé signé par le patient"
-              />
               <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="jeuneExamen" label="Patient à jeune" />
               {values.jeuneExamen && (
                 <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
@@ -198,6 +191,11 @@ export default function UserNewForm({ isEdit, formik }) {
               <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="sédationExamen" label="Sous sédation" />
               {values.sédationExamen && (
                 <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="Protocole examen avant sédation"
+                    {...getFieldProps('protocoleAvantSédation')}
+                  />
                   <ExploredItem
                     noLabel="Sans anomalies"
                     yesLabel="Avec anomalies"
@@ -211,11 +209,6 @@ export default function UserNewForm({ isEdit, formik }) {
                         fullWidth
                         label="Description des anomalies"
                         {...getFieldProps('anomaliesAvantSédationDesc')}
-                      />
-                      <TextField
-                        fullWidth
-                        label="Protocole examen avant sédation"
-                        {...getFieldProps('protocoleAvantSédation')}
                       />
                     </Stack>
                   )}

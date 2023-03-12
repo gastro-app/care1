@@ -80,20 +80,8 @@ export default function PatientPersoData({ isEdit, formik }) {
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-              <TextField
-                fullWidth
-                label="Nom"
-                {...getFieldProps('nom')}
-                error={Boolean(touched.nom && errors.nom)}
-                helperText={touched.nom && errors.nom}
-              />
-              <TextField
-                fullWidth
-                label="Prénom"
-                {...getFieldProps('prenom')}
-                error={Boolean(touched.prenom && errors.prenom)}
-                helperText={touched.prenom && errors.prenom}
-              />
+              <TextField fullWidth label="Nom" {...getFieldProps('nom')} />
+              <TextField fullWidth label="Prénom" {...getFieldProps('prenom')} />
             </Stack>
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
@@ -104,10 +92,8 @@ export default function PatientPersoData({ isEdit, formik }) {
                 placeholder="Genre"
                 {...getFieldProps('genre')}
                 SelectProps={{ native: true }}
-                error={Boolean(touched.genre && errors.genre)}
-                helperText={touched.genre && errors.genre}
               >
-                <option key="0" value="choisir" />
+                <option key="0" value="choisir genre" />
                 {['Homme', 'Femme'].map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -119,35 +105,34 @@ export default function PatientPersoData({ isEdit, formik }) {
                 label="Age"
                 {...getFieldProps('age')}
                 inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                error={Boolean(touched.age && errors.age)}
-                helperText={touched.age && errors.age}
               />
             </Stack>
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
               <TextField
+                select
                 fullWidth
-                label="Adresse"
-                {...getFieldProps('adresse')}
-                error={Boolean(touched.adresse && errors.adresse)}
-                helperText={touched.adresse && errors.adresse}
-              />
-              <TextField
-                fullWidth
-                label="Numéro de téléphone"
-                {...getFieldProps('numTel')}
-                error={Boolean(touched.numTel && errors.numTel)}
-                helperText={touched.numTel && errors.numTel}
-              />
+                label="Service d'origine"
+                {...getFieldProps('serviceOrigine')}
+                SelectProps={{ native: true }}
+              >
+                <option key="0" value="choisir service" />
+                {[
+                  'Service des urgences',
+                  'Service de chirurgie générale',
+                  'Service de gastroentérologie',
+                  'Consultation externe de gastroentérologie',
+                  'Service de médecine'
+                ].map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </TextField>
+              <TextField fullWidth label="Numéro de téléphone" {...getFieldProps('numTel')} />
             </Stack>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-              <TextField
-                fullWidth
-                label="Numéro de dossier médical"
-                {...getFieldProps('numDoss')}
-                error={Boolean(touched.numDoss && errors.numDoss)}
-                helperText={touched.numDoss && errors.numDoss}
-              />
+              <TextField fullWidth label="Numéro de dossier médical" {...getFieldProps('numDoss')} />
             </Stack>
             {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
               <TextField

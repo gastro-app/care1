@@ -20,13 +20,6 @@ import {
   FormControlLabel,
   Switch
 } from '@mui/material';
-// utils
-import fakeRequest from '../../../../utils/fakeRequest';
-// routes
-import { PATH_DASHBOARD } from '../../../../routes/paths';
-import { UploadMultiFile } from '../../../../components/upload';
-
-// ----------------------------------------------------------------------
 
 ExploredItem.propTypes = {
   label: PropTypes.string,
@@ -64,7 +57,7 @@ ExploredItem.propTypes = {
 //   );
 // }
 function ExploredItem({ label, field, formik, yesLabel, noLabel }) {
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  const { setFieldValue } = formik;
   const [isChecked, setIsChecked] = useState(false);
 
   const handleChange = (event, checked) => {
@@ -72,22 +65,20 @@ function ExploredItem({ label, field, formik, yesLabel, noLabel }) {
     setFieldValue(field, checked, false);
   };
   return (
-    <>
-      <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-        <Typography variant="h6">{label}</Typography>
-        <ToggleButtonGroup
-          name={field}
-          color="primary"
-          value={isChecked}
-          exclusive
-          onChange={handleChange}
-          aria-label="Platform"
-        >
-          <ToggleButton value={false}>{noLabel}</ToggleButton>
-          <ToggleButton value>{yesLabel}</ToggleButton>
-        </ToggleButtonGroup>
-      </Stack>
-    </>
+    <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+      <Typography variant="h6">{label}</Typography>
+      <ToggleButtonGroup
+        name={field}
+        color="primary"
+        value={isChecked}
+        exclusive
+        onChange={handleChange}
+        aria-label="Platform"
+      >
+        <ToggleButton value={false}>{noLabel}</ToggleButton>
+        <ToggleButton value>{yesLabel}</ToggleButton>
+      </ToggleButtonGroup>
+    </Stack>
   );
 }
 UserNewForm.propTypes = {
@@ -96,7 +87,7 @@ UserNewForm.propTypes = {
 };
 
 export default function UserNewForm({ isEdit, formik }) {
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  const { values, getFieldProps } = formik;
 
   return (
     <Grid container spacing={3}>
@@ -179,17 +170,6 @@ export default function UserNewForm({ isEdit, formik }) {
                 label="Nécessité d’une hospitalisation pour surveillance"
               />
             </Stack>
-            {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-              <TextField
-                fullWidth
-                multiline
-                minRows={4}
-                label="nom des operateurs"
-                {...getFieldProps('nomsOps')}
-                error={Boolean(touched.nomsOps && errors.nomsOps)}
-                helperText={touched.nomsOps && errors.nomsOps}
-              />
-            </Stack> */}
           </Stack>
         </Card>
       </Grid>
