@@ -5,6 +5,7 @@ import ReactModal from 'react-modal';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
+import dayjs from 'dayjs';
 // material
 import {
   Chip,
@@ -26,18 +27,33 @@ import {
   AccordionDetails,
   Radio,
   RadioGroup,
-  Button
+  Select,
+  Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  MenuItem
 } from '@mui/material';
+
+import { useTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DateTimePicker, MobileDateTimePicker, DesktopDateTimePicker } from '@mui/lab';
-// utils
-import fakeRequest from '../../../../utils/fakeRequest';
-// routes
-import { PATH_DASHBOARD } from '../../../../routes/paths';
-import { UploadMultiFile } from '../../../../components/upload';
+import Style from './Modal.module.css';
+import BSG from '../../../../assets/indications/bsg.pdf';
+import ACG from '../../../../assets/indications/acg.pdf';
+import Fig1 from '../../../../assets/indications/fig1.pdf';
+import Fig2 from '../../../../assets/indications/fig2.pdf';
 
-//
-
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
 FixedTags.propTypes = {
   label: PropTypes.string
 };
@@ -161,7 +177,7 @@ export default function UserNewForm({ isEdit, formik }) {
     'Bilan d’une polypose-adénomateurse-familiale',
     'Mise en place d’une gastro/jéjunostomie d’alimentation'
   ];
-
+  //  const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
   const FGDOdiagnostique = [
     'Symptômes digestifs hauts persistants malgré une épreuve thérapeutique',
     'Symptômes digestifs hauts avec signes d’alarmes ou âge >45ans',
@@ -192,9 +208,15 @@ export default function UserNewForm({ isEdit, formik }) {
     'Traitement d’une métaplasie intestinale',
     'Prise en charge de complications (exp : fistule)'
   ];
-  const [indicationIndex, setIndicationIndex] = useState('0');
-  const [diagnostiqueIndex, setDiagnostiqueIndex] = useState('0');
-  const [thérapeutiqueIndex, setThérapeutiqueIndex] = useState('0');
+  const classes = ['Aspirine', 'Antiagrégant plaquettaire', 'Anticoagulant oral', 'Anti vitamine K'];
+  const [className, setClassName] = useState([]);
+  const [diagnostiqueIndex, setDiagnostiqueIndex] = useState('-1');
+  const [thérapeutiqueIndex, setThérapeutiqueIndex] = useState('-1');
+  const [modalNumber, setModalNumber] = useState(0);
+  function displayModal(number) {
+    setModalNumber(number);
+    setModalVisible(true);
+  }
   const handleChangeRadioGroupDiagnostique = (event) => {
     console.log('value', event.target.value);
     setDiagnostiqueIndex(event.target.value);
@@ -205,27 +227,60 @@ export default function UserNewForm({ isEdit, formik }) {
     setThérapeutiqueIndex(event.target.value);
     setFieldValue('thérapeutiqueIndex', event.target.value, false);
   };
+  function getStyles(name, className) {
+    return {
+      fontWeight: className.indexOf(name) === -1 ? '300' : 'bold'
+    };
+  }
 
+  const handleChangeClassName = (event) => {
+    const {
+      target: { value }
+    } = event;
+
+    console.log('val', value);
+    console.log('className', typeof value === 'string' ? value.split(',') : value);
+    const newArray = typeof value === 'string' ? value.split(',') : value;
+    if (newArray.length < 3) {
+      setClassName(
+        // On autofill we get a stringified value.
+        typeof value === 'string' ? value.split(',') : value
+      );
+    }
+  };
+
+  function getModalContent() {
+    switch (modalNumber) {
+      case 0:
+        return <Typography style={{ color: 'black' }}>Modal {modalNumber}</Typography>;
+      case 1:
+        return <Typography style={{ color: 'black' }}>Modal {modalNumber}</Typography>;
+      default:
+        break;
+    }
+  }
   return (
     <>
       <ReactModal
         isOpen={modalVisible}
         onRequestClose={() => setModalVisible(false)}
+        // className="Modal"
+        overlayClassName="Overlay"
         style={{
           content: {
-            // height: '50vh', width: '50vw',
+            height: '50vh',
+            width: '50vw',
             top: '50%',
             left: '50%',
             right: 'auto',
             bottom: 'auto',
             marginRight: '-50%',
-            transform: 'translate(-50%, -50%)'
+            transform: 'translate(-50%, 20%)'
           }
           // content: { height: '100%', width: '100%' }
         }}
       >
-        <p>hello</p>
-
+        {getModalContent()}
         <Button variant="contained" title="Close" onClick={() => setModalVisible(false)}>
           <Typography>Close</Typography>
         </Button>
@@ -240,7 +295,7 @@ export default function UserNewForm({ isEdit, formik }) {
               noLabel="Non"
               yesLabel="Oui"
             />
-            <Accordion>
+            {/* <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                 <Typography variant="h4">Antécédents</Typography>
               </AccordionSummary>
@@ -304,7 +359,7 @@ export default function UserNewForm({ isEdit, formik }) {
                 </Stack>
               </AccordionDetails>
             </Accordion>
-            <Accordion>
+         <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                 <Typography variant="h4">Habitudes</Typography>
               </AccordionSummary>
@@ -326,27 +381,12 @@ export default function UserNewForm({ isEdit, formik }) {
                     noLabel="Occasionnel"
                     yesLabel="Fréquent"
                   />
-                  {/* {values.consoAlcool && (
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      inputMode="numeric"
-                      label="Nombre de bières par jour"
-                      {...getFieldProps('nombreBiereParJour')}
-                    />
-                    <TextField
-                      fullWidth
-                      inputMode="numeric"
-                      label="Nombre de jour de consommation par semaine"
-                      {...getFieldProps('nombreDeJourConsoAlcoolParSemaine')}
-                    />
-                  </Stack>
-                )} */}
+              
                   <Typography variant="h6">Autres</Typography>
                   <TextField fullWidth label="Autres habitudes" {...getFieldProps('autresHabitudes')} />
                 </Stack>
               </AccordionDetails>
-            </Accordion>
+            </Accordion> */}
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                 <Typography variant="h4">Traitements en cours</Typography>
@@ -355,15 +395,33 @@ export default function UserNewForm({ isEdit, formik }) {
                 <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                   <ExploredItem
                     formik={formik}
-                    field="antiCoagulants"
-                    label="Anticoagulants"
+                    field="antiThrombotique"
+                    label="Traitement anti thrombotique"
                     yesLabel="Oui"
                     noLabel="Non"
                   />
-                  {values.antiCoagulants && (
+                  {values.antiThrombotique && (
                     <>
-                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <TextField fullWidth label="Classe" {...getFieldProps('antiCoagulantsClasse')} />
+                      <Stack direction={{ xs: 'column', sm: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                        {/* <TextField fullWidth label="Classe" {...getFieldProps('antiCoagulantsClasse')} /> */}
+                        <FormControl sx={{ width: '100%' }}>
+                          <InputLabel id="demo-multiple-name-label">Classe</InputLabel>
+                          <Select
+                            labelId="demo-multiple-name-label"
+                            id="demo-multiple-name"
+                            multiple
+                            value={className}
+                            onChange={handleChangeClassName}
+                            input={<OutlinedInput label="Name" />}
+                            MenuProps={MenuProps}
+                          >
+                            {classes.map((name) => (
+                              <MenuItem key={name} value={name} style={getStyles(name, className)}>
+                                {name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                         <TextField fullWidth label="Dose" {...getFieldProps('antiCoagulantsDose')} />
                         <TextField fullWidth label="Nombre de prise" {...getFieldProps('antiCoagulantsNb')} />
                       </Stack>
@@ -385,10 +443,50 @@ export default function UserNewForm({ isEdit, formik }) {
                       </Stack>
                     </>
                   )}
+                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Button
+                      sx={{ width: '50%', textAlign: 'center' }}
+                      variant="contained"
+                      href={BSG}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      BSG_ESGE : Antiplatelets and anticoagulation update 2021
+                    </Button>
 
-                  <Button sx={{ width: '30%' }} variant="contained" onClick={() => setModalVisible(true)}>
-                    BSG_ESGE : Antiplatelets and anticoagulation update 2021
-                  </Button>
+                    <Button
+                      sx={{ width: '50%', textAlign: 'center' }}
+                      variant="contained"
+                      href={ACG}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      ACG_CAG : Management of anticoagulant and antiplatelets in gastrointestinal bleeding and
+                      periendoscopic period
+                    </Button>
+                  </Stack>
+                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Button
+                      sx={{ width: '50%', textAlign: 'center' }}
+                      variant="contained"
+                      href={Fig1}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Fig 1 : Guidelines for the management of patients on P2Y12 receptor antagonist antiplatelet agents
+                      undergoing endoscopic procedures
+                    </Button>
+                    <Button
+                      sx={{ width: '50%', textAlign: 'center' }}
+                      variant="contained"
+                      href={Fig2}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Fig 2 : Guidelines for the management of patients on warfarin or Direct Oral Anticoagulants (DOAC)
+                      undergoing endoscopic procedures
+                    </Button>
+                  </Stack>
                   <Typography variant="h6">Autres</Typography>
                   <TextField fullWidth label="Autres traitements" {...getFieldProps('autresTraitements')} />
                 </Stack>
@@ -411,21 +509,21 @@ export default function UserNewForm({ isEdit, formik }) {
               <AccordionDetails>
                 <Stack spacing={3}>
                   <ExploredItem
-                    noLabel="FOGD thérapeutique"
-                    yesLabel="FOGD diagnostique"
+                    noLabel="FOGD diagnostique"
+                    yesLabel="FOGD thérapeutique"
                     formik={formik}
                     field="typeIndication"
                     label="Catégorie d'indications"
                   />
                   {values.typeIndication ? (
-                    <RadioGroup value={diagnostiqueIndex} onChange={handleChangeRadioGroupDiagnostique}>
-                      {FGDOdiagnostique.map((item, index) => (
+                    <RadioGroup value={thérapeutiqueIndex} onChange={handleChangeRadioGroupThérapeutique}>
+                      {FGDOthérapeutique.map((item, index) => (
                         <FormControlLabel key={index} value={index} control={<Radio />} label={item} />
                       ))}
                     </RadioGroup>
                   ) : (
-                    <RadioGroup value={thérapeutiqueIndex} onChange={handleChangeRadioGroupThérapeutique}>
-                      {FGDOthérapeutique.map((item, index) => (
+                    <RadioGroup value={diagnostiqueIndex} onChange={handleChangeRadioGroupDiagnostique}>
+                      {FGDOdiagnostique.map((item, index) => (
                         <FormControlLabel key={index} value={index} control={<Radio />} label={item} />
                       ))}
                     </RadioGroup>
@@ -433,18 +531,20 @@ export default function UserNewForm({ isEdit, formik }) {
                 </Stack>
                 <Typography variant="h5">
                   Indication choisie:{' '}
-                  {values.typeIndication ? FGDOdiagnostique[diagnostiqueIndex] : FGDOthérapeutique[thérapeutiqueIndex]}
+                  {values.typeIndication ? FGDOthérapeutique[thérapeutiqueIndex] : FGDOdiagnostique[diagnostiqueIndex]}
                 </Typography>
-                {!values.typeIndication && thérapeutiqueIndex === '0' && (
+                {values.typeIndication && thérapeutiqueIndex === '0' && (
                   <Stack spacing={3} style={{ marginTop: 20 }}>
-                    <DateTimePicker
+                    {/* <MobileDateTimePicker
                       label="Date et heure de survenue"
-                      value={values.dateHémoragieDigestive}
-                      onChange={(event, newAlignment) => {
-                        formik.setFieldValue('dateHémoragieDigestive', newAlignment);
+                      value={date}
+                      onChange={(newDate) => {
+                        console.log('new date', newDate);
+                        setDate(newDate);
+                        formik.setFieldValue('dateHD', newDate);
                       }}
                       renderInput={(params) => <TextField {...params} />}
-                    />
+                    /> */}
                     <Typography variant="h5">Prise en charge</Typography>
                     <Stack spacing={{ xs: 3, sm: 2 }} style={{}}>
                       <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="ippHD" label="IPP" />
@@ -458,7 +558,7 @@ export default function UserNewForm({ isEdit, formik }) {
                         yesLabel="Oui"
                         formik={formik}
                         field="suspicionCirrhoseHD"
-                        label="Suspicion de cirrhose"
+                        label="Suspicion d’hémorragie par hypertension portale "
                       />
                       {values.suspicionCirrhoseHD && (
                         <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
@@ -493,7 +593,7 @@ export default function UserNewForm({ isEdit, formik }) {
                           )}
                         </Stack>
                       )}
-                      <ExploredItem
+                      {/* <ExploredItem
                         noLabel="Non"
                         yesLabel="Oui"
                         formik={formik}
@@ -508,11 +608,11 @@ export default function UserNewForm({ isEdit, formik }) {
                             {...getFieldProps('cgrHD')}
                           />
                         </Stack>
-                      )}
+                      )} */}
                     </Stack>
                   </Stack>
                 )}
-                {!values.typeIndication && thérapeutiqueIndex === '6' && (
+                {values.typeIndication && thérapeutiqueIndex === '6' && (
                   <Stack spacing={{ xs: 3, sm: 2 }}>
                     <ExploredItem
                       noLabel="Non"
@@ -535,18 +635,6 @@ export default function UserNewForm({ isEdit, formik }) {
                 <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }} style={{ marginTop: 20 }}>
                   <Typography variant="h6">Autres indications</Typography>
                   <TextField fullWidth label="Autres indications" {...getFieldProps('autresIndications')} />
-                  <ExploredItem
-                    noLabel="Non"
-                    yesLabel="Oui"
-                    formik={formik}
-                    field="prémédicationIndication"
-                    label="Pré médication"
-                  />
-                  {values.prémédicationIndication && (
-                    <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                      <TextField fullWidth label="Pré médication" {...getFieldProps('prémédicationIndicationDesc')} />
-                    </Stack>
-                  )}
                 </Stack>
               </AccordionDetails>
             </Accordion>

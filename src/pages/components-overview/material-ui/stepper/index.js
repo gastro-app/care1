@@ -24,7 +24,7 @@ export default function StepperComponent() {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title="General: Banking | Minimal-UI">
+    <Page title="CREEIS">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Stack spacing={5}>
           <Block title="Rapport">
