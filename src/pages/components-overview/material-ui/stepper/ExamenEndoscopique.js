@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import ReactModal from 'react-modal';
@@ -22,12 +22,14 @@ import {
   FormControlLabel,
   Switch,
   DatePicker,
-  Button
+  Button,
+  Autocomplete
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { DateTimePicker, MobileDateTimePicker, DesktopDateTimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
-import Style from './Modal.module.css';
+// import Style from './Modal.module.css';
 import Criterion from '../../../../assets/examen/criterion.png';
 import Forrest from '../../../../assets/examen/forrest.png';
 import Gastrooeso from '../../../../assets/examen/gastro-oeso.jpg';
@@ -38,6 +40,8 @@ import Reflux from '../../../../assets/examen/reflux.jpg';
 import VO from '../../../../assets/examen/vo.png';
 import Zargar from '../../../../assets/examen/zargar.png';
 import Cancel from '../../../../assets/examen/cancel.png';
+import TaskList from './TaskList';
+
 // utils
 import fakeRequest from '../../../../utils/fakeRequest';
 // routes
@@ -119,7 +123,24 @@ UserNewForm.propTypes = {
   isEdit: PropTypes.bool,
   formik: PropTypes.object
 };
-
+const optionsFundus = [
+  { id: '1', label: 'Take out the trash' },
+  {
+    id: '2',
+    label: 'Take a shower Right now/Before sleep/In one hour',
+    hasDropdown: true,
+    dropdownValues: ['Right now', 'Before sleep', 'In one hour'],
+    dropdownLabel: 'Time'
+  },
+  {
+    id: '3',
+    label: 'Clean the rooms',
+    hasDropdown: true,
+    dropdownValues: ['Bedroom', 'Bedroom and bathroom', 'Bedroom and bathroom and kitchen'],
+    dropdownLabel: 'Rooms'
+  },
+  { id: '4', label: 'Feed the cat', hasTextField: true, textFieldLabel: 'Time' }
+];
 export default function UserNewForm({ isEdit, formik }) {
   // const handleChange = (event, newAlignment) => {
   //   formik.setFieldValue('FOGDEstomac', newAlignment);
@@ -220,6 +241,49 @@ export default function UserNewForm({ isEdit, formik }) {
     }
   }
   const isModalWide = modalNumber === 1 || modalNumber === 2 || modalNumber === 4;
+
+  const [tasks, setTasks] = useState([]);
+  const onDeleteTask = (index) => {
+    const newTasks = Array.from(tasks);
+    newTasks.splice(index, 1);
+    setTasks(newTasks);
+  };
+  function onDragEnd(result) {
+    if (!result.destination) {
+      return;
+    }
+
+    const newTasks = Array.from(tasks);
+    const [removed] = newTasks.splice(result.source.index, 1);
+    newTasks.splice(result.destination.index, 0, removed);
+
+    setTasks(newTasks);
+  }
+  const [text, setText] = useState('');
+  const autocRef = useRef();
+  function handleSubmitForm() {
+    console.log('submit', text);
+    if (text.trim().length === 0 || tasks.find((t) => t.content === text)) {
+      return;
+    }
+    const task = optionsFundus.find((e) => e.label === text);
+
+    // props.onSubmit(text);
+    const newTasks = Array.from(tasks);
+    if (task) {
+      newTasks.push({ id: task.id.toString(), content: task.label, ...task });
+    } else {
+      newTasks.push({ id: Math.random().toFixed(3).toString(), content: text });
+    }
+    setTasks(newTasks);
+    setText('');
+  }
+  const onSaveTask = (index, content) => {
+    const newTasks = Array.from(tasks);
+    newTasks[index].content = content;
+    setTasks(newTasks);
+  };
+  console.log('tasks', tasks);
   return (
     <>
       <ReactModal
@@ -507,6 +571,45 @@ export default function UserNewForm({ isEdit, formik }) {
                     label="Fundus"
                   />
                   {values.fundus && <TextField fullWidth label="Exploration Fundus" {...getFieldProps('fundusDesc')} />}
+                  <Typography variant="h6">Conclusion Fundus</Typography>
+                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Autocomplete
+                      ref={autocRef}
+                      // disablePortal
+                      // freeSolo
+                      id="combo-box-demo"
+                      options={optionsFundus}
+                      sx={{ width: '60%' }}
+                      inputValue={text}
+                      value={text}
+                      onChange={(e) => {
+                        if (!e.target.innerHTML.includes('<path')) {
+                          console.log('autoc', e.target.innerHTML);
+                          setText(e.target.innerHTML);
+                        } else {
+                          setText('');
+                        }
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Conclusion"
+                          value={text}
+                          onChange={(e) => {
+                            console.log('textField', e.target.value);
+                            setText(e.target.value);
+                          }}
+                        />
+                      )}
+                    />
+                    <Button variant="contained" onClick={(e) => handleSubmitForm(e)}>
+                      <Typography>Ajouter</Typography>
+                    </Button>
+                  </Stack>
+                  {/* TODO CONCULSION FUNDUS */}
+                  <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
+                    <TaskList tasks={tasks} onDeleteTask={onDeleteTask} onSaveTask={onSaveTask} />
+                  </DragDropContext>
                   <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="antre" label="Antre" />
                   {values.antre && <TextField fullWidth label="Exploration Antre" {...getFieldProps('antreDesc')} />}
                   <ExploredItem
