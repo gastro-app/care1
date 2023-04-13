@@ -22,7 +22,12 @@ import {
   FormControlLabel,
   Switch,
   DatePicker,
+  Select,
   Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  MenuItem,
   Autocomplete
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -40,13 +45,18 @@ import Reflux from '../../../../assets/examen/reflux.jpg';
 import VO from '../../../../assets/examen/vo.png';
 import Zargar from '../../../../assets/examen/zargar.png';
 import Cancel from '../../../../assets/examen/cancel.png';
-import TaskList from './TaskList';
+import A from '../../../../assets/examen/A.png';
+import B from '../../../../assets/examen/B.png';
+import C from '../../../../assets/examen/C.png';
+import D from '../../../../assets/examen/D.png';
 
 // utils
 import fakeRequest from '../../../../utils/fakeRequest';
 // routes
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 import { UploadMultiFile } from '../../../../components/upload';
+import ConclusionGenerator from './ConclusionGenerator';
+import MultiSelect from './MultiSelect';
 
 //
 // ----------------------------------------------------------------------
@@ -123,44 +133,197 @@ UserNewForm.propTypes = {
   isEdit: PropTypes.bool,
   formik: PropTypes.object
 };
-const optionsFundus = [
-  { id: '1', label: 'Take out the trash' },
+const optionsOesophage = [
+  { id: '1', label: 'Aspect d’acanthose glycogénique de l’œsophage' },
   {
     id: '2',
-    label: 'Take a shower Right now/Before sleep/In one hour',
+    label: 'Oesophagite caustique grade (0/I/IIA/IIB/IIIA/IIIB/IV) selon la classification de Zargar ',
     hasDropdown: true,
-    dropdownValues: ['Right now', 'Before sleep', 'In one hour'],
-    dropdownLabel: 'Time'
+    dropdownValues: ['0', 'I', 'IIA', 'IIB', 'IIIA', 'IIIB', 'IV'],
+    dropdownLabel: 'Grade'
   },
   {
     id: '3',
-    label: 'Clean the rooms',
+    label: 'Oesophagite grade (A/B/C/D) selon la classification de Los Angeles',
     hasDropdown: true,
-    dropdownValues: ['Bedroom', 'Bedroom and bathroom', 'Bedroom and bathroom and kitchen'],
-    dropdownLabel: 'Rooms'
+    dropdownValues: ['A', 'B', 'C', 'D'],
+    dropdownLabel: 'Grade'
   },
-  { id: '4', label: 'Feed the cat', hasTextField: true, textFieldLabel: 'Time' }
+  {
+    id: '4',
+    label: 'Varices oesophagiennes grade (I/II/III) [sans signes rouges/avec signes rouges]',
+    hasDropdown: true,
+    dropdownValues: ['I', 'II', 'III'],
+    dropdownLabel: 'Grade',
+    hasChoice: true,
+    yesLabel: 'sans signes rouges',
+    noLabel: 'avec signes rouges',
+    isCustom: true,
+    customNb: 1
+  },
+  {
+    id: '5',
+    label:
+      'EBO classé C(chiffre)M(chiffre) selon la classification de Prague, Biopsies oesophagiennes selon le protocole de Seattle [oui/non]',
+    hasTextField: true,
+    textFieldLabel: 'C',
+    textField: '',
+    hasTextField2: true,
+    textFieldLabel2: 'M',
+    textField2: '',
+    hasChoice: true,
+    yesLabel: 'Oui',
+    noLabel: 'Non',
+    isCustom: true,
+    customNb: 2
+  },
+  {
+    id: '6',
+    label: 'Processus ulcéro-bourgeonnant de l’œsophage (supérieur, moyen, inférieur) ',
+    hasDropdown: true,
+    dropdownValues: ['supérieur', 'moyen', 'inférieur'],
+    dropdownLabel: 'Grade'
+  }
 ];
-export default function UserNewForm({ isEdit, formik }) {
-  // const handleChange = (event, newAlignment) => {
-  //   formik.setFieldValue('FOGDEstomac', newAlignment);
-  // };
+const optionsCardia = [
+  {
+    id: '1',
+    label: 'Hernie hiatale par (glissement/roulement)',
+    hasDropdown: true,
+    dropdownValues: ['glissement', 'roulement'],
+    dropdownLabel: 'Type'
+  }
+];
+const optionsFundus = [
+  { id: '1', label: 'Aspect de métaplasie intestinale gastrique' },
+  {
+    id: '2',
+    label: 'Gastropathie fundique (en mosaïque/congestive/nodulaire/ulcérée/Erosive/varioloforme/atrophique)',
+    hasDropdown: true,
+    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'Erosive', 'varioloforme', 'atrophique'],
+    dropdownLabel: 'Description'
+  },
+  {
+    id: '3',
+    label: 'Ulcère fundique'
+  },
+  {
+    id: '4',
+    label: 'Aspect de gros plis fundique'
+  },
+  {
+    id: '5',
+    label: 'Aspect de compression extrinsèque'
+  },
+  {
+    id: '6',
+    label: 'Formation d’allure sous-muqueuse fundique'
+  },
+  {
+    id: '7',
+    label: 'Polype fundique classé (text) selon la classification de Paris ',
+    hasTextField: true,
+    textFieldLabel: 'Classe'
+  },
+  {
+    id: '8',
+    label: 'Processus ulcéro-bourgeonnant fundique'
+  }
+];
+const optionsPylore = [
+  { id: '1', label: 'Aspect de métaplasie intestinale gastrique, Biopsies' },
+  {
+    id: '2',
+    label: 'Gastropathie antrale (en mosaïque,congestive,nodulaire,ulcérée,érosive,varioloforme,atrophique)',
+    hasDropdown: true,
+    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'Erosive', 'varioloforme', 'atrophique'],
+    dropdownLabel: 'Description'
+  },
+  {
+    id: '3',
+    label: 'Ulcère antral'
+  },
+  {
+    id: '4',
+    label: 'Aspect de gros (plis antraux/pré pyloriques)',
 
-  const [alignment, setAlignment] = useState('explorer');
+    hasDropdown: true,
+    dropdownValues: ['plis antraux', 'pré pyloriques'],
+    dropdownLabel: 'Description'
+  },
+  {
+    id: '5',
+    label: 'Aspect de compression extrinsèque'
+  },
+  {
+    id: '6',
+    label: 'Formation d’allure sous-muqueuse fundique'
+  },
+  {
+    id: '7',
+    label: 'Polype fundique classé (text) selon la classification de Paris ',
+    hasTextField: true,
+    textFieldLabel: 'Classe'
+  },
+  {
+    id: '8',
+    label: 'Processus ulcéro-bourgeonnant antral'
+  }
+];
+const optionsBulbe = [
+  { id: '1', label: 'Ulcère évolutif du bulbe' },
+  {
+    id: '2',
+    label: 'Bulbe déformé cicatriciel'
+  },
+  {
+    id: '3',
+    label: 'Bulbe atrophique'
+  }
+];
+const optionsDuodénum = [
+  {
+    id: '1',
+    label: 'Aspect en (mosaïque/nodulaire/blanchâtre) de la muqueuse duodénale',
+    hasDropdown: true,
+    dropdownValues: ['mosaïque', 'nodulaire', 'blanchâtre'],
+    dropdownLabel: 'Description'
+  },
+  {
+    id: '2',
+    label: 'Aspect d’atrophie duodénale'
+  },
+  {
+    id: '3',
+    label: 'Aspect déchiqueté et atrophique des plis duodénaux'
+  },
+  {
+    id: '4',
+    label: 'Grosse papille'
+  },
+  {
+    id: '5',
+    label: 'Processus ulcéro-bourgeonnant duodénal '
+  }
+];
+const scores = [
+  { label: 'A: Absence de mucus', value: 'A' },
+  { label: 'B: Faible quantité de mucus', value: 'B' },
+  { label: 'C: Mucus qui nécessite moins de 50 ml pou d’eau pour être lavé', value: 'C' },
+  { label: 'D: Mucus qui nécessite plus de 50 ml d’eau pour être lavé', value: 'D' }
+];
+
+export default function UserNewForm({ isEdit, formik }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalNumber, setModalNumber] = useState(0);
   function displayModal(number) {
     setModalNumber(number);
     setModalVisible(true);
   }
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const [preview, setPreview] = useState(false);
   const [files, setFiles] = useState([]);
-  const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
+  // const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
+  const [date, setDate] = React.useState(new Date());
   const handleDropMultiFile = useCallback(
     (acceptedFiles) => {
       setFiles(
@@ -236,6 +399,36 @@ export default function UserNewForm({ isEdit, formik }) {
             <Image src={Gastrooeso} width="40vw" fit="contain" alt="Gastrooeso" />
           </Stack>
         );
+      case 5:
+        return (
+          <Stack
+            direction={{ xs: 'column' }}
+            sx={modalViewStyle}
+            // spacing={{ xs: 3, sm: 2 }}
+          >
+            <Image src={Paris} width="40vw" fit="contain" alt="Paris" />
+          </Stack>
+        );
+      case 6:
+        return (
+          <Stack
+            direction={{ xs: 'column' }}
+            sx={modalViewStyle}
+            // spacing={{ xs: 3, sm: 2 }}
+          >
+            <Image src={Gov} width="40vw" fit="contain" alt="Gov" />
+          </Stack>
+        );
+      case 7:
+        return (
+          <Stack
+            direction={{ xs: 'column' }}
+            sx={modalViewStyle}
+            // spacing={{ xs: 3, sm: 2 }}
+          >
+            <Image src={Forrest} width="40vw" fit="contain" alt="forrest" />
+          </Stack>
+        );
       default:
         break;
     }
@@ -284,6 +477,16 @@ export default function UserNewForm({ isEdit, formik }) {
     setTasks(newTasks);
   };
   console.log('tasks', tasks);
+  const autresMateriels = [
+    'Clips d’hémostase',
+    'Kit de ligature élastique des varices oesophagiennes',
+    'Aiguille d’injection',
+    'Pince froide',
+    'Pince chaude',
+    'Anse à polypectomie à panier de type Dormia',
+    'Autres'
+  ];
+
   return (
     <>
       <ReactModal
@@ -440,7 +643,7 @@ export default function UserNewForm({ isEdit, formik }) {
                   fullWidth
                   {...getFieldProps('endoscope')}
                   SelectProps={{ native: true }}
-                  label="Choisir type de l'endoscope"
+                  label="L'endoscope"
                 >
                   <option key="0" value="" />
                   {[
@@ -454,11 +657,11 @@ export default function UserNewForm({ isEdit, formik }) {
                     </option>
                   ))}
                 </TextField>
-                <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="pince" label="Pince" />
+                {/* <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="pince" label="Pince" />
                 {values.pince && (
                   <ExploredItem noLabel="Unique" yesLabel="Multiple" formik={formik} field="usagePince" label="Usage" />
-                )}
-                <TextField
+                )} */}
+                {/* <TextField
                   select
                   fullWidth
                   label="Autres Materiels"
@@ -466,20 +669,19 @@ export default function UserNewForm({ isEdit, formik }) {
                   {...getFieldProps('autresMateriels')}
                 >
                   <option key="0" value="" />
-                  {[
-                    'Clips d’hémostase',
-                    'Kit de ligature élastique des varices oesophagiennes',
-                    'Aiguille d’injection',
-                    'Pince froide',
-                    'Pince chaude',
-                    'Anse à polypectomie à panier de type Dormia',
-                    'Autres'
-                  ].map((option) => (
+                  {.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>
                   ))}
-                </TextField>
+                </TextField> */}
+
+                <MultiSelect
+                  label="Autre Materiels"
+                  options={autresMateriels}
+                  formikValue={autresMateriels}
+                  setFieldValue={setFieldValue}
+                />
               </Stack>
             </AccordionDetails>
           </Accordion>
@@ -534,35 +736,58 @@ export default function UserNewForm({ isEdit, formik }) {
                         <Typography>Classification de Siewert</Typography>
                       </Button>
                     </Stack>
+                    <Typography variant="h6">Conclusion Œsophage</Typography>
+                    <ConclusionGenerator
+                      formikValue="osoConclusion"
+                      options={optionsOesophage}
+                      setFieldValue={setFieldValue}
+                    />
                   </Stack>
                 )}
-
                 <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="cardia" label="Cardia" />
-                {values.cardia && <TextField fullWidth label="Exploration Cardia" {...getFieldProps('cardiaDesc')} />}
-
+                {values.cardia && (
+                  <>
+                    <TextField fullWidth label="Exploration Cardia" {...getFieldProps('cardiaDesc')} />
+                    <Typography variant="h6">Conclusion Cardia</Typography>
+                    <ConclusionGenerator
+                      formikValue="cardiaConclusion"
+                      options={optionsCardia}
+                      setFieldValue={setFieldValue}
+                    />
+                  </>
+                )}
                 <Typography variant="h4">Estomac</Typography>
                 <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    select
-                    fullWidth
-                    label="Lac muqueux "
-                    SelectProps={{ native: true }}
-                    {...getFieldProps('lacMuqueux')}
-                  >
-                    <option key="0" value="" />
-                    {[
-                      'Claire',
-                      'Sale avec présence de débris alimentaire',
-                      'Mousseux',
-                      'Bilieux',
-                      'Normo-abondant',
-                      'Abondant'
-                    ].map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </TextField>
+                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Lac muqueux "
+                      SelectProps={{ native: true }}
+                      {...getFieldProps('lacMuqueux')}
+                    >
+                      <option key="0" value="" />
+                      {['Claire', 'Sale avec présence de débris alimentaire', 'Mousseux', 'Bilieux'].map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </TextField>
+                    <TextField
+                      select
+                      fullWidth
+                      label=""
+                      SelectProps={{ native: true }}
+                      {...getFieldProps('lacMuqueuxDesc')}
+                    >
+                      <option key="0" value="" />
+                      {['Normo-abondant', 'Abondant'].map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Stack>
                   <ExploredItem
                     noLabel="Non exploré"
                     yesLabel="Exploré"
@@ -570,46 +795,17 @@ export default function UserNewForm({ isEdit, formik }) {
                     field="fundus"
                     label="Fundus"
                   />
-                  {values.fundus && <TextField fullWidth label="Exploration Fundus" {...getFieldProps('fundusDesc')} />}
-                  <Typography variant="h6">Conclusion Fundus</Typography>
-                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <Autocomplete
-                      ref={autocRef}
-                      // disablePortal
-                      // freeSolo
-                      id="combo-box-demo"
-                      options={optionsFundus}
-                      sx={{ width: '60%' }}
-                      inputValue={text}
-                      value={text}
-                      onChange={(e) => {
-                        if (!e.target.innerHTML.includes('<path')) {
-                          console.log('autoc', e.target.innerHTML);
-                          setText(e.target.innerHTML);
-                        } else {
-                          setText('');
-                        }
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Conclusion"
-                          value={text}
-                          onChange={(e) => {
-                            console.log('textField', e.target.value);
-                            setText(e.target.value);
-                          }}
-                        />
-                      )}
-                    />
-                    <Button variant="contained" onClick={(e) => handleSubmitForm(e)}>
-                      <Typography>Ajouter</Typography>
-                    </Button>
-                  </Stack>
-                  {/* TODO CONCULSION FUNDUS */}
-                  <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
-                    <TaskList tasks={tasks} onDeleteTask={onDeleteTask} onSaveTask={onSaveTask} />
-                  </DragDropContext>
+                  {values.fundus && (
+                    <>
+                      <TextField fullWidth label="Exploration Fundus" {...getFieldProps('fundusDesc')} />
+                      <Typography variant="h6">Conclusion Fundus</Typography>
+                      <ConclusionGenerator
+                        formikValue="fundusConclusion"
+                        options={optionsFundus}
+                        setFieldValue={setFieldValue}
+                      />
+                    </>
+                  )}
                   <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="antre" label="Antre" />
                   {values.antre && <TextField fullWidth label="Exploration Antre" {...getFieldProps('antreDesc')} />}
                   <ExploredItem
@@ -619,15 +815,38 @@ export default function UserNewForm({ isEdit, formik }) {
                     field="pylore"
                     label="Pylore"
                   />
-                  {values.pylore && <TextField fullWidth label="Exploration Pylore" {...getFieldProps('pyloreDesc')} />}
-                  <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="estoBiopsies" label="Biopsies" />
+                  {values.pylore && (
+                    <>
+                      <TextField fullWidth label="Exploration Pylore" {...getFieldProps('pyloreDesc')} />
+                      <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                        <Button variant="contained" onClick={() => displayModal(0)}>
+                          <Typography>Classification de Baveno pour les varices gastriques</Typography>
+                        </Button>
+                        <Button variant="contained" onClick={() => displayModal(5)}>
+                          <Typography>Classification de Paris</Typography>
+                        </Button>
+                      </Stack>
+                      <Stack direction={{ xs: 'row', width: '100%' }} spacing={{ xs: 3, sm: 2 }}>
+                        <Button variant="contained" onClick={() => displayModal(7)}>
+                          <Typography>Classification de Forrest</Typography>
+                        </Button>
+                      </Stack>
+                      <Typography variant="h6">Conclusion Pylore</Typography>
+                      <ConclusionGenerator
+                        formikValue="pyloreConclusion"
+                        options={optionsPylore}
+                        setFieldValue={setFieldValue}
+                      />
+                    </>
+                  )}
+                  {/* <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="estoBiopsies" label="Biopsies" />
                   {values.estoBiopsies && (
                     <TextField
                       fullWidth
                       label="Biopsies estomac: nombre et localisation, nombre de tubes"
                       {...getFieldProps('estoBiopsiesDesc')}
                     />
-                  )}
+                  )} */}
                   <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="bulbe" label="Bulbe" />
                   {values.bulbe && (
                     <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
@@ -642,6 +861,12 @@ export default function UserNewForm({ isEdit, formik }) {
                       {values.bulbeBiopsies && (
                         <TextField fullWidth label="Biopsies bulbe: nombre " {...getFieldProps('bulbeBiopsiesDesc')} />
                       )}
+                      <Typography variant="h6">Conclusion Bulbe</Typography>
+                      <ConclusionGenerator
+                        formikValue="bulbeConclusion"
+                        options={optionsBulbe}
+                        setFieldValue={setFieldValue}
+                      />
                     </Stack>
                   )}
                   <ExploredItem
@@ -668,8 +893,87 @@ export default function UserNewForm({ isEdit, formik }) {
                           {...getFieldProps('duodénumBiopsiesDesc')}
                         />
                       )}
+                      <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                        <Button variant="contained" onClick={() => displayModal(0)}>
+                          <Typography>Classification de Spigelman</Typography>
+                        </Button>
+                      </Stack>
+                      <Typography variant="h6">Conclusion duodénum</Typography>
+                      <ConclusionGenerator
+                        formikValue="duodénumConclusion"
+                        options={optionsDuodénum}
+                        setFieldValue={setFieldValue}
+                      />
                     </Stack>
                   )}
+                  <Typography variant="h4">Qualité de la visualisation de la muqueuse :</Typography>
+                  <Typography variant="h6">Score totale de visibilité muqueuse : </Typography>
+                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Fundus"
+                      SelectProps={{ native: true }}
+                      {...getFieldProps('qvFundus')}
+                    >
+                      <option key="0" value="" />
+                      {scores.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </TextField>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Partie supérieure de la grosse tubérosité "
+                      SelectProps={{ native: true }}
+                      {...getFieldProps('qvPartieSup')}
+                    >
+                      <option key="0" value="" />
+                      {scores.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Stack>
+                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Partie inférieure de la grosse tubérosité"
+                      SelectProps={{ native: true }}
+                      {...getFieldProps('qvPartieInf')}
+                    >
+                      <option key="0" value="" />
+                      {scores.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </TextField>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Antre"
+                      SelectProps={{ native: true }}
+                      {...getFieldProps('qvAntre')}
+                    >
+                      <option key="0" value="" />
+                      {scores.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Stack>
+                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <Image src={A} height="20vh" fit="contain" alt="A" />
+                    <Image src={B} height="20vh" fit="contain" alt="B" />
+                    <Image src={C} height="20vh" fit="contain" alt="C" />
+                    <Image src={D} height="20vh" fit="contain" alt="D" />
+                  </Stack>
                   <ExploredItem
                     noLabel="Non"
                     yesLabel="Oui"
@@ -678,16 +982,10 @@ export default function UserNewForm({ isEdit, formik }) {
                     label="Y a-t-il des zones non ou mal explorées?"
                   />
                   {values.zoneMalExploré && (
-                    <TextField
-                      select
-                      fullWidth
-                      {...getFieldProps('indexZoneMalExploré')}
-                      SelectProps={{ native: true }}
-                    >
-                      <option key="0" value="">
-                        Choisir zone mal exploré
-                      </option>
-                      {[
+                    <MultiSelect
+                      label="Choisir zone mal exploré"
+                      formikValue="indexZoneMalExploré"
+                      options={[
                         'Œsophage supérieur',
                         'Œsophage inférieur',
                         'Ligne Z et sommet des plis gastriques',
@@ -696,12 +994,9 @@ export default function UserNewForm({ isEdit, formik }) {
                         'L’angle de la petite  courbure en rétrovision',
                         'Bulbe',
                         'DI, DII'
-                      ].map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </TextField>
+                      ]}
+                      setFieldValue={setFieldValue}
+                    />
                   )}
                 </Stack>
                 <Box sx={{ flexGrow: 1 }}>

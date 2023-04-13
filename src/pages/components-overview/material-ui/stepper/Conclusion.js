@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
@@ -18,8 +18,15 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   FormControlLabel,
-  Switch
+  Switch,
+  Select,
+  Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  MenuItem
 } from '@mui/material';
+import MultiSelect from './MultiSelect';
 
 ExploredItem.propTypes = {
   label: PropTypes.string,
@@ -56,6 +63,7 @@ ExploredItem.propTypes = {
 //     </>
 //   );
 // }
+
 function ExploredItem({ label, field, formik, yesLabel, noLabel }) {
   const { setFieldValue } = formik;
   const [isChecked, setIsChecked] = useState(false);
@@ -87,8 +95,50 @@ UserNewForm.propTypes = {
 };
 
 export default function UserNewForm({ isEdit, formik }) {
-  const { values, getFieldProps } = formik;
+  const { values, getFieldProps, setFieldValue } = formik;
+  const [conclusionText, setConclusionText] = useState('');
 
+  const optionsSeniors = ['Dr Enaifer', 'Dr Bougassas', 'Dr Ben Nejma', 'Dr Bouchabou', 'Dr Hemdani', 'Dr Nakhli'];
+  const optionsResidents = [
+    'Rste Medhioub',
+    'Rste Smaoui',
+    'Rste Kefi',
+    'Rste Ben Safta',
+    'Rste Ghanouchi',
+    'Rste Mbarek'
+  ];
+  const optionsTechniciens = [
+    'Assili Nader',
+    'Amri Wajdi',
+    'Sellami Aroua',
+    'Jarroudi Hassen',
+    'Abdelhafidh Hermi',
+    'Nouri Meriem'
+  ];
+  useEffect(() => {
+    console.log(values.osoConclusion);
+    console.log(values.osoConclusion);
+    const array = [
+      // { content: '- Conclusion Oseophage' },
+      ...values.osoConclusion,
+      // { content: '- Conclusion Cardia' },
+      ...values.cardiaConclusion,
+      // { content: '- Conclusion Fundus' },
+      ...values.fundusConclusion,
+      // { content: '- Conclusion Pylore' },
+      ...values.pyloreConclusion,
+      // { content: '- Conclusion Bulbe' },
+      ...values.bulbeConclusion,
+      // { content: '- Conclusion Duodénum' },
+      ...values.duodénumConclusion
+    ];
+    let string = '';
+    array.forEach((e) => {
+      string += `${e.content}\n`;
+    });
+    setConclusionText(string);
+    setFieldValue('conclusion', string);
+  }, []);
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
@@ -97,6 +147,20 @@ export default function UserNewForm({ isEdit, formik }) {
             <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
               <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="FOGDtotale" label="FOGD totale" />
               <TextField fullWidth label="Durée de l’examen endoscopique" {...getFieldProps('duréeExamen')} />
+              <TextField
+                select
+                fullWidth
+                label="Qualité de la visualisation de la muqueuse"
+                SelectProps={{ native: true }}
+                {...getFieldProps('qualityVisualisation')}
+              >
+                <option key="0" value="" />
+                {['Bonne', 'Moyenne', 'Mauvaise'].map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </TextField>
               <ExploredItem
                 noLabel="Non"
                 yesLabel="Oui"
@@ -119,9 +183,42 @@ export default function UserNewForm({ isEdit, formik }) {
                   {...getFieldProps('biopsiesDesc')}
                 />
               )}
-              <TextField fullWidth multiline minRows={4} label="Conclusion" {...getFieldProps('conclusion')} />
+              {/* TODO display all conclusion */}
+              <TextField
+                fullWidth
+                multiline
+                minRows={4}
+                label="Conclusion"
+                {...getFieldProps('conclusion')}
+                value={conclusionText}
+                onChange={(e) => {
+                  setConclusionText(e.target.value);
+                  setFieldValue('conclusion', e.target.value);
+                }}
+              />
               <TextField fullWidth multiline minRows={4} label="CAT" {...getFieldProps('CAT')} />
-              <TextField fullWidth multiline minRows={4} label="Opérateurs" {...getFieldProps('nomsOps')} />
+              <MultiSelect
+                label="Séniors"
+                options={optionsSeniors}
+                setFieldValue={setFieldValue}
+                formikValue="seniors"
+                limit={3}
+              />
+              <MultiSelect
+                label="Résidents"
+                options={optionsResidents}
+                setFieldValue={setFieldValue}
+                formikValue="residents"
+                limit={3}
+              />
+              <MultiSelect
+                label="Techniciens"
+                options={optionsTechniciens}
+                setFieldValue={setFieldValue}
+                formikValue="techniciens"
+                limit={3}
+              />
+
               <TextField
                 fullWidth
                 multiline

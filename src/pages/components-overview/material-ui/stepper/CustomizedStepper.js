@@ -8,11 +8,13 @@ import { styled } from '@mui/material/styles';
 import Check from '@mui/icons-material/Check';
 import { Form, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
+import * as fs from 'fs';
 import PersonIcon from '@mui/icons-material/Person';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-
+import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, TextRun } from 'docx';
+import { saveAs } from 'file-saver';
 import {
   Box,
   Step,
@@ -198,10 +200,11 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       // autresHabitudes: currentReport?.autresHabitudes || '',
       antiThrombotique: currentReport?.antiThrombotique || false,
       antiCoagulantsClasse: currentReport?.antiCoagulantsClasse || '',
-      antiCoagulantsDose: currentReport?.antiCoagulantsDose || '',
-      antiCoagulantsNb: currentReport?.antiCoagulantsNb || '',
-      antiCoagulantsGestionDebut: currentReport?.antiCoagulantsGestionDebut || '',
-      antiCoagulantsGestionFin: currentReport?.antiCoagulantsGestionFin || '',
+      // antiCoagulantsDose: currentReport?.antiCoagulantsDose || '',
+      // antiCoagulantsNb: currentReport?.antiCoagulantsNb || '',
+      // antiCoagulantsGestionDebut: currentReport?.antiCoagulantsGestionDebut || '',
+      // antiCoagulantsGestionFin: currentReport?.antiCoagulantsGestionFin || '',
+      antiCoagulantsGestion: currentReport?.antiCoagulantsGestion || '',
       autresTraitements: currentReport?.autresTraitements || '',
       typeIndication: currentReport?.typeIndication || false,
       diagnostiqueIndex: currentReport?.diagnostiqueIndex || '',
@@ -235,38 +238,44 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       protocoleAvantSédation: currentReport?.protocoleAvantSédation || '',
       endoscope: currentReport?.endoscope || '',
 
-      pince: currentReport?.pince || false,
-      usagePince: currentReport?.usagePince || false,
-      indexPince: currentReport?.indexPince || '',
+      // pince: currentReport?.pince || false,
+      // usagePince: currentReport?.usagePince || false,
+      // indexPince: currentReport?.indexPince || '',
       autresMateriels: currentReport?.autresMateriels || '',
       osophage: currentReport?.osophage || false,
       osophageDesc: currentReport?.osophageDesc || '',
       osoBiopsies: currentReport?.osoBiopsies || false,
       osoBiopsiesDesc: currentReport?.osoBiopsiesDesc || '',
+      osoConclusion: currentReport?.osoConclusion || '',
       cardia: currentReport?.cardia || false,
       cardiaDesc: currentReport?.cardiaDesc || '',
-
+      cardiaConclusion: currentReport?.cardiaConclusion || '',
+      // estomac: currentReport?.estomac || '',
       lacMuqueux: currentReport?.lacMuqueux || '',
+      lacMuqueuxDesc: currentReport?.lacMuqueuxDesc || '',
       fundus: currentReport?.fundus || false,
       fundusDesc: currentReport?.fundusDesc || '',
-
+      fundusConclusion: currentReport?.fundusConclusion || '',
       antre: currentReport?.antre || false,
       antreDesc: currentReport?.antreDesc || '',
 
       pylore: currentReport?.pylore || false,
       pyloreDesc: currentReport?.pyloreDesc || '',
-      estoBiopsies: currentReport?.estoBiopsies || false,
-      estoBiopsiesDesc: currentReport?.estoBiopsiesDesc || '',
+      pyloreConclusion: currentReport?.pyloreConclusion || '',
+      // estoBiopsies: currentReport?.estoBiopsies || false,
+      // estoBiopsiesDesc: currentReport?.estoBiopsiesDesc || '',
 
       bulbe: currentReport?.bulbe || false,
       bulbeDesc: currentReport?.bulbeDesc || '',
       bulbeBiopsies: currentReport?.bulbeBiopsies || false,
       bulbeBiopsiesDesc: currentReport?.bulbeBiopsiesDesc || '',
+      bulbeConclusion: currentReport?.bulbeConclusion || '',
 
       duodénum: currentReport?.duodénum || false,
       duodénumDesc: currentReport?.duodénumDesc || '',
       duodénumBiopsies: currentReport?.duodénumBiopsies || false,
       duodénumBiopsiesDesc: currentReport?.duodénumBiopsiesDesc || '',
+      duodénumConclusion: currentReport?.duodénumConclusion || '',
 
       zoneMalExploré: currentReport?.zoneMalExploré || false,
 
@@ -274,13 +283,19 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
 
       FOGDtotale: currentReport?.FOGDtotale || false,
       duréeExamen: currentReport?.duréeExamen || '',
+      qvFundus: currentReport?.qvFundus || '',
+      qvPartieSup: currentReport?.qvPartieSup || '',
+      qvPartieInf: currentReport?.qvPartieInf || '',
+      qvAntre: currentReport?.qvAntre || '',
       chromoendoscopie: currentReport?.chromoendoscopie || false,
       chromoendoscopieDesc: currentReport?.chromoendoscopieDesc || '',
       biopsies: currentReport?.biopsies || false,
       biopsiesDesc: currentReport?.biopsiesDesc || '',
       conclusion: currentReport?.conclusion || '',
       CAT: currentReport?.CAT || '',
-      nomsOps: currentReport?.nomsOps || '',
+      seniors: currentReport?.seniors || '',
+      residents: currentReport?.residents || '',
+      techniciens: currentReport?.techniciens || '',
       ressentiPatient: currentReport?.ressentiPatient || '',
       complicationSedation: currentReport?.complicationSedation || false,
       complicationSedationDesc: currentReport?.complicationSedationDesc || '',
@@ -323,17 +338,94 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     // validationSchema: NewReportSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
-        fetch('http://localhost:5000/api/reports', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(values)
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            generatePDF(data);
-          });
+        console.log('VALUES', values.osoConclusion);
+        const doc = new Document({
+          creator: 'CREEIS',
+          description: 'Compte rendu de fibroscopie oeso-gastro-duodénale ',
+          title: 'CREEIS',
+          sections: [
+            {
+              properties: {},
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({ text: 'CHU Monji Slim la marsa', color: '#000000' }),
+                    new TextRun({
+                      text: 'Unité d’endoscopie',
+                      color: '#000000',
+                      break: 1
+                    })
+                  ],
+                  heading: HeadingLevel.HEADING_3
+                }),
+                new Paragraph({
+                  children: [
+                    createBreak(),
+                    new TextRun({
+                      text: 'Compte rendu de fibroscopie oeso-gastro-duodénale',
+                      bold: true,
+                      color: '#000000'
+                    })
+                  ],
+                  alignment: AlignmentType.CENTER,
+                  heading: HeadingLevel.HEADING_1,
+                  break: 2
+                }),
+                new Paragraph({
+                  children: [
+                    createBreak(),
+                    createBreak(),
+                    createBoldText('Nom: '),
+                    createText(values.nom),
+                    createBoldText('\t\t\tPrénom: '),
+                    createText(values.prenom),
+                    createBoldText('\t\t\tAge: '),
+                    createText(values.age),
+                    createBreak(),
+                    createBoldText("Service d'origine: "),
+                    createText(values.serviceOrigine),
+                    createBoldText('\t\t\tNuméro de téléphone: '),
+                    createText(values.numTel),
+                    createBreak(),
+                    createBoldText('Numéro de dossier médical: '),
+                    createText(values.numDoss)
+                  ]
+                })
+              ]
+            }
+          ]
+        });
+
+        // Used to export the file into a .docx file
+        // Packer.toBuffer(doc).then((buffer) => {
+        //   //fs.writeFileSync('My Document.docx', buffer);
+        // });
+        const buffer = await Packer.toBuffer(doc);
+        const blob = new Blob([buffer], {
+          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        });
+        saveAs(blob, 'CREEIS.docx');
+
+        const bodyValues = values;
+        delete bodyValues.cardiaConclusion;
+        delete bodyValues.osoConclusion;
+        delete bodyValues.duodénumConclusion;
+        delete bodyValues.fundusConclusion;
+        delete bodyValues.pyloreConclusion;
+        delete bodyValues.bulbeConclusion;
+        // fetch('http://localhost:5000/api/reports', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   body: JSON.stringify(bodyValues)
+        // })
+        //   .then((response) => response.json())
+        //   .then(async (data) => {
+        //     console.log('data', data);
+
+        //     // generatePDF(data);
+        //   });
         // resetForm();
         setSubmitting(false);
         enqueueSnackbar('Report generated', { variant: 'success' });
@@ -360,6 +452,38 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
   const handleReset = () => {
     setActiveStep(0);
   };
+  const createText = (text) =>
+    new TextRun({
+      text,
+      color: '#000000'
+    });
+
+  const createTextOnNewLine = (text) =>
+    new TextRun({
+      text,
+      color: '#000000',
+      break: 1
+    });
+
+  const createBoldText = (text) =>
+    new TextRun({
+      text,
+      color: '#000000',
+      bold: true
+    });
+  const createBreak = () =>
+    new TextRun({
+      text: '',
+      break: 1
+    });
+
+  const createBoldTextOnNewLine = (text) =>
+    new TextRun({
+      text,
+      color: '#000000',
+      break: 1,
+      bold: true
+    });
 
   return (
     <>

@@ -422,12 +422,12 @@ export default function UserNewForm({ isEdit, formik }) {
                             ))}
                           </Select>
                         </FormControl>
-                        <TextField fullWidth label="Dose" {...getFieldProps('antiCoagulantsDose')} />
-                        <TextField fullWidth label="Nombre de prise" {...getFieldProps('antiCoagulantsNb')} />
+                        {/* <TextField fullWidth label="Dose" {...getFieldProps('antiCoagulantsDose')} />
+                        <TextField fullWidth label="Nombre de prise" {...getFieldProps('antiCoagulantsNb')} /> */}
                       </Stack>
                       <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                         <Typography variant="h6">Gestion des anticoagulants</Typography>
-                        <TextField
+                        {/* <TextField
                           fullWidth
                           inputMode="numeric"
                           label="Arrêté depuis quand ?"
@@ -439,7 +439,21 @@ export default function UserNewForm({ isEdit, formik }) {
                           label="A
                   reprendre quand après l’examen endoscopique ?"
                           {...getFieldProps('antiCoagulantsGestionFin')}
-                        />
+                        /> */}
+                        <TextField
+                          select
+                          fullWidth
+                          label="Gestion des anticoagulants"
+                          {...getFieldProps('antiCoagulantsGestion')}
+                          SelectProps={{ native: true }}
+                        >
+                          <option key="0" value="choisir" />
+                          {['Maintenus', 'Arrêtés', 'Chevauchement'].map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </TextField>
                       </Stack>
                     </>
                   )}
@@ -529,10 +543,10 @@ export default function UserNewForm({ isEdit, formik }) {
                     </RadioGroup>
                   )}
                 </Stack>
-                <Typography variant="h5">
+                {/* <Typography variant="h5">
                   Indication choisie:{' '}
                   {values.typeIndication ? FGDOthérapeutique[thérapeutiqueIndex] : FGDOdiagnostique[diagnostiqueIndex]}
-                </Typography>
+                </Typography> */}
                 {values.typeIndication && thérapeutiqueIndex === '0' && (
                   <Stack spacing={3} style={{ marginTop: 20 }}>
                     {/* <MobileDateTimePicker
