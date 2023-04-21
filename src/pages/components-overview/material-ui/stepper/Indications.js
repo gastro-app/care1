@@ -246,6 +246,7 @@ export default function UserNewForm({ isEdit, formik }) {
         // On autofill we get a stringified value.
         typeof value === 'string' ? value.split(',') : value
       );
+      setFieldValue('antiCoagulantsClasse', typeof value === 'string' ? value.split(',') : value);
     }
   };
 

@@ -429,6 +429,16 @@ export default function UserNewForm({ isEdit, formik }) {
             <Image src={Forrest} width="40vw" fit="contain" alt="forrest" />
           </Stack>
         );
+      case 8:
+        return (
+          <Stack
+            direction={{ xs: 'column' }}
+            sx={modalViewStyle}
+            // spacing={{ xs: 3, sm: 2 }}
+          >
+            <Image src={Criterion} width="40vw" fit="contain" alt="Criterion" />
+          </Stack>
+        );
       default:
         break;
     }
@@ -498,7 +508,12 @@ export default function UserNewForm({ isEdit, formik }) {
         style={{
           content: {
             // height: '80vh',
-            width: isModalWide ? '55vw' : '40vw',
+            // eslint-disable-next-line
+            width: isModalWide
+              ? '55vw'
+              : modalNumber === 5 || modalNumber === 6 || modalNumber === 7 || modalNumber === 8
+              ? '45vw'
+              : '40vw',
             top: isModalWide ? '15%' : '20%',
             left: isModalWide ? '25%' : '30%',
             // right: '40%',
@@ -679,7 +694,7 @@ export default function UserNewForm({ isEdit, formik }) {
                 <MultiSelect
                   label="Autre Materiels"
                   options={autresMateriels}
-                  formikValue={autresMateriels}
+                  formikValue="autresMateriels"
                   setFieldValue={setFieldValue}
                 />
               </Stack>
@@ -819,7 +834,7 @@ export default function UserNewForm({ isEdit, formik }) {
                     <>
                       <TextField fullWidth label="Exploration Pylore" {...getFieldProps('pyloreDesc')} />
                       <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <Button variant="contained" onClick={() => displayModal(0)}>
+                        <Button variant="contained" onClick={() => displayModal(6)}>
                           <Typography>Classification de Baveno pour les varices gastriques</Typography>
                         </Button>
                         <Button variant="contained" onClick={() => displayModal(5)}>
@@ -894,7 +909,7 @@ export default function UserNewForm({ isEdit, formik }) {
                         />
                       )}
                       <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <Button variant="contained" onClick={() => displayModal(0)}>
+                        <Button variant="contained" onClick={() => displayModal(8)}>
                           <Typography>Classification de Spigelman</Typography>
                         </Button>
                       </Stack>

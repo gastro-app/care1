@@ -116,8 +116,8 @@ export default function UserNewForm({ isEdit, formik }) {
     'Nouri Meriem'
   ];
   useEffect(() => {
-    console.log(values.osoConclusion);
-    console.log(values.osoConclusion);
+    // console.log(values.osoConclusion);
+    // console.log(values.osoConclusion);
     const array = [
       // { content: '- Conclusion Oseophage' },
       ...values.osoConclusion,

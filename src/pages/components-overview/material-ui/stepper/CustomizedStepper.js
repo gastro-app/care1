@@ -13,7 +13,17 @@ import PersonIcon from '@mui/icons-material/Person';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import BiotechIcon from '@mui/icons-material/Biotech';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, TextRun } from 'docx';
+import {
+  AlignmentType,
+  Border,
+  BorderStyle,
+  Document,
+  HeadingLevel,
+  Packer,
+  Paragraph,
+  SectionType,
+  TextRun
+} from 'docx';
 import { saveAs } from 'file-saver';
 import {
   Box,
@@ -199,7 +209,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       // consoAlcool: currentReport?.consoAlcool || false,
       // autresHabitudes: currentReport?.autresHabitudes || '',
       antiThrombotique: currentReport?.antiThrombotique || false,
-      antiCoagulantsClasse: currentReport?.antiCoagulantsClasse || '',
+      antiCoagulantsClasse: currentReport?.antiCoagulantsClasse || [],
       // antiCoagulantsDose: currentReport?.antiCoagulantsDose || '',
       // antiCoagulantsNb: currentReport?.antiCoagulantsNb || '',
       // antiCoagulantsGestionDebut: currentReport?.antiCoagulantsGestionDebut || '',
@@ -338,34 +348,34 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     // validationSchema: NewReportSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
-        console.log('VALUES', values.osoConclusion);
+        console.log('VALUES', values);
+        console.log({ thérapeutiqueIndex: values.thérapeutiqueIndex });
         const doc = new Document({
           creator: 'CREEIS',
           description: 'Compte rendu de fibroscopie oeso-gastro-duodénale ',
           title: 'CREEIS',
+          properties: {
+            type: SectionType.CONTINUOUS
+          },
           sections: [
             {
               properties: {},
               children: [
                 new Paragraph({
-                  children: [
-                    new TextRun({ text: 'CHU Monji Slim la marsa', color: '#000000' }),
-                    new TextRun({
-                      text: 'Unité d’endoscopie',
-                      color: '#000000',
-                      break: 1
-                    })
-                  ],
+                  children: [createText('CHU Monji Slim la marsa'), createTextOnNewLine('Unité d’endoscopie')],
                   heading: HeadingLevel.HEADING_3
                 }),
                 new Paragraph({
                   children: [
                     createBreak(),
+                    createBreak(),
                     new TextRun({
                       text: 'Compte rendu de fibroscopie oeso-gastro-duodénale',
                       bold: true,
                       color: '#000000'
-                    })
+                    }),
+                    createBreak(),
+                    createBreak()
                   ],
                   alignment: AlignmentType.CENTER,
                   heading: HeadingLevel.HEADING_1,
@@ -373,22 +383,56 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                 }),
                 new Paragraph({
                   children: [
-                    createBreak(),
-                    createBreak(),
                     createBoldText('Nom: '),
                     createText(values.nom),
                     createBoldText('\t\t\tPrénom: '),
                     createText(values.prenom),
                     createBoldText('\t\t\tAge: '),
                     createText(values.age),
-                    createBreak(),
-                    createBoldText("Service d'origine: "),
+                    createBoldTextOnNewLine("Service d'origine: "),
                     createText(values.serviceOrigine),
                     createBoldText('\t\t\tNuméro de téléphone: '),
                     createText(values.numTel),
-                    createBreak(),
-                    createBoldText('Numéro de dossier médical: '),
-                    createText(values.numDoss)
+                    createBoldTextOnNewLine('Numéro de dossier médical: '),
+                    createText(values.numDoss),
+                    createBoldTextOnNewLine("Date de l'examen: "),
+                    createText(values.dateExamen ?? ''),
+                    createBoldText("\t\t\tDurée l'examen: "),
+                    createText(values.duréeExamen ?? ''),
+                    createBoldTextOnNewLine('Traitements en cours: '),
+                    ...getAntiCoagulant(),
+                    ...getIndications(),
+                    ...getHemoDigestive(),
+                    ...getJJA(),
+                    ...getConsentementPatient(),
+                    ...getPrémédicationIndication(),
+                    ...getPatientaJeune(),
+                    ...getProtocolSédation(),
+                    ...getMaterial()
+                  ],
+                  border: {
+                    bottom: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 },
+                    top: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 },
+                    left: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 },
+                    right: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 }
+                  }
+                }),
+                new Paragraph({
+                  children: [createBoldTextOnNewLine('Examen: ')],
+                  heading: HeadingLevel.HEADING_3,
+                  break: 1
+                }),
+
+                new Paragraph({
+                  children: [
+                    ...getOesophage(),
+                    ...getCardia(),
+                    ...getEstomac(),
+                    ...getFundus(),
+                    ...getAntre(),
+                    ...getPylore(),
+                    ...getBulbe(),
+                    ...getDuodénum()
                   ]
                 })
               ]
@@ -400,10 +444,11 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         // Packer.toBuffer(doc).then((buffer) => {
         //   //fs.writeFileSync('My Document.docx', buffer);
         // });
-        const buffer = await Packer.toBuffer(doc);
-        const blob = new Blob([buffer], {
-          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        });
+        // const buffer = await Packer.toBuffer(doc);
+        // const blob = new Blob([buffer], {
+        //   type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        // });
+        const blob = await Packer.toBlob(doc);
         saveAs(blob, 'CREEIS.docx');
 
         const bodyValues = values;
@@ -452,6 +497,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
   const handleReset = () => {
     setActiveStep(0);
   };
+
   const createText = (text) =>
     new TextRun({
       text,
@@ -484,6 +530,156 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       break: 1,
       bold: true
     });
+
+  const getAntiCoagulant = () => {
+    console.log('antiThrombotique', values.antiThrombotique);
+    console.log('antiCoagulantsClasse', values.antiCoagulantsClasse);
+    if (values.antiThrombotique && values.antiCoagulantsClasse.length > 0) {
+      const classeString = values.antiCoagulantsClasse.join(', ');
+      console.log('classeString', classeString);
+      return [
+        createBoldTextOnNewLine('\tAnti thrombotique: '),
+        createText(classeString),
+        createBoldTextOnNewLine('\tGestion des anticoagulants: '),
+        createText(values.antiCoagulantsGestion ?? '')
+      ];
+    }
+    return [createBoldTextOnNewLine('\tAnti thrombotique: '), createText('Non')];
+  };
+  function getIndications() {
+    if (values.thérapeutiqueIndex !== '' || values.diagnostiqueIndex !== '')
+      return [
+        createBoldTextOnNewLine(
+          `Indications: ${values.typeIndication ? 'FOGD Thérapeutique: ' : 'FOGD Diagnostique: '}`
+        ),
+        createText(
+          `${
+            values.typeIndication
+              ? FGDOthérapeutique[values.thérapeutiqueIndex] ?? "Pas d'indications"
+              : FGDOdiagnostique[values.diagnostiqueIndex] ?? "Pas d'indications"
+          }`
+        )
+      ];
+    return [createBoldTextOnNewLine("Pas d'indications")];
+  }
+  const getHemoDigestive = () => {
+    console.log('typeIndication', values.typeIndication);
+    console.log('thérapeutiqueIndex', values.thérapeutiqueIndex);
+    if (values.typeIndication && values.thérapeutiqueIndex === '0') {
+      return [getIPP(), getSuspicion(), getVasoactif(), getAntibioprophylaxie()];
+    }
+    return [];
+  };
+  const getIPP = () => {
+    if (values.ippHD) return [createBoldText('IPP: '), createText(values.ippProtocolHD)];
+    return [createBoldText('IPP: '), createText('Non')];
+  };
+  const getSuspicion = () => {
+    if (values.suspicionCirrhoseHD)
+      return [createBoldTextOnNewLine('Suspicion d’hémorragie par hypertension portale: '), createText('Oui')];
+    return [createBoldTextOnNewLine('Suspicion d’hémorragie par hypertension portale: '), createText('Non')];
+  };
+  const getVasoactif = () => {
+    if (values.vasoactifHD)
+      return [createBoldTextOnNewLine('Traitement vasoactif: '), createText(values.vasoactifDescHD)];
+    return [createBoldTextOnNewLine('Traitement vasoactif: '), createText('Non')];
+  };
+
+  const getAntibioprophylaxie = () => {
+    if (values.antibioprophylaxieHD)
+      return [createBoldTextOnNewLine('Antibioprophylaxie: '), createText(values.antibioprophylaxieDescHD)];
+    return [createBoldTextOnNewLine('Antibioprophylaxie: '), createText('Non')];
+  };
+
+  const getJJA = () => {
+    if (values.typeIndication && values.thérapeutiqueIndex === '6' && values.antibioprophylaxieJJA)
+      return [
+        createBoldTextOnNewLine('Sonde de gastrostomie/jéjunostomie d’alimentation : '),
+        createBoldText('Antibioprophylaxie: '),
+        createText(values.antibioprophylaxieDescJJA)
+      ];
+    return [];
+  };
+  const getConsentementPatient = () => {
+    if (values.consentement)
+      return [createBoldTextOnNewLine('Consentement éclairé signé par le patient: '), createText('Oui')];
+    return [createBoldTextOnNewLine('Consentement éclairé signé par le patient: '), createText('Non')];
+  };
+  const getPrémédicationIndication = () => {
+    if (values.prémédicationIndication)
+      return [createBoldTextOnNewLine('Pré médication: '), createText(values.prémédicationIndicationDesc)];
+    return [createBoldTextOnNewLine('Pré médication: '), createText('Non')];
+  };
+  const getPatientaJeune = () => {
+    console.log('jeuneExamen', values.jeuneExamen);
+    if (values.jeuneExamen) return [createBoldTextOnNewLine('Patient à jeûne: '), createText('Oui')];
+    return [createBoldTextOnNewLine('Patient à jeûne: '), createText('Non')];
+  };
+
+  const getProtocolSédation = () => {
+    if (values.sédationExamen)
+      return [createBoldTextOnNewLine('Sous sédation: '), createText(values.protocoleAvantSédation)];
+    return [createBoldTextOnNewLine('Sous sédation: '), createText('Non')];
+  };
+  const getMaterial = () => {
+    console.log('autresMateriels', values?.autresMateriels);
+    const materialString = values?.autresMateriels ? values.autresMateriels.join(', ') : '';
+    return [
+      createBoldTextOnNewLine('Matériel: '),
+      createBoldTextOnNewLine('\tEndoscope: '),
+      createText(values.endoscope),
+      createBoldTextOnNewLine('\tAutres: '),
+      createText(materialString)
+    ];
+  };
+  const getOesophage = () => [
+    createBoldTextOnNewLine('Œsophage: '),
+    createText(values.osophage ? 'Exploré: ' : 'Non exploré'),
+    createText(values.osophage ? values.osophageDesc ?? '' : ''),
+    values.osoBiopsies ? createBoldTextOnNewLine('Biopsises Œsophage: ') : createText(''),
+    createText(values.osoBiopsies ? values.osoBiopsiesDesc ?? '' : '')
+  ];
+  const getCardia = () => [
+    createBoldTextOnNewLine('Cardia: '),
+    createText(values.cardia ? 'Exploré: ' : 'Non exploré'),
+    createText(values.cardia ? values.cardiaDesc ?? '' : '')
+  ];
+  const getEstomac = () => [
+    createBoldTextOnNewLine('Estomac: '),
+    createText(values.lacMuqueux ?? ''),
+    createText(values.lacMuqueux !== '' && values.lacMuqueuxDesc !== '' ? ', ' : 'Pas de description'),
+    createText(values.lacMuqueuxDesc ?? '')
+  ];
+  const getFundus = () => [
+    createBoldTextOnNewLine('Fundus: '),
+    createText(values.fundus ? 'Exploré: ' : 'Non exploré'),
+    createText(values.fundus ? values.fundusDesc ?? '' : '')
+  ];
+  const getAntre = () => [
+    createBoldTextOnNewLine('Antre: '),
+    createText(values.antre ? 'Exploré: ' : 'Non exploré'),
+    createText(values.antre ? values.antreDesc ?? '' : '')
+  ];
+  const getPylore = () => [
+    createBoldTextOnNewLine('Pylore: '),
+    createText(values.pylore ? 'Exploré: ' : 'Non exploré'),
+    createText(values.pylore ? values.pyloreDesc ?? '' : '')
+  ];
+  const getBulbe = () => [
+    createBoldTextOnNewLine('Bulbe: '),
+    createText(values.bulbe ? 'Exploré: ' : 'Non exploré'),
+    createText(values.bulbe ? values.bulbeDesc ?? '' : ''),
+    values.bulbeBiopsies ? createBoldTextOnNewLine('Biopsises Bulbe: ') : createText(''),
+    createText(values.bulbeBiopsies ? values.bulbeBiopsiesDesc ?? '' : '')
+  ];
+
+  const getDuodénum = () => [
+    createBoldTextOnNewLine('Duodénum: '),
+    createText(values.duodénum ? 'Exploré: ' : 'Non exploré'),
+    createText(values.duodénum ? values.duodénumDesc ?? '' : ''),
+    values.duodénumBiopsies ? createBoldTextOnNewLine('Biopsises Duodénum: ') : createText(''),
+    createText(values.duodénumBiopsies ? values.duodénumBiopsiesDesc ?? '' : '')
+  ];
 
   return (
     <>
@@ -731,3 +927,34 @@ const generatePDF = (rapport) => {
   // Save the PDF
   doc.save(`medical-report-${numDoss}.pdf`);
 };
+
+const FGDOdiagnostique = [
+  'Symptômes digestifs hauts persistants malgré une épreuve thérapeutique',
+  'Symptômes digestifs hauts avec signes d’alarmes ou âge >45ans',
+  'Dysphagie, odynophagie',
+  'RGO persistant ou récidivant après traitement',
+  'Surveillance d’une lésion prénéoplasique (exp : endobrachy œsophage)',
+  'Vomissements persistants',
+  'Pathologies au cours desquelles la FOGD peut modifier la prise en charge (exemple : ATCDs d’ulcère et indication d’une anticoagulation)',
+  'Polypose adénomateuse familiale',
+  'Explorer une lésion de découverte radiologique (lésion d’allure néoplasique, ulcère œsophagien ou gastrique, sténose)',
+  'Suspicion d’une spoliation sanguine et anémie ferriprive',
+  'Nécessité de faire des biopsies ou de prélever un liquide',
+  'Bilan d’une hypertension portale',
+  'Evaluation d’une reconstruction anatomique (Exp : fundoplicature, chirurgie bariatrique)'
+];
+
+const FGDOthérapeutique = [
+  'Hémorragie digestive active actuelle ou récente',
+  'Traitement d’une lésion qui saigne',
+  'Ligature ou sclérothérapie pour varices œsophagiennes',
+  'Ingestion de caustique',
+  'Extraction de corps étranger',
+  'Résection d’un polype',
+  'Mise en place d’un drainage ou d’une stomie (exp : gastrostomie)',
+  'Dilatation d’une sténose',
+  'Prise en charge d’une achalasie',
+  'Prise en charge palliative d’une sténose d’origine néoplasique',
+  'Traitement d’une métaplasie intestinale',
+  'Prise en charge de complications (exp : fistule)'
+];
