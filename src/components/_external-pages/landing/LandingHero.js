@@ -101,7 +101,7 @@ export default function LandingHero() {
               <Typography variant="h1" sx={{ color: 'common.white' }}>
                 Les rapports sont devenus Plus facile <br /> avec
                 <Typography component="span" variant="h1" sx={{ color: 'primary.main' }}>
-                  &nbsp;CREEIS
+                  &nbsp;Care1
                 </Typography>
               </Typography>
             </motion.div>

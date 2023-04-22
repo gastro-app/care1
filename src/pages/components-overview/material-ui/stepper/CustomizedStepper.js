@@ -5,6 +5,7 @@ import { useState } from 'react';
 import jsPDF from 'jspdf';
 // material
 import { styled } from '@mui/material/styles';
+import { isArray } from 'lodash';
 import Check from '@mui/icons-material/Check';
 import { Form, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -19,10 +20,12 @@ import {
   BorderStyle,
   Document,
   HeadingLevel,
+  ImageRun,
   Packer,
   Paragraph,
   SectionType,
-  TextRun
+  TextRun,
+  UnderlineType
 } from 'docx';
 import { saveAs } from 'file-saver';
 import {
@@ -232,8 +235,8 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       antibioprophylaxieJJA: currentReport?.antibioprophylaxieJJA || false,
       antibioprophylaxieDescJJA: currentReport?.antibioprophylaxieDescJJA || '',
       autresIndications: currentReport?.autresIndications || '',
-      prémédicationIndication: currentReport?.prémédicationIndication || false,
-      prémédicationIndicationDesc: currentReport?.prémédicationIndicationDesc || '',
+      // prémédicationIndication: currentReport?.prémédicationIndication || false,
+      // prémédicationIndicationDesc: currentReport?.prémédicationIndicationDesc || '',
 
       examenPhysiqueInterrogatoire: currentReport?.examenPhysiqueInterrogatoire || false,
       délaiExamen: currentReport?.délaiExamen || '',
@@ -291,12 +294,14 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
 
       indexZoneMalExploré: currentReport?.indexZoneMalExploré || '',
 
+      images: currentReport?.images || '',
       FOGDtotale: currentReport?.FOGDtotale || false,
       duréeExamen: currentReport?.duréeExamen || '',
       qvFundus: currentReport?.qvFundus || '',
       qvPartieSup: currentReport?.qvPartieSup || '',
       qvPartieInf: currentReport?.qvPartieInf || '',
       qvAntre: currentReport?.qvAntre || '',
+      qualityVisualisation: currentReport?.qualityVisualisation || '',
       chromoendoscopie: currentReport?.chromoendoscopie || false,
       chromoendoscopieDesc: currentReport?.chromoendoscopieDesc || '',
       biopsies: currentReport?.biopsies || false,
@@ -350,10 +355,47 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       try {
         console.log('VALUES', values);
         console.log({ thérapeutiqueIndex: values.thérapeutiqueIndex });
+        // const imageBlobs = [];
+        // if (isArray(values.images)) {
+        //   values.images.forEach((img) => {
+        //     //   const imageBlob = await fetch(
+        //     //     'https://raw.githubusercontent.com/dolanmiu/docx/master/demo/images/cat.jpg'
+        //     //   ).then((r) => r.blob());
+
+        //   });
+        // }
+        // const blobb = await fetch('https://raw.githubusercontent.com/dolanmiu/docx/master/demo/images/cat.jpg').then(
+        //   (r) => r.blob()
+        // );
+        // console.log('blob', blobb);
+        const images = [];
+        if (values?.images?.length && values.images.length > 0) {
+          for (let index = 0; index < values.images.length; index += 1) {
+            /* eslint-disable no-await-in-loop */
+            const iblob = await (await fetch(values.images[index])).blob();
+            console.log('iblob', iblob);
+            if (iblob) {
+              console.log('first');
+              images.push(createTextOnNewLine(`Image ${index + 1}:`));
+              images.push(createBreak());
+              images.push(
+                new ImageRun({
+                  data: iblob,
+                  transformation: {
+                    width: 300,
+                    height: 300
+                  }
+                })
+              );
+              images.push(createBreak());
+            }
+          }
+        }
+        console.log('second');
         const doc = new Document({
-          creator: 'CREEIS',
+          creator: 'Care1',
           description: 'Compte rendu de fibroscopie oeso-gastro-duodénale ',
-          title: 'CREEIS',
+          title: 'Care1',
           properties: {
             type: SectionType.CONTINUOUS
           },
@@ -405,7 +447,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                     ...getHemoDigestive(),
                     ...getJJA(),
                     ...getConsentementPatient(),
-                    ...getPrémédicationIndication(),
+                    // ...getPrémédicationIndication(),
                     ...getPatientaJeune(),
                     ...getProtocolSédation(),
                     ...getMaterial()
@@ -418,7 +460,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                   }
                 }),
                 new Paragraph({
-                  children: [createBoldTextOnNewLine('Examen: ')],
+                  children: [createUnderlinedBoldTextOnNewLine('Examen: ')],
                   heading: HeadingLevel.HEADING_3,
                   break: 1
                 }),
@@ -434,6 +476,34 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                     ...getBulbe(),
                     ...getDuodénum()
                   ]
+                }),
+                new Paragraph({
+                  children: [createUnderlinedBoldTextOnNewLine('Conclusion: '), createBreak()],
+                  heading: HeadingLevel.HEADING_3,
+                  break: 1
+                }),
+                getPart1(),
+                getPart2(),
+                getPart3(),
+                new Paragraph({
+                  children: [
+                    values?.images?.length > 0 ? createBoldTextOnNewLine('Photo documentations:') : createText(''),
+
+                    ...images
+                    // isArray(values.images)
+                    //   ? values.images.map(
+                    //       (img) =>
+                    //         new ImageRun({
+                    //           data: img,
+                    //           transformation: {
+                    //             width: 100,
+                    //             height: 100
+                    //           }
+                    //         })
+                    //     )
+                    //   : createText('')
+                  ],
+                  break: 1
                 })
               ]
             }
@@ -449,7 +519,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         //   type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         // });
         const blob = await Packer.toBlob(doc);
-        saveAs(blob, 'CREEIS.docx');
+        saveAs(blob, 'Care1.docx');
 
         const bodyValues = values;
         delete bodyValues.cardiaConclusion;
@@ -458,19 +528,20 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         delete bodyValues.fundusConclusion;
         delete bodyValues.pyloreConclusion;
         delete bodyValues.bulbeConclusion;
-        // fetch('http://localhost:5000/api/reports', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   body: JSON.stringify(bodyValues)
-        // })
-        //   .then((response) => response.json())
-        //   .then(async (data) => {
-        //     console.log('data', data);
+        delete bodyValues.images;
+        fetch('http://localhost:5000/api/reports', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyValues)
+        })
+          .then((response) => response.json())
+          .then(async (data) => {
+            console.log('data', data);
 
-        //     // generatePDF(data);
-        //   });
+            // generatePDF(data);
+          });
         // resetForm();
         setSubmitting(false);
         enqueueSnackbar('Report generated', { variant: 'success' });
@@ -522,7 +593,14 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       text: '',
       break: 1
     });
-
+  const createUnderlinedBoldTextOnNewLine = (text) =>
+    new TextRun({
+      text,
+      color: '#000000',
+      break: 1,
+      bold: true,
+      underline: {}
+    });
   const createBoldTextOnNewLine = (text) =>
     new TextRun({
       text,
@@ -530,7 +608,27 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       break: 1,
       bold: true
     });
-
+  const getImages = async () => {
+    const returnArray = [];
+    if (values?.images?.length && values.images.length > 0) {
+      await values.images.forEach(async (img) => {
+        const iblob = await (await fetch(img)).blob();
+        if (iblob) {
+          returnArray.push(
+            new ImageRun({
+              data: iblob,
+              transformation: {
+                width: 100,
+                height: 100
+              }
+            })
+          );
+        }
+      });
+      return returnArray;
+    }
+    return returnArray;
+  };
   const getAntiCoagulant = () => {
     console.log('antiThrombotique', values.antiThrombotique);
     console.log('antiCoagulantsClasse', values.antiCoagulantsClasse);
@@ -566,35 +664,41 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     console.log('typeIndication', values.typeIndication);
     console.log('thérapeutiqueIndex', values.thérapeutiqueIndex);
     if (values.typeIndication && values.thérapeutiqueIndex === '0') {
-      return [getIPP(), getSuspicion(), getVasoactif(), getAntibioprophylaxie()];
+      return [...getIPP(), ...getSuspicion(), ...getVasoactif(), ...getAntibioprophylaxie()];
     }
     return [];
   };
   const getIPP = () => {
-    if (values.ippHD) return [createBoldText('IPP: '), createText(values.ippProtocolHD)];
-    return [createBoldText('IPP: '), createText('Non')];
+    if (values.ippHD) return [createBoldTextOnNewLine('\tIPP: '), createText(values.ippProtocolHD)];
+    return [createBoldTextOnNewLine('\tIPP: '), createText('Non')];
   };
   const getSuspicion = () => {
     if (values.suspicionCirrhoseHD)
-      return [createBoldTextOnNewLine('Suspicion d’hémorragie par hypertension portale: '), createText('Oui')];
-    return [createBoldTextOnNewLine('Suspicion d’hémorragie par hypertension portale: '), createText('Non')];
+      return [createBoldTextOnNewLine('\tSuspicion d’hémorragie par hypertension portale: '), createText('Oui')];
+    return [createBoldTextOnNewLine('\tSuspicion d’hémorragie par hypertension portale: '), createText('Non')];
   };
   const getVasoactif = () => {
-    if (values.vasoactifHD)
-      return [createBoldTextOnNewLine('Traitement vasoactif: '), createText(values.vasoactifDescHD)];
-    return [createBoldTextOnNewLine('Traitement vasoactif: '), createText('Non')];
+    if (values.suspicionCirrhoseHD) {
+      if (values.vasoactifHD)
+        return [createBoldTextOnNewLine('\tTraitement vasoactif: '), createText(values.vasoactifDescHD)];
+      return [createBoldTextOnNewLine('\tTraitement vasoactif: '), createText('Non')];
+    }
+    return [];
   };
 
   const getAntibioprophylaxie = () => {
-    if (values.antibioprophylaxieHD)
-      return [createBoldTextOnNewLine('Antibioprophylaxie: '), createText(values.antibioprophylaxieDescHD)];
-    return [createBoldTextOnNewLine('Antibioprophylaxie: '), createText('Non')];
+    if (values.suspicionCirrhoseHD) {
+      if (values.antibioprophylaxieHD)
+        return [createBoldTextOnNewLine('\tAntibioprophylaxie: '), createText(values.antibioprophylaxieDescHD)];
+      return [createBoldTextOnNewLine('\tAntibioprophylaxie: '), createText('Non')];
+    }
+    return [];
   };
 
   const getJJA = () => {
     if (values.typeIndication && values.thérapeutiqueIndex === '6' && values.antibioprophylaxieJJA)
       return [
-        createBoldTextOnNewLine('Sonde de gastrostomie/jéjunostomie d’alimentation : '),
+        createBoldTextOnNewLine('\tSonde de gastrostomie/jéjunostomie d’alimentation: '),
         createBoldText('Antibioprophylaxie: '),
         createText(values.antibioprophylaxieDescJJA)
       ];
@@ -605,11 +709,11 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       return [createBoldTextOnNewLine('Consentement éclairé signé par le patient: '), createText('Oui')];
     return [createBoldTextOnNewLine('Consentement éclairé signé par le patient: '), createText('Non')];
   };
-  const getPrémédicationIndication = () => {
-    if (values.prémédicationIndication)
-      return [createBoldTextOnNewLine('Pré médication: '), createText(values.prémédicationIndicationDesc)];
-    return [createBoldTextOnNewLine('Pré médication: '), createText('Non')];
-  };
+  // const getPrémédicationIndication = () => {
+  //   if (values.prémédicationIndication)
+  //     return [createBoldTextOnNewLine('Pré médication: '), createText(values.prémédicationIndicationDesc)];
+  //   return [createBoldTextOnNewLine('Pré médication: '), createText('Non')];
+  // };
   const getPatientaJeune = () => {
     console.log('jeuneExamen', values.jeuneExamen);
     if (values.jeuneExamen) return [createBoldTextOnNewLine('Patient à jeûne: '), createText('Oui')];
@@ -681,6 +785,111 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     createText(values.duodénumBiopsies ? values.duodénumBiopsiesDesc ?? '' : '')
   ];
 
+  const getFOGDTotal = () => [createBoldText('FOGD Totale: '), createText(values.FOGDtotale ? 'Oui' : 'Non')];
+  const getDuréeExamen = () => [createBoldTextOnNewLine("Durée de l'examen: "), createText(values.duréeExamen)];
+  const getQualitéVisualisation = () => [
+    createBoldTextOnNewLine('Qualité de visualisation de la muqueuse: '),
+    createText(values.qualityVisualisation)
+  ];
+  const getChromoendoscopie = () => [
+    createBoldTextOnNewLine('Utilisation de la chromoendoscopie virtuelle ou au lugol: '),
+    createText(values.chromoendoscopie ? 'Oui' : 'Non'),
+    createText(values.chromoendoscopie && values.chromoendoscopieDesc !== '' ? `: ${values.chromoendoscopieDesc}` : '')
+  ];
+  const getBiopsies = () => [
+    createBoldTextOnNewLine('Biopsies: '),
+    createText(values.biopsies ? 'Oui' : 'Non'),
+    createText(values.biopsies && values.biopsiesDesc !== '' ? `: ${values.biopsiesDesc}` : '')
+  ];
+
+  const getConclusionGeneral = () => [createBoldText('Conclusion: '), createText(values.conclusion ?? '')];
+  const getCAT = () => [createBoldTextOnNewLine('CAT: '), createText(values.CAT ?? '')];
+  const getOperateurs = () => {
+    const seniors = isArray(values.seniors) ? values.seniors.join(', ') : '';
+    const residents = isArray(values.residents) ? values.residents.join(', ') : '';
+    const techniciens = isArray(values.techniciens) ? values.techniciens.join(', ') : '';
+
+    return [
+      createBoldTextOnNewLine('Opérateurs: '),
+      createBoldTextOnNewLine('\tSéniors:'),
+      createText(seniors),
+      createBoldTextOnNewLine('\tRésidents:'),
+      createText(residents),
+      createBoldTextOnNewLine('\tTechniciens:'),
+      createText(techniciens)
+    ];
+  };
+  const getRessenti = () => [createBoldText('Ressenti du malade :'), createText(values.ressentiPatient)];
+  const getComplications = () => [
+    createBoldTextOnNewLine('Complications de l’examen endoscopique: '),
+    createText(values.complicationEndo ? 'Oui' : 'Non'),
+    createText(values.complicationEndo && values.complicationEndoDesc !== '' ? `: ${values.complicationEndoDesc}` : '')
+  ];
+  const getComplicationSedation = () => {
+    if (values.sédationExamen) {
+      return [
+        createBoldTextOnNewLine('Complications de la sédation: '),
+        createText(values.complicationSedation ? 'Oui' : 'Non'),
+        createText(
+          values.complicationSedation && values.complicationSedationDesc !== ''
+            ? `: ${values.complicationSedationDesc}`
+            : ''
+        )
+      ];
+    }
+    return [];
+  };
+  const getHospitatlisation = () => [
+    createBoldTextOnNewLine('Nécessité d’une hospitalisation pour surveillance: '),
+    createText(values.necessiteHospitalisation ? 'Oui' : 'Non')
+  ];
+  const createBorderedParagraph = (children) =>
+    new Paragraph({
+      children,
+      border: {
+        bottom: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 },
+        top: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 },
+        left: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 },
+        right: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 1 }
+      }
+    });
+
+  const getPart1 = () =>
+    new Paragraph({
+      children: [
+        ...getFOGDTotal(),
+        // ...getDuréeExamen(),
+        ...getQualitéVisualisation(),
+        ...getChromoendoscopie(),
+        ...getBiopsies()
+      ],
+      border: {
+        bottom: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        top: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        left: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        right: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 }
+      }
+    });
+  const getPart2 = () =>
+    new Paragraph({
+      children: [...getConclusionGeneral(), ...getCAT(), ...getOperateurs()],
+      border: {
+        // bottom: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        // top: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 5 },
+        left: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        right: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 }
+      }
+    });
+  const getPart3 = () =>
+    new Paragraph({
+      children: [...getRessenti(), ...getComplications(), ...getComplicationSedation(), ...getHospitatlisation()],
+      border: {
+        bottom: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        top: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        left: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
+        right: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 }
+      }
+    });
   return (
     <>
       <Box sx={{ mb: 5 }} />

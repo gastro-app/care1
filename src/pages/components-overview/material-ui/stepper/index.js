@@ -24,7 +24,7 @@ export default function StepperComponent() {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title="CREEIS">
+    <Page title="Care1">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Stack spacing={5}>
           <Block title="Rapport">

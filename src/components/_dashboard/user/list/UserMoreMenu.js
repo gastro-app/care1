@@ -16,13 +16,14 @@ import { PATH_DASHBOARD } from '../../../../routes/paths';
 
 UserMoreMenu.propTypes = {
   onDelete: PropTypes.func,
-  userName: PropTypes.string
+  userName: PropTypes.string,
+  user: PropTypes.object,
 };
 
-export default function UserMoreMenu({ onDelete, userName }) {
+export default function UserMoreMenu({ onDelete, userName,user }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-
+console.log('user',user)
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>

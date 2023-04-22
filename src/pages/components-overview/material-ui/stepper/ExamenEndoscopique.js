@@ -1,5 +1,7 @@
+/* eslint-disable */
 import PropTypes from 'prop-types';
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import moment from 'moment/moment';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import ReactModal from 'react-modal';
@@ -314,28 +316,120 @@ const scores = [
 ];
 
 export default function UserNewForm({ isEdit, formik }) {
+  // (() => {
+  //   // overrides URL methods to be able to retrieve the original blobs later on
+  //   const oldCreate = URL.createObjectURL;
+  //   const oldRevoke = URL.revokeObjectURL;
+  //   Object.defineProperty(URL, 'createObjectURL', {
+  //     get: () => storeAndCreate
+  //   });
+  //   Object.defineProperty(URL, 'revokeObjectURL', {
+  //     get: () => forgetAndRevoke
+  //   });
+  //   Object.defineProperty(URL, 'getFromObjectURL', {
+  //     get: () => getBlob
+  //   });
+  //   const dict = {};
+
+  //   function storeAndCreate(blob) {
+  //     const url = oldCreate(blob); // let it throw if it has to
+  //     dict[url] = blob;
+  //     return url;
+  //   }
+
+  //   function forgetAndRevoke(url) {
+  //     oldRevoke(url);
+  //     try {
+  //       if (new URL(url).protocol === 'blob:') {
+  //         delete dict[url];
+  //       }
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+
+  //   function getBlob(url) {
+  //     return dict[url] || null;
+  //   }
+  // })();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalNumber, setModalNumber] = useState(0);
   function displayModal(number) {
     setModalNumber(number);
     setModalVisible(true);
   }
-  const [preview, setPreview] = useState(false);
+  const [preview, setPreview] = useState(true);
   const [files, setFiles] = useState([]);
   // const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
   const [date, setDate] = React.useState(new Date());
+  const reader = new FileReader();
+
   const handleDropMultiFile = useCallback(
     (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file)
-          })
-        )
-      );
+      // setFiles(
+      acceptedFiles.forEach((f, i) => {
+        console.log(f);
+
+        // reader.onloadend = function () {
+        //   // console.log('RESULT', reader.result);
+        //   return Object.assign(f, {
+        //     preview: URL.createObjectURL(f),
+        //     result: reader.result
+        //   });
+        //   //  return reader.result;
+        // };
+        if (i === 0) {
+          // const a = [...files];
+          // a.push(
+          //   Object.assign(f, {
+          //     preview: URL.createObjectURL(f)
+          //     // result: reader?.result?.split(',')[1] ?? ''
+          //   })
+          // );
+          // setFiles(a);
+          reader.onload = function () {
+            // console.log('RESULT', reader.result);
+            console.log('FILES HERE', files);
+            const a = [...files];
+            a.push(
+              Object.assign(f, {
+                preview: URL.createObjectURL(f),
+                result: reader.result // dataURLtoBlob(reader.result)
+                // blob: window.dataURLtoBlob(reader.result)
+              })
+            );
+            setFiles(a);
+
+            // dataURLtoBlob(reader.result, function (blob) {
+            //   console.log(blob);
+            // });
+            //  return reader.result;
+          };
+          reader.readAsDataURL(f);
+        }
+        // return Object.assign(f, {
+        //   preview: URL.createObjectURL(f)
+        // });
+      });
+      // );
     },
-    [setFiles]
+    [setFiles, files]
   );
+
+  useEffect(() => {
+    if (files) {
+      // console.log('Files', files);
+      const array = [];
+      files.forEach((e) => {
+        // console.log('f', e.result);
+        if (e.result) {
+          array.push(e.result.split(',')[1]);
+        }
+      });
+      // console.log('array', array);
+      setFieldValue('images', array);
+    }
+  }, [files]);
 
   const handleRemoveAll = () => {
     setFiles([]);
@@ -565,13 +659,14 @@ export default function UserNewForm({ isEdit, formik }) {
                   label="Date et heure de l'examen"
                   value={date}
                   onChange={(newDate) => {
-                    setDate(newDate);
-                    formik.setFieldValue('dateExamen', newDate);
+                    console.log('newDate', moment(newDate).format('DD-MM-YYYY HH:MM'));
+                    setDate(moment(newDate));
+                    setFieldValue('dateExamen', moment(newDate).format('DD-MM-YYYY HH:MM'));
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
 
-                <ExploredItem
+                {/* <ExploredItem
                   noLabel="Non"
                   yesLabel="Oui"
                   formik={formik}
@@ -582,7 +677,7 @@ export default function UserNewForm({ isEdit, formik }) {
                   <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField fullWidth label="Pré médication" {...getFieldProps('prémédicationIndicationDesc')} />
                   </Stack>
-                )}
+                )} */}
                 <ExploredItem
                   noLabel="Non"
                   yesLabel="Oui"
@@ -751,7 +846,7 @@ export default function UserNewForm({ isEdit, formik }) {
                         <Typography>Classification de Siewert</Typography>
                       </Button>
                     </Stack>
-                    <Typography variant="h6">Conclusion Œsophage</Typography>
+                    <Typography variant="h6">Conclusion</Typography>
                     <ConclusionGenerator
                       formikValue="osoConclusion"
                       options={optionsOesophage}
@@ -763,7 +858,7 @@ export default function UserNewForm({ isEdit, formik }) {
                 {values.cardia && (
                   <>
                     <TextField fullWidth label="Exploration Cardia" {...getFieldProps('cardiaDesc')} />
-                    <Typography variant="h6">Conclusion Cardia</Typography>
+                    <Typography variant="h6">Conclusion</Typography>
                     <ConclusionGenerator
                       formikValue="cardiaConclusion"
                       options={optionsCardia}
@@ -813,7 +908,7 @@ export default function UserNewForm({ isEdit, formik }) {
                   {values.fundus && (
                     <>
                       <TextField fullWidth label="Exploration Fundus" {...getFieldProps('fundusDesc')} />
-                      <Typography variant="h6">Conclusion Fundus</Typography>
+                      <Typography variant="h6">Conclusion</Typography>
                       <ConclusionGenerator
                         formikValue="fundusConclusion"
                         options={optionsFundus}
@@ -846,7 +941,7 @@ export default function UserNewForm({ isEdit, formik }) {
                           <Typography>Classification de Forrest</Typography>
                         </Button>
                       </Stack>
-                      <Typography variant="h6">Conclusion Pylore</Typography>
+                      <Typography variant="h6">Conclusion</Typography>
                       <ConclusionGenerator
                         formikValue="pyloreConclusion"
                         options={optionsPylore}
@@ -876,7 +971,7 @@ export default function UserNewForm({ isEdit, formik }) {
                       {values.bulbeBiopsies && (
                         <TextField fullWidth label="Biopsies bulbe: nombre " {...getFieldProps('bulbeBiopsiesDesc')} />
                       )}
-                      <Typography variant="h6">Conclusion Bulbe</Typography>
+                      <Typography variant="h6">Conclusion</Typography>
                       <ConclusionGenerator
                         formikValue="bulbeConclusion"
                         options={optionsBulbe}
@@ -913,7 +1008,7 @@ export default function UserNewForm({ isEdit, formik }) {
                           <Typography>Classification de Spigelman</Typography>
                         </Button>
                       </Stack>
-                      <Typography variant="h6">Conclusion duodénum</Typography>
+                      <Typography variant="h6">Conclusion</Typography>
                       <ConclusionGenerator
                         formikValue="duodénumConclusion"
                         options={optionsDuodénum}
@@ -1015,13 +1110,34 @@ export default function UserNewForm({ isEdit, formik }) {
                   )}
                 </Stack>
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="subtitle2">Images prises durant l’examen endoscopiques</Typography>
+                  <Typography variant="h4" sx={{ mb: '2%' }}>
+                    Images prises durant l’examen endoscopiques
+                  </Typography>
                   <UploadMultiFile
                     showPreview={preview}
                     files={files}
                     onDrop={handleDropMultiFile}
                     onRemove={handleRemove}
                     onRemoveAll={handleRemoveAll}
+                    onUpload={async () => {
+                      console.log('files', files);
+                      const a = [];
+                      files.forEach(async (f) => {
+                        if (f?.result && f.result !== '') {
+                          //   a.push(Uint8Array.from(atob(f.result), (c) => c.charCodeAt(0)));
+                          a.push(f.result);
+
+                          // fetch(f.result)
+                          //   .then((res) => res.blob())
+                          //   .then((blob) => {
+                          //     console.log(blob);
+                          //     a.push(blob);
+                          //   });
+                        }
+                      });
+                      setFieldValue('images', a);
+                      console.log('a', a);
+                    }}
                   />
                 </Box>
               </Stack>
@@ -1347,3 +1463,26 @@ export default function UserNewForm({ isEdit, formik }) {
     </>
   );
 }
+function dataURLtoBlob(dataUrl) {
+  var req = new XMLHttpRequest();
+
+  req.open('GET', dataUrl);
+  req.responseType = 'arraybuffer'; // Can't use blob directly because of https://crbug.com/412752
+
+  req.onload = function fileLoaded(e) {
+    // If you require the blob to have correct mime type
+    var mime = this.getResponseHeader('content-type');
+
+    return new Blob([this.response], { type: mime });
+  };
+
+  req.send();
+}
+
+// dataURLtoBlob(
+//   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==',
+//   function (blob) {
+//     console.log(blob);
+//     return blob;
+//   }
+// );

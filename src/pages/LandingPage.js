@@ -14,7 +14,7 @@ const RootStyle = styled(Page)({
 
 export default function LandingPage() {
   return (
-    <RootStyle title="CREEIS" id="move_top">
+    <RootStyle title="Care1" id="move_top">
       <LandingHero />
     </RootStyle>
   );

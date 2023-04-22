@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
+import { isArray } from 'lodash';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
@@ -118,19 +119,26 @@ export default function UserNewForm({ isEdit, formik }) {
   useEffect(() => {
     // console.log(values.osoConclusion);
     // console.log(values.osoConclusion);
+    const a1 = isArray(values.osoConclusion) ? values.osoConclusion : [];
+    const a2 = isArray(values.cardiaConclusion) ? values.cardiaConclusion : [];
+    const a3 = isArray(values.fundusConclusion) ? values.fundusConclusion : [];
+    const a4 = isArray(values.pyloreConclusion) ? values.pyloreConclusion : [];
+    const a5 = isArray(values.bulbeConclusion) ? values.bulbeConclusion : [];
+    const a6 = isArray(values.duodénumConclusion) ? values.duodénumConclusion : [];
+
     const array = [
       // { content: '- Conclusion Oseophage' },
-      ...values.osoConclusion,
+      ...a1,
       // { content: '- Conclusion Cardia' },
-      ...values.cardiaConclusion,
+      ...a2,
       // { content: '- Conclusion Fundus' },
-      ...values.fundusConclusion,
+      ...a3,
       // { content: '- Conclusion Pylore' },
-      ...values.pyloreConclusion,
+      ...a4,
       // { content: '- Conclusion Bulbe' },
-      ...values.bulbeConclusion,
+      ...a5,
       // { content: '- Conclusion Duodénum' },
-      ...values.duodénumConclusion
+      ...a6
     ];
     let string = '';
     array.forEach((e) => {

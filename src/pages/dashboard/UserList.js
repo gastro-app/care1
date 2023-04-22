@@ -236,7 +236,7 @@ export default function UserList() {
                         <TableCell align="left">{numDoss}</TableCell>
                         <TableCell align="left">{etab}</TableCell>
                         <TableCell align="right">
-                          <UserMoreMenu userName={nom} />
+                          <UserMoreMenu userName={nom} user={row} />
                         </TableCell>
                       </TableRow>
                     );

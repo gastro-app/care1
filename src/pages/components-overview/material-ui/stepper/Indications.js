@@ -43,6 +43,7 @@ import BSG from '../../../../assets/indications/bsg.pdf';
 import ACG from '../../../../assets/indications/acg.pdf';
 import Fig1 from '../../../../assets/indications/fig1.pdf';
 import Fig2 from '../../../../assets/indications/fig2.pdf';
+import MultiSelect from './MultiSelect';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -405,7 +406,7 @@ export default function UserNewForm({ isEdit, formik }) {
                     <>
                       <Stack direction={{ xs: 'column', sm: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                         {/* <TextField fullWidth label="Classe" {...getFieldProps('antiCoagulantsClasse')} /> */}
-                        <FormControl sx={{ width: '100%' }}>
+                        {/* <FormControl sx={{ width: '100%' }}>
                           <InputLabel id="demo-multiple-name-label">Classe</InputLabel>
                           <Select
                             labelId="demo-multiple-name-label"
@@ -422,7 +423,14 @@ export default function UserNewForm({ isEdit, formik }) {
                               </MenuItem>
                             ))}
                           </Select>
-                        </FormControl>
+                        </FormControl> */}
+                        <MultiSelect
+                          label="Classe anti coagulants"
+                          options={classes}
+                          formikValue="antiCoagulantsClasse"
+                          setFieldValue={setFieldValue}
+                          limit={2}
+                        />
                         {/* <TextField fullWidth label="Dose" {...getFieldProps('antiCoagulantsDose')} />
                         <TextField fullWidth label="Nombre de prise" {...getFieldProps('antiCoagulantsNb')} /> */}
                       </Stack>
