@@ -529,19 +529,19 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         delete bodyValues.pyloreConclusion;
         delete bodyValues.bulbeConclusion;
         delete bodyValues.images;
-        fetch('http://localhost:5000/api/reports', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(bodyValues)
-        })
-          .then((response) => response.json())
-          .then(async (data) => {
-            console.log('data', data);
+        // fetch('http://localhost:5000/api/reports', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   body: JSON.stringify(bodyValues)
+        // })
+        //   .then((response) => response.json())
+        //   .then(async (data) => {
+        //     console.log('data', data);
 
-            // generatePDF(data);
-          });
+        //     // generatePDF(data);
+        //   });
         // resetForm();
         setSubmitting(false);
         enqueueSnackbar('Report generated', { variant: 'success' });

@@ -159,11 +159,11 @@ export default function UserList() {
   filteredUsers = applySortFilter1(filteredUsers, getComparator(order, orderBy), filterNumDoss);
   const isUserNotFound = filteredUsers.length === 0;
   useEffect(() => {
-    fetch('http://localhost:5000/api/reports')
-      .then((response) => response.json())
-      .then((data) => {
-        setReports(data);
-      });
+    // fetch('http://localhost:5000/api/reports')
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     setReports(data);
+    //   });
   }, []);
   return (
     <Page title="User: List | Minimal-UI">

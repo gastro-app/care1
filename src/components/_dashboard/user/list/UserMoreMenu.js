@@ -20,10 +20,9 @@ UserMoreMenu.propTypes = {
   user: PropTypes.object,
 };
 
-export default function UserMoreMenu({ onDelete, userName,user }) {
+export default function UserMoreMenu({ onDelete, userName, user }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-console.log('user',user)
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
