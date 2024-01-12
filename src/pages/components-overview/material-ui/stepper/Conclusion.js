@@ -1,4 +1,4 @@
-import * as Yup from 'yup';
+/* eslint-disable */
 import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
 import { isArray } from 'lodash';
@@ -99,30 +99,33 @@ export default function UserNewForm({ isEdit, formik }) {
   const { values, getFieldProps, setFieldValue } = formik;
   const [conclusionText, setConclusionText] = useState('');
 
-  const optionsSeniors = ['Dr Enaifer', 'Dr Bougassas', 'Dr Ben Nejma', 'Dr Bouchabou', 'Dr Hemdani', 'Dr Nakhli'];
+  const optionsSeniors = [
+    'Dr Enaifer',
+    'Dr Bougassas',
+    'Dr Ben Nejma',
+    'Dr Bouchabou',
+    'Dr Hemdani',
+    'Dr Nakhli',
+    'Autre'
+  ];
   const optionsResidents = [
     'Rste Medhioub',
     'Rste Smaoui',
     'Rste Kefi',
     'Rste Ben Safta',
     'Rste Ghanouchi',
-    'Rste Mbarek'
+    'Rste Mbarek',
+    'Autre'
   ];
-  const optionsTechniciens = [
-    'Assili Nader',
-    'Amri Wajdi',
-    'Sellami Aroua',
-    'Jarroudi Hassen',
-    'Abdelhafidh Hermi',
-    'Nouri Meriem'
-  ];
+  //disable-eslint
+  const optionsTechniciens = ['Assili Nader', 'Sellami Aroua', 'Jarroudi Hassen', 'Nouri Meriem', 'Chakroun Hameyda'];
   useEffect(() => {
     // console.log(values.osoConclusion);
     // console.log(values.osoConclusion);
     const a1 = isArray(values.osoConclusion) ? values.osoConclusion : [];
     const a2 = isArray(values.cardiaConclusion) ? values.cardiaConclusion : [];
     const a3 = isArray(values.fundusConclusion) ? values.fundusConclusion : [];
-    const a4 = isArray(values.pyloreConclusion) ? values.pyloreConclusion : [];
+    const a4 = isArray(values.antreConclusion) ? values.antreConclusion : [];
     const a5 = isArray(values.bulbeConclusion) ? values.bulbeConclusion : [];
     const a6 = isArray(values.duodénumConclusion) ? values.duodénumConclusion : [];
 
@@ -142,11 +145,18 @@ export default function UserNewForm({ isEdit, formik }) {
     ];
     let string = '';
     array.forEach((e) => {
-      string += `${e.content}\n`;
+      string += `${e.content}, \n`;
     });
     setConclusionText(string);
     setFieldValue('conclusion', string);
   }, []);
+  const checkIfArrayHasValue = (array, value) => {
+    const index = array.findIndex((e) => e === value);
+    if (index > -1) {
+      return true;
+    }
+    return false;
+  };
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
@@ -155,20 +165,9 @@ export default function UserNewForm({ isEdit, formik }) {
             <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
               <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="FOGDtotale" label="FOGD totale" />
               <TextField fullWidth label="Durée de l’examen endoscopique" {...getFieldProps('duréeExamen')} />
-              <TextField
-                select
-                fullWidth
-                label="Qualité de la visualisation de la muqueuse"
-                SelectProps={{ native: true }}
-                {...getFieldProps('qualityVisualisation')}
-              >
-                <option key="0" value="" />
-                {['Bonne', 'Moyenne', 'Mauvaise'].map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </TextField>
+              <Typography style={{ marginLeft: '1vw' }}>
+                La durée d'exploration minimale recommandée est de 7 minutes
+              </Typography>
               <ExploredItem
                 noLabel="Non"
                 yesLabel="Oui"
@@ -205,36 +204,43 @@ export default function UserNewForm({ isEdit, formik }) {
                 }}
               />
               <TextField fullWidth multiline minRows={4} label="CAT" {...getFieldProps('CAT')} />
-              <MultiSelect
+              <TextField fullWidth multiline minRows={4} label="Séniors" {...getFieldProps('seniors')} />
+              <TextField fullWidth multiline minRows={4} label="Résidents" {...getFieldProps('residents')} />
+              {/* <MultiSelect
                 label="Séniors"
                 options={optionsSeniors}
                 setFieldValue={setFieldValue}
                 formikValue="seniors"
-                limit={3}
+                limit={4}
               />
-              <MultiSelect
+              {checkIfArrayHasValue(values.seniors, 'Autre') && (
+                <TextField fullWidth label="Autre sénior" {...getFieldProps('autreSeniors')} />
+              )} */}
+              {/* <MultiSelect
                 label="Résidents"
                 options={optionsResidents}
                 setFieldValue={setFieldValue}
                 formikValue="residents"
-                limit={3}
+                limit={4}
               />
-              <MultiSelect
+              {checkIfArrayHasValue(values.residents, 'Autre') && (
+                <TextField fullWidth label="Autre résident" {...getFieldProps('autreResidents')} />
+              )} */}
+
+              {/* <MultiSelect
                 label="Techniciens"
                 options={optionsTechniciens}
                 setFieldValue={setFieldValue}
                 formikValue="techniciens"
-                limit={3}
-              />
-
-              <TextField
+                limit={4}
+              /> */}
+              {/*   <TextField
                 fullWidth
                 multiline
                 minRows={4}
                 label="Ressenti du patient"
                 {...getFieldProps('ressentiPatient')}
-              />
-
+              /> */}
               {values.sédationExamen && (
                 <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                   <ExploredItem

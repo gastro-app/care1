@@ -17,7 +17,7 @@ import { PATH_DASHBOARD } from '../../../../routes/paths';
 UserMoreMenu.propTypes = {
   onDelete: PropTypes.func,
   userName: PropTypes.string,
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default function UserMoreMenu({ onDelete, userName, user }) {

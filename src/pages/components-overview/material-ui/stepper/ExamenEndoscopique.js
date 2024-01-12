@@ -51,7 +51,7 @@ import A from '../../../../assets/examen/A.png';
 import B from '../../../../assets/examen/B.png';
 import C from '../../../../assets/examen/C.png';
 import D from '../../../../assets/examen/D.png';
-
+import checklist from '../../../../assets/examen/checklist.jpg';
 // utils
 import fakeRequest from '../../../../utils/fakeRequest';
 // routes
@@ -67,43 +67,6 @@ ExploredItem.propTypes = {
   label: PropTypes.string,
   formik: PropTypes.object
 };
-
-// function ExploredItem({ labelExplored, value, label, formik }) {
-//   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
-
-//   const handleChange = (event, newAlignment) => {
-//     formik.setFieldValue(labelExplored, newAlignment);
-//   };
-//   return (
-//     <>
-//       <Box sx={{ flexGrow: 1 }}>
-//         <Typography variant="h5">{label}</Typography>
-//         <ToggleButtonGroup
-//           color="primary"
-//           value={values[labelExplored]}
-//           exclusive
-//           onChange={handleChange}
-//           aria-label="Platform"
-//         >
-//           <ToggleButton value="Exploré">Exploré</ToggleButton>
-//           <ToggleButton value="Non Exploré">Non Exploré</ToggleButton>
-//         </ToggleButtonGroup>
-//       </Box>
-//       {values[labelExplored] === 'Exploré' && (
-//         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-//           <TextField
-//             fullWidth
-//             multiline
-//             label={label}
-//             {...getFieldProps(value)}
-//             error={Boolean(touched[value] && errors[value])}
-//             helperText={touched[value] && errors[value]}
-//           />
-//         </Stack>
-//       )}
-//     </>
-//   );
-// }
 function ExploredItem({ label, field, formik, yesLabel, noLabel }) {
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
   const [isChecked, setIsChecked] = useState(false);
@@ -135,6 +98,37 @@ UserNewForm.propTypes = {
   isEdit: PropTypes.bool,
   formik: PropTypes.object
 };
+const zones = [
+  'Œsophage supérieur',
+  'Œsophage inférieur',
+  'Ligne Z et sommet des plis gastriques',
+  'Cardia, fundus et la petite courbure en rétroversion',
+  'Corps gastrique avec la petite courbure en vision directe',
+  'Corps gastrique avec la grande courbure en rétrovision',
+  'Antre',
+  'L’angle de la petite courbure en rétrovision partielle',
+  'Bulbe',
+  'Deuxième duodénum'
+];
+const endoscopes = [
+  '1- Olympus GIF-Q150 2206251',
+  '2- Olympus GIF-Q150 2620604',
+  '3- Olympus GIF-H180',
+  '4- Olympus GIF-H170 (EXERA III)',
+  '5- FUJINON SN7G361K493'
+];
+const autresMateriels = [
+  'Clips d’hémostase',
+  'Kit de ligature élastique des varices oesophagiennes',
+  'Aiguille d’injection',
+  'Pince froide',
+  'Pince chaude',
+  'Pince à usage unique',
+  'Pince à usage multiple',
+  'Anse à polypectomie à panier de type Dormia',
+  'Argon/sonde d’électrocoagulation',
+  'Autres'
+];
 const optionsOesophage = [
   { id: '1', label: 'Aspect d’acanthose glycogénique de l’œsophage' },
   {
@@ -151,6 +145,7 @@ const optionsOesophage = [
     dropdownValues: ['A', 'B', 'C', 'D'],
     dropdownLabel: 'Grade'
   },
+  { id: '7', label: 'Oesophagite mycotique ' },
   {
     id: '4',
     label: 'Varices oesophagiennes grade (I/II/III) [sans signes rouges/avec signes rouges]',
@@ -184,7 +179,7 @@ const optionsOesophage = [
     label: 'Processus ulcéro-bourgeonnant de l’œsophage (supérieur, moyen, inférieur) ',
     hasDropdown: true,
     dropdownValues: ['supérieur', 'moyen', 'inférieur'],
-    dropdownLabel: 'Grade'
+    dropdownLabel: 'Localisation'
   }
 ];
 const optionsCardia = [
@@ -200,9 +195,9 @@ const optionsFundus = [
   { id: '1', label: 'Aspect de métaplasie intestinale gastrique' },
   {
     id: '2',
-    label: 'Gastropathie fundique (en mosaïque/congestive/nodulaire/ulcérée/Erosive/varioloforme/atrophique)',
+    label: 'Gastropathie fundique (en mosaïque/congestive/nodulaire/ulcérée/érosive/varioloforme/atrophique)',
     hasDropdown: true,
-    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'Erosive', 'varioloforme', 'atrophique'],
+    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'érosive', 'varioloforme', 'atrophique'],
     dropdownLabel: 'Description'
   },
   {
@@ -223,23 +218,31 @@ const optionsFundus = [
   },
   {
     id: '7',
-    label: 'Polype fundique classé (text) selon la classification de Paris ',
+    label: 'Polype fundique classé () selon la classification de Paris ',
     hasTextField: true,
     textFieldLabel: 'Classe'
   },
   {
     id: '8',
     label: 'Processus ulcéro-bourgeonnant fundique'
+  },
+  {
+    id: '9',
+    label: 'Varice gastrique type (GOV 1/GOV 2/IGV 1)',
+    hasDropdown: true,
+    dropdownValues: ['GOV 1', 'GOV 2', 'IGV 1'],
+    dropdownLabel: 'Type'
   }
 ];
-const optionsPylore = [
+const optionsAntre = [
   { id: '1', label: 'Aspect de métaplasie intestinale gastrique, Biopsies' },
   {
     id: '2',
     label: 'Gastropathie antrale (en mosaïque,congestive,nodulaire,ulcérée,érosive,varioloforme,atrophique)',
     hasDropdown: true,
-    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'Erosive', 'varioloforme', 'atrophique'],
-    dropdownLabel: 'Description'
+    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'erosive', 'varioloforme', 'atrophique'],
+    dropdownLabel: 'Description',
+    hasSecondDropdown: true
   },
   {
     id: '3',
@@ -259,17 +262,21 @@ const optionsPylore = [
   },
   {
     id: '6',
-    label: 'Formation d’allure sous-muqueuse fundique'
+    label: 'Formation d’allure sous-muqueuse antrale'
   },
   {
     id: '7',
-    label: 'Polype fundique classé (text) selon la classification de Paris ',
+    label: 'Polype antral classé () selon la classification de Paris ',
     hasTextField: true,
     textFieldLabel: 'Classe'
   },
   {
     id: '8',
     label: 'Processus ulcéro-bourgeonnant antral'
+  },
+  {
+    id: '9',
+    label: 'Varice gastrique type IGV 2'
   }
 ];
 const optionsBulbe = [
@@ -281,14 +288,18 @@ const optionsBulbe = [
   {
     id: '3',
     label: 'Bulbe atrophique'
+  },
+  {
+    id: '4',
+    label: 'Bulbite congestive'
   }
 ];
 const optionsDuodénum = [
   {
     id: '1',
-    label: 'Aspect en (mosaïque/nodulaire/blanchâtre) de la muqueuse duodénale',
+    label: 'Aspect (en mosaïque/nodulaire/blanchâtre) de la muqueuse duodénale',
     hasDropdown: true,
-    dropdownValues: ['mosaïque', 'nodulaire', 'blanchâtre'],
+    dropdownValues: ['en mosaïque', 'nodulaire', 'blanchâtre'],
     dropdownLabel: 'Description'
   },
   {
@@ -306,6 +317,10 @@ const optionsDuodénum = [
   {
     id: '5',
     label: 'Processus ulcéro-bourgeonnant duodénal '
+  },
+  {
+    id: '6',
+    label: 'Aspect de lymphangiectasies duodénales'
   }
 ];
 const scores = [
@@ -316,42 +331,6 @@ const scores = [
 ];
 
 export default function UserNewForm({ isEdit, formik }) {
-  // (() => {
-  //   // overrides URL methods to be able to retrieve the original blobs later on
-  //   const oldCreate = URL.createObjectURL;
-  //   const oldRevoke = URL.revokeObjectURL;
-  //   Object.defineProperty(URL, 'createObjectURL', {
-  //     get: () => storeAndCreate
-  //   });
-  //   Object.defineProperty(URL, 'revokeObjectURL', {
-  //     get: () => forgetAndRevoke
-  //   });
-  //   Object.defineProperty(URL, 'getFromObjectURL', {
-  //     get: () => getBlob
-  //   });
-  //   const dict = {};
-
-  //   function storeAndCreate(blob) {
-  //     const url = oldCreate(blob); // let it throw if it has to
-  //     dict[url] = blob;
-  //     return url;
-  //   }
-
-  //   function forgetAndRevoke(url) {
-  //     oldRevoke(url);
-  //     try {
-  //       if (new URL(url).protocol === 'blob:') {
-  //         delete dict[url];
-  //       }
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   }
-
-  //   function getBlob(url) {
-  //     return dict[url] || null;
-  //   }
-  // })();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalNumber, setModalNumber] = useState(0);
   function displayModal(number) {
@@ -363,6 +342,21 @@ export default function UserNewForm({ isEdit, formik }) {
   // const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
   const [date, setDate] = React.useState(new Date());
   const reader = new FileReader();
+  const checkIndiction = (isThérapeutique, i) => {
+    if (isThérapeutique) {
+      const index = values.thérapeutiqueIndex.findIndex((e) => e === i);
+      if (index > -1) {
+        return true;
+      }
+      return false;
+    } else {
+      const index = values.diagnostiqueIndex.findIndex((e) => e === i);
+      if (index > -1) {
+        return true;
+      }
+      return false;
+    }
+  };
 
   const handleDropMultiFile = useCallback(
     (acceptedFiles) => {
@@ -416,6 +410,29 @@ export default function UserNewForm({ isEdit, formik }) {
     [setFiles, files]
   );
 
+  const getScoreQV = () => {
+    const getScore = (value) => {
+      switch (value) {
+        case 'A':
+          return 1;
+        case 'B':
+          return 2;
+        case 'C':
+          return 3;
+        case 'D':
+          return 4;
+        default:
+          return 0;
+      }
+    };
+    if (values.qvFundus && values.qvPartieSup && values.qvPartieInf && values.qvAntre)
+      return (
+        getScore(values.qvFundus) +
+        getScore(values.qvPartieSup) +
+        getScore(values.qvPartieInf) +
+        getScore(values.qvAntre)
+      );
+  };
   useEffect(() => {
     if (files) {
       // console.log('Files', files);
@@ -581,15 +598,6 @@ export default function UserNewForm({ isEdit, formik }) {
     setTasks(newTasks);
   };
   console.log('tasks', tasks);
-  const autresMateriels = [
-    'Clips d’hémostase',
-    'Kit de ligature élastique des varices oesophagiennes',
-    'Aiguille d’injection',
-    'Pince froide',
-    'Pince chaude',
-    'Anse à polypectomie à panier de type Dormia',
-    'Autres'
-  ];
 
   return (
     <>
@@ -649,12 +657,12 @@ export default function UserNewForm({ isEdit, formik }) {
                   field="examenPhysiqueInterrogatoire"
                   label="Examen physique et interrogatoire "
                 />
-                <TextField
+                {/*  <TextField
                   fullWidth
                   multiline
                   label="Délai entre la demande de l’examen et sa réalisation "
                   {...getFieldProps('délaiExamen')}
-                />
+                /> */}
                 <MobileDateTimePicker
                   label="Date et heure de l'examen"
                   value={date}
@@ -665,14 +673,14 @@ export default function UserNewForm({ isEdit, formik }) {
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
-
-                {/* <ExploredItem
+                <ExploredItem
                   noLabel="Non"
                   yesLabel="Oui"
                   formik={formik}
                   field="prémédicationIndication"
                   label="Pré médication"
                 />
+                {/*
                 {values.prémédicationIndication && (
                   <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField fullWidth label="Pré médication" {...getFieldProps('prémédicationIndicationDesc')} />
@@ -718,7 +726,7 @@ export default function UserNewForm({ isEdit, formik }) {
                   <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                     <TextField
                       fullWidth
-                      label="Protocole examen avant sédation"
+                      label="Protocole de la sédation"
                       {...getFieldProps('protocoleAvantSédation')}
                     />
                     <ExploredItem
@@ -732,7 +740,7 @@ export default function UserNewForm({ isEdit, formik }) {
                       <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                         <TextField
                           fullWidth
-                          label="Description des anomalies"
+                          label="Les anomalies à l'examen"
                           {...getFieldProps('anomaliesAvantSédationDesc')}
                         />
                       </Stack>
@@ -756,12 +764,7 @@ export default function UserNewForm({ isEdit, formik }) {
                   label="L'endoscope"
                 >
                   <option key="0" value="" />
-                  {[
-                    'Olympus GIF-Q150 2206251',
-                    'Olympus GIF-Q150 2620604',
-                    'Olympus GIF-H180',
-                    'Olympus GIF-H170 (EXERA III)'
-                  ].map((option) => (
+                  {endoscopes.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>
@@ -787,11 +790,15 @@ export default function UserNewForm({ isEdit, formik }) {
                 </TextField> */}
 
                 <MultiSelect
-                  label="Autre Materiels"
+                  label="Autres Materiels"
                   options={autresMateriels}
                   formikValue="autresMateriels"
                   setFieldValue={setFieldValue}
                 />
+
+                {values.autresMateriels.includes('Autres') && (
+                  <TextField fullWidth label="Autres" {...getFieldProps('autresMaterielsDesc')} />
+                )}
               </Stack>
             </AccordionDetails>
           </Accordion>
@@ -811,59 +818,83 @@ export default function UserNewForm({ isEdit, formik }) {
                 />
                 {values.osophage && (
                   <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField fullWidth label="Exploration Œsophage" {...getFieldProps('osophageDesc')} />
+                    <ExploredItem
+                      noLabel="Non"
+                      yesLabel="Oui"
+                      formik={formik}
+                      field="osoNormal"
+                      label="Aspect endoscopique normal"
+                    />
+                    {!values.osoNormal && (
+                      <TextField fullWidth label="Exploration de l'Œsophage" {...getFieldProps('osophageDesc')} />
+                    )}
                     <ExploredItem
                       noLabel="Non"
                       yesLabel="Oui"
                       formik={formik}
                       field="osoBiopsies"
-                      label="Biopsises Œsophage"
+                      label="Biopsises de l'Œsophage"
                     />
                     {values.osoBiopsies && (
                       <TextField
                         fullWidth
-                        label="Biopsises Œsophage: nombre de biopsies, nombre de tubes, selon le 
-                  Protocole de seattle si EBO"
+                        label="Biopsises de l'Œsophage: nombre de biopsies, nombre de tubes"
                         {...getFieldProps('osoBiopsiesDesc')}
                       />
                     )}
-                    <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                      <Button variant="contained" onClick={() => displayModal(0)}>
-                        <Typography>Classification de Baveno pour les varices oesophagiennes</Typography>
-                      </Button>
-                      <Button variant="contained" onClick={() => displayModal(1)}>
-                        <Typography>Classification de Prague</Typography>
-                      </Button>
-                    </Stack>
-                    <Stack direction={{ xs: 'row', width: '100%' }} spacing={{ xs: 3, sm: 2 }}>
-                      <Button variant="contained" onClick={() => displayModal(2)}>
-                        <Typography>Classification de Los Angeles</Typography>
-                      </Button>
-                      <Button variant="contained" onClick={() => displayModal(3)}>
-                        <Typography>Classification de Zargar</Typography>
-                      </Button>
-                      <Button variant="contained" onClick={() => displayModal(4)}>
-                        <Typography>Classification de Siewert</Typography>
-                      </Button>
-                    </Stack>
-                    <Typography variant="h6">Conclusion</Typography>
-                    <ConclusionGenerator
-                      formikValue="osoConclusion"
-                      options={optionsOesophage}
-                      setFieldValue={setFieldValue}
-                    />
+                    {!values.osoNormal && (
+                      <>
+                        <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                          <Button variant="contained" onClick={() => displayModal(0)}>
+                            <Typography>Classification de Baveno pour les varices oesophagiennes</Typography>
+                          </Button>
+                          <Button variant="contained" onClick={() => displayModal(1)}>
+                            <Typography>Classification de Prague</Typography>
+                          </Button>
+                        </Stack>
+                        <Stack direction={{ xs: 'row', width: '100%' }} spacing={{ xs: 3, sm: 2 }}>
+                          <Button variant="contained" onClick={() => displayModal(2)}>
+                            <Typography>Classification de Los Angeles</Typography>
+                          </Button>
+                          <Button variant="contained" onClick={() => displayModal(3)}>
+                            <Typography>Classification de Zargar</Typography>
+                          </Button>
+                          <Button variant="contained" onClick={() => displayModal(4)}>
+                            <Typography>Classification de Siewert</Typography>
+                          </Button>
+                        </Stack>
+                        <Typography variant="h6">Conclusion</Typography>
+                        <ConclusionGenerator
+                          formikValue="osoConclusion"
+                          options={optionsOesophage}
+                          setFieldValue={setFieldValue}
+                        />
+                      </>
+                    )}
                   </Stack>
                 )}
                 <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="cardia" label="Cardia" />
                 {values.cardia && (
                   <>
-                    <TextField fullWidth label="Exploration Cardia" {...getFieldProps('cardiaDesc')} />
-                    <Typography variant="h6">Conclusion</Typography>
-                    <ConclusionGenerator
-                      formikValue="cardiaConclusion"
-                      options={optionsCardia}
-                      setFieldValue={setFieldValue}
+                    <ExploredItem
+                      noLabel="Non"
+                      yesLabel="Oui"
+                      formik={formik}
+                      field="cardiaNormal"
+                      label="Aspect endoscopique normal"
                     />
+
+                    {!values.cardiaNormal && (
+                      <>
+                        <TextField fullWidth label="Exploration du cardia" {...getFieldProps('cardiaDesc')} />
+                        <Typography variant="h6">Conclusion</Typography>
+                        <ConclusionGenerator
+                          formikValue="cardiaConclusion"
+                          options={optionsCardia}
+                          setFieldValue={setFieldValue}
+                        />
+                      </>
+                    )}
                   </>
                 )}
                 <Typography variant="h4">Estomac</Typography>
@@ -877,7 +908,7 @@ export default function UserNewForm({ isEdit, formik }) {
                       {...getFieldProps('lacMuqueux')}
                     >
                       <option key="0" value="" />
-                      {['Claire', 'Sale avec présence de débris alimentaire', 'Mousseux', 'Bilieux'].map((option) => (
+                      {['Clair', 'Sale avec présence de débris alimentaires', 'Mousseux', 'Bilieux'].map((option) => (
                         <option key={option} value={option}>
                           {option}
                         </option>
@@ -907,17 +938,62 @@ export default function UserNewForm({ isEdit, formik }) {
                   />
                   {values.fundus && (
                     <>
-                      <TextField fullWidth label="Exploration Fundus" {...getFieldProps('fundusDesc')} />
-                      <Typography variant="h6">Conclusion</Typography>
-                      <ConclusionGenerator
-                        formikValue="fundusConclusion"
-                        options={optionsFundus}
-                        setFieldValue={setFieldValue}
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="fundusNormal"
+                        label="Aspect endoscopique normal"
                       />
+                      {!values.fundusNormal && (
+                        <>
+                          <TextField fullWidth label="Exploration du fundus" {...getFieldProps('fundusDesc')} />
+                          <Typography variant="h6">Conclusion</Typography>
+                          <ConclusionGenerator
+                            formikValue="fundusConclusion"
+                            options={optionsFundus}
+                            setFieldValue={setFieldValue}
+                          />
+                        </>
+                      )}
                     </>
                   )}
                   <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="antre" label="Antre" />
-                  {values.antre && <TextField fullWidth label="Exploration Antre" {...getFieldProps('antreDesc')} />}
+                  {values.antre && (
+                    <>
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="antreNormal"
+                        label="Aspect endoscopique normal"
+                      />
+                      {!values.antreNormal && (
+                        <>
+                          <TextField fullWidth label="Exploration de l'antre" {...getFieldProps('antreDesc')} />
+                          <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                            <Button variant="contained" onClick={() => displayModal(6)}>
+                              <Typography>Classification de Sarin pour les varices gastriques</Typography>
+                            </Button>
+                            <Button variant="contained" onClick={() => displayModal(5)}>
+                              <Typography>Classification de Paris</Typography>
+                            </Button>
+                          </Stack>
+                          <Stack direction={{ xs: 'row', width: '100%' }} spacing={{ xs: 3, sm: 2 }}>
+                            <Button variant="contained" onClick={() => displayModal(7)}>
+                              <Typography>Classification de Forrest</Typography>
+                            </Button>
+                          </Stack>
+                          <Typography variant="h6">Conclusion</Typography>
+                          <ConclusionGenerator
+                            formikValue="antreConclusion"
+                            options={optionsAntre}
+                            setFieldValue={setFieldValue}
+                          />
+                        </>
+                      )}
+                    </>
+                  )}
                   <ExploredItem
                     noLabel="Non exploré"
                     yesLabel="Exploré"
@@ -927,26 +1003,16 @@ export default function UserNewForm({ isEdit, formik }) {
                   />
                   {values.pylore && (
                     <>
-                      <TextField fullWidth label="Exploration Pylore" {...getFieldProps('pyloreDesc')} />
-                      <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <Button variant="contained" onClick={() => displayModal(6)}>
-                          <Typography>Classification de Baveno pour les varices gastriques</Typography>
-                        </Button>
-                        <Button variant="contained" onClick={() => displayModal(5)}>
-                          <Typography>Classification de Paris</Typography>
-                        </Button>
-                      </Stack>
-                      <Stack direction={{ xs: 'row', width: '100%' }} spacing={{ xs: 3, sm: 2 }}>
-                        <Button variant="contained" onClick={() => displayModal(7)}>
-                          <Typography>Classification de Forrest</Typography>
-                        </Button>
-                      </Stack>
-                      <Typography variant="h6">Conclusion</Typography>
-                      <ConclusionGenerator
-                        formikValue="pyloreConclusion"
-                        options={optionsPylore}
-                        setFieldValue={setFieldValue}
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="pyloreNormal"
+                        label="Aspect endoscopique normal"
                       />
+                      {!values.pyloreNormal && (
+                        <TextField fullWidth label="Exploration du pylore" {...getFieldProps('pyloreDesc')} />
+                      )}
                     </>
                   )}
                   {/* <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="estoBiopsies" label="Biopsies" />
@@ -957,10 +1023,33 @@ export default function UserNewForm({ isEdit, formik }) {
                       {...getFieldProps('estoBiopsiesDesc')}
                     />
                   )} */}
+                  <ExploredItem
+                    noLabel="Non"
+                    yesLabel="Oui"
+                    formik={formik}
+                    field="estoBiopsies"
+                    label="Biopsies de l'Estomac"
+                  />
+                  {values.estoBiopsies && (
+                    <TextField
+                      fullWidth
+                      label="Biopsies de l'Estomac: nombre de biopsies, nombre de tubes"
+                      {...getFieldProps('estoBiopsiesDesc')}
+                    />
+                  )}
                   <ExploredItem noLabel="Non exploré" yesLabel="Exploré" formik={formik} field="bulbe" label="Bulbe" />
                   {values.bulbe && (
                     <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                      <TextField fullWidth label="Exploration bulbe" {...getFieldProps('bulbeDesc')} />
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="bulbeNormal"
+                        label="Aspect endoscopique normal"
+                      />
+                      {!values.bulbeNormal && (
+                        <TextField fullWidth label="Exploration du bulbe" {...getFieldProps('bulbeDesc')} />
+                      )}
                       <ExploredItem
                         noLabel="Non"
                         yesLabel="Oui"
@@ -969,14 +1058,22 @@ export default function UserNewForm({ isEdit, formik }) {
                         label="Biopsies bulbe"
                       />
                       {values.bulbeBiopsies && (
-                        <TextField fullWidth label="Biopsies bulbe: nombre " {...getFieldProps('bulbeBiopsiesDesc')} />
+                        <TextField
+                          fullWidth
+                          label="Biopsies du bulbe: nombre de biopsies, nombre de tubes "
+                          {...getFieldProps('bulbeBiopsiesDesc')}
+                        />
                       )}
-                      <Typography variant="h6">Conclusion</Typography>
-                      <ConclusionGenerator
-                        formikValue="bulbeConclusion"
-                        options={optionsBulbe}
-                        setFieldValue={setFieldValue}
-                      />
+                      {!values.bulbeNormal && (
+                        <>
+                          <Typography variant="h6">Conclusion</Typography>
+                          <ConclusionGenerator
+                            formikValue="bulbeConclusion"
+                            options={optionsBulbe}
+                            setFieldValue={setFieldValue}
+                          />
+                        </>
+                      )}
                     </Stack>
                   )}
                   <ExploredItem
@@ -988,127 +1085,191 @@ export default function UserNewForm({ isEdit, formik }) {
                   />
                   {values.duodénum && (
                     <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                      <TextField fullWidth label="Exploration duodénum" {...getFieldProps('duodénumDesc')} />
+                      <ExploredItem
+                        noLabel="Non"
+                        yesLabel="Oui"
+                        formik={formik}
+                        field="duodénumNormal"
+                        label="Aspect endoscopique normal"
+                      />
+                      {!values.duodénumNormal && (
+                        <TextField fullWidth label="Exploration du duodénum" {...getFieldProps('duodénumDesc')} />
+                      )}
                       <ExploredItem
                         noLabel="Non"
                         yesLabel="Oui"
                         formik={formik}
                         field="duodénumBiopsies"
-                        label="Biopsies duodénum"
+                        //TODO add condition
+                        label={checkIndiction(false, 9) ? 'Biopsies duodénales systématiques' : 'Biopsies du duodénum'}
                       />
                       {values.duodénumBiopsies && (
                         <TextField
                           fullWidth
-                          label="Biopsies duodénum: nombre "
+                          label="Biopsies du duodénum: nombre de biopsies, nombre de tubes "
                           {...getFieldProps('duodénumBiopsiesDesc')}
                         />
                       )}
-                      <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <Button variant="contained" onClick={() => displayModal(8)}>
-                          <Typography>Classification de Spigelman</Typography>
-                        </Button>
-                      </Stack>
-                      <Typography variant="h6">Conclusion</Typography>
-                      <ConclusionGenerator
-                        formikValue="duodénumConclusion"
-                        options={optionsDuodénum}
-                        setFieldValue={setFieldValue}
-                      />
+                      {!values.duodénumNormal && (
+                        <>
+                          <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                            <Button variant="contained" onClick={() => displayModal(8)}>
+                              <Typography>Classification de Spigelman</Typography>
+                            </Button>
+                          </Stack>
+                          <Typography variant="h6">Conclusion</Typography>
+                          <ConclusionGenerator
+                            formikValue="duodénumConclusion"
+                            options={optionsDuodénum}
+                            setFieldValue={setFieldValue}
+                          />
+                        </>
+                      )}
                     </Stack>
                   )}
-                  <Typography variant="h4">Qualité de la visualisation de la muqueuse :</Typography>
-                  <Typography variant="h6">Score totale de visibilité muqueuse : </Typography>
-                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Fundus"
-                      SelectProps={{ native: true }}
-                      {...getFieldProps('qvFundus')}
-                    >
-                      <option key="0" value="" />
-                      {scores.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </TextField>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Partie supérieure de la grosse tubérosité "
-                      SelectProps={{ native: true }}
-                      {...getFieldProps('qvPartieSup')}
-                    >
-                      <option key="0" value="" />
-                      {scores.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </TextField>
-                  </Stack>
-                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Partie inférieure de la grosse tubérosité"
-                      SelectProps={{ native: true }}
-                      {...getFieldProps('qvPartieInf')}
-                    >
-                      <option key="0" value="" />
-                      {scores.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </TextField>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Antre"
-                      SelectProps={{ native: true }}
-                      {...getFieldProps('qvAntre')}
-                    >
-                      <option key="0" value="" />
-                      {scores.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </TextField>
-                  </Stack>
-                  <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <Image src={A} height="20vh" fit="contain" alt="A" />
-                    <Image src={B} height="20vh" fit="contain" alt="B" />
-                    <Image src={C} height="20vh" fit="contain" alt="C" />
-                    <Image src={D} height="20vh" fit="contain" alt="D" />
-                  </Stack>
-                  <ExploredItem
-                    noLabel="Non"
-                    yesLabel="Oui"
-                    formik={formik}
-                    field="zoneMalExploré"
-                    label="Y a-t-il des zones non ou mal explorées?"
-                  />
-                  {values.zoneMalExploré && (
-                    <MultiSelect
-                      label="Choisir zone mal exploré"
-                      formikValue="indexZoneMalExploré"
-                      options={[
-                        'Œsophage supérieur',
-                        'Œsophage inférieur',
-                        'Ligne Z et sommet des plis gastriques',
-                        'Cardia, fundus et la petite courbure en rétroversion',
-                        'Antre',
-                        'L’angle de la petite  courbure en rétrovision',
-                        'Bulbe',
-                        'DI, DII'
-                      ]}
-                      setFieldValue={setFieldValue}
-                    />
+                  {values.typeIndication && (
+                    <TextField fullWidth label="Deuxiéme temps" {...getFieldProps('secondTime')} />
                   )}
                 </Stack>
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+              <Typography variant="h4">Qualité de la visualisation de la muqueuse </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                {/* <Typography variant="h4">Qualité de la visualisation de la muqueuse :</Typography> */}
+                <Typography variant="h6">Score totale de visibilité muqueuse : </Typography>
+                <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Fundus"
+                    SelectProps={{ native: true }}
+                    {...getFieldProps('qvFundus')}
+                  >
+                    <option key="0" value="" />
+                    {scores.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Partie supérieure de la grosse tubérosité "
+                    SelectProps={{ native: true }}
+                    {...getFieldProps('qvPartieSup')}
+                  >
+                    <option key="0" value="" />
+                    {scores.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
+                </Stack>
+                <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Partie inférieure de la grosse tubérosité"
+                    SelectProps={{ native: true }}
+                    {...getFieldProps('qvPartieInf')}
+                  >
+                    <option key="0" value="" />
+                    {scores.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Antre"
+                    SelectProps={{ native: true }}
+                    {...getFieldProps('qvAntre')}
+                  >
+                    <option key="0" value="" />
+                    {scores.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
+                </Stack>
+                <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  <Image src={A} height="20vh" fit="contain" alt="A" />
+                  <Image src={B} height="20vh" fit="contain" alt="B" />
+                  <Image src={C} height="20vh" fit="contain" alt="C" />
+                  <Image src={D} height="20vh" fit="contain" alt="D" />
+                </Stack>
+                <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  Qualité de la préparation selon le score de Kuo modifié par Chang : A=1, B=2, C=3, D=4 : le score
+                  totale est la somme des scores attribués à chaque région : il varie entre 4 et 16 avec 4 pour une
+                  excellente préparation et 16 pour une très mauvaise préparation
+                </Stack>
+                <Typography variant="h6">Score: {getScoreQV()}</Typography>
+                <TextField
+                  select
+                  fullWidth
+                  label="Qualité de la visualisation de la muqueuse"
+                  SelectProps={{ native: true }}
+                  {...getFieldProps('qualityVisualisation')}
+                >
+                  <option key="0" value="" />
+                  {['Bonne', 'Moyenne', 'Mauvaise'].map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </TextField>
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+              <Typography variant="h4">Photodocumentation </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                <Typography>
+                  Les sociétés savantes recommandent de réaliser un examen complet et de prendre des photos des
+                  différentes zones à explorer à savoir : oesophage proximal, oesophage distal, ligne Z et cardia
+                  anatomique, cardia et fundus en rétrovision, corps gastriqur avec la petite courbure en vision
+                  directe, corps gastrique avec la grande courbure en rétrovision partielle, l'angle de la petite
+                  courbure en rétrovision partielle, l'antre, le bulbe et le deuxième duodénum. À défaut de prendre des
+                  photos, ces zones doivent être considérées comme des check-points ou il faut faire un temps de latence
+                  pour bien les explorer. (photos ci dessous)
+                </Typography>
+                <Image src={checklist} width={'100%'} fit="contain" alt="A" />
+                {/* <MultiSelect
+                    label="Zones explorées"
+                    formikValue="indexZoneExploré"
+                    options={zones}
+                    setFieldValue={setFieldValue}
+                  /> */}
+                <ExploredItem
+                  noLabel="Non"
+                  yesLabel="Oui"
+                  formik={formik}
+                  field="zoneMalExploré"
+                  label="Y a-t-il des zones non ou mal explorées?"
+                />
+                {values.zoneMalExploré && (
+                  <MultiSelect
+                    label="Zones mal explorées"
+                    formikValue="indexZoneMalExploré"
+                    options={zones}
+                    setFieldValue={setFieldValue}
+                  />
+                )}
+
                 <Box sx={{ flexGrow: 1 }}>
                   <Typography variant="h4" sx={{ mb: '2%' }}>
                     Images prises durant l’examen endoscopiques
@@ -1143,321 +1304,22 @@ export default function UserNewForm({ isEdit, formik }) {
               </Stack>
             </AccordionDetails>
           </Accordion>
-          {/* */}
-          {/* <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-            <Typography variant="h4">FOGD</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Card sx={{ p: 3 }}>
-              <Stack spacing={3}>
-                <>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <Typography variant="h5">Information générale</Typography>
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="h5">sous anesthésie générale</Typography>
-                      <ToggleButtonGroup
-                        color="primary"
-                        exclusive
-                        value={values.FOGDsag}
-                        onChange={(event, newAlignment) => {
-                          formik.setFieldValue('FOGDsag', newAlignment);
-                        }}
-                        aria-label="Platform"
-                      >
-                        <ToggleButton value="Oui">Oui</ToggleButton>
-                        <ToggleButton value="Non">Non</ToggleButton>
-                      </ToggleButtonGroup>
-                    </Box>
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <DateTimePicker
-                      label="date de l'examen"
-                      value={values.FOGDDateExam}
-                      onChange={(event, newAlignment) => {
-                        formik.setFieldValue('FOGDDateExam', newAlignment);
-                      }}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </Stack>
-
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="Durée de l'examen"
-                      {...getFieldProps('FOGDDureExam')}
-                      error={Boolean(touched.FOGDDureExam && errors.FOGDDureExam)}
-                      helperText={touched.FOGDDureExam && errors.FOGDDureExam}
-                    />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <Typography variant="h5">Materials</Typography>
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="endoscope"
-                      {...getFieldProps('FOGDendoscope')}
-                      error={Boolean(touched.FOGDendoscope && errors.FOGDendoscope)}
-                      helperText={touched.FOGDendoscope && errors.FOGDendoscope}
-                    />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="pince"
-                      {...getFieldProps('FOGDpince')}
-                      error={Boolean(touched.FOGDpince && errors.FOGDpince)}
-                      helperText={touched.FOGDpince && errors.FOGDpince}
-                    />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="autres"
-                      {...getFieldProps('FOGDautres')}
-                      error={Boolean(touched.FOGDautres && errors.FOGDautres)}
-                      helperText={touched.FOGDautres && errors.FOGDautres}
-                    />
-                  </Stack>
-                  <ExploredItem
-                    labelExplored="FOGDOesophageExplored"
-                    label="FOGD Oesophage"
-                    value="FOGDOesophage"
-                    formik={formik}
-                  />
-                  <ExploredItem
-                    labelExplored="FOGDCardiaExplored"
-                    label="FOGD Cardia"
-                    value="FOGDCardia"
-                    formik={formik}
-                  />
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Typography variant="h5">Estomac</Typography>
-                    <ToggleButtonGroup
-                      color="primary"
-                      value={values.FOGDEstomac}
-                      exclusive
-                      onChange={handleChange}
-                      aria-label="Platform"
-                    >
-                      <ToggleButton value="Exploré">Exploré</ToggleButton>
-                      <ToggleButton value="Non Exploré">Non Exploré</ToggleButton>
-                    </ToggleButtonGroup>
-                  </Box>
-                  {values.FOGDEstomac === 'Exploré' && (
-                    <>
-                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <TextField
-                          fullWidth
-                          label="fundus"
-                          {...getFieldProps('FOGDfundus')}
-                          error={Boolean(touched.FOGDfundus && errors.FOGDfundus)}
-                          helperText={touched.FOGDfundus && errors.FOGDfundus}
-                        />
-                      </Stack>
-                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <TextField
-                          fullWidth
-                          label="antre"
-                          {...getFieldProps('FOGDantre')}
-                          error={Boolean(touched.FOGDantre && errors.FOGDantre)}
-                          helperText={touched.FOGDantre && errors.FOGDantre}
-                        />
-                      </Stack>
-                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                        <FormControlLabel
-                          checked={values.biopsie}
-                          onChange={(e, newValue) => formik.setFieldValue('FOGDBiopsie', newValue)}
-                          control={<Switch />}
-                          label="Biopsie"
-                          labelPlacement="start"
-                        />
-                      </Stack>
-                    </>
-                  )}
-                  <ExploredItem
-                    labelExplored="FOGDpyloreExplored"
-                    label="FOGD pylore"
-                    value="FOGDpylore"
-                    formik={formik}
-                  />
-                  <ExploredItem
-                    labelExplored="FOGDdidiiExplored"
-                    label="FOGD DIDII"
-                    value="FOGDdidii"
-                    formik={formik}
-                  />
-                </>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+              <Typography variant="h4">Ressenti du patient </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
+                <ExploredItem
+                  noLabel="Non"
+                  yesLabel="Oui"
+                  formik={formik}
+                  field="ressentiPatient"
+                  label="Examen mal toléré"
+                />
               </Stack>
-            </Card>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-            <Typography variant="h4">Coloscopie</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Card sx={{ p: 3 }}>
-              <Stack spacing={3}>
-                <>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <Typography variant="h5">Materials</Typography>
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="endoscope"
-                      {...getFieldProps('Coloscopieendoscope')}
-                      error={Boolean(touched.Coloscopieendoscope && errors.Coloscopieendoscope)}
-                      helperText={touched.Coloscopieendoscope && errors.Coloscopieendoscope}
-                    />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="pince"
-                      {...getFieldProps('Coloscopiepince')}
-                      error={Boolean(touched.Coloscopiepince && errors.Coloscopiepince)}
-                      helperText={touched.Coloscopiepince && errors.Coloscopiepince}
-                    />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      label="autres"
-                      {...getFieldProps('Coloscopieautres')}
-                      error={Boolean(touched.Coloscopieautres && errors.Coloscopieautres)}
-                      helperText={touched.Coloscopieautres && errors.Coloscopieautres}
-                    />
-                  </Stack>
-                  <Typography variant="h5">BOSTON</Typography>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Colon gauche"
-                      placeholder="Colon gauche"
-                      {...getFieldProps('ColoscopieColonGauche')}
-                      SelectProps={{ native: true }}
-                      error={Boolean(touched.ColoscopieColonGauche && errors.ColoscopieColonGauche)}
-                      helperText={touched.ColoscopieColonGauche && errors.ColoscopieColonGauche}
-                    >
-                      <option value="" />
-                      {['1', '2', '3'].map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </TextField>
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Colon Transverse"
-                      placeholder="Colon Transverse"
-                      {...getFieldProps('ColoscopieColonTansverse')}
-                      SelectProps={{ native: true }}
-                      error={Boolean(touched.ColoscopieColonTansverse && errors.ColoscopieColonTansverse)}
-                      helperText={touched.ColoscopieColonTansverse && errors.ColoscopieColonTansverse}
-                    >
-                      <option value="" />
-                      {['1', '2', '3'].map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </TextField>
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Colon droit"
-                      placeholder="Colon droit"
-                      {...getFieldProps('ColoscopieColonDroit')}
-                      SelectProps={{ native: true }}
-                      error={Boolean(touched.ColoscopieColonDroit && errors.ColoscopieColonDroit)}
-                      helperText={touched.ColoscopieColonDroit && errors.ColoscopieColonDroit}
-                    >
-                      <option value="" />
-                      {['1', '2', '3'].map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </TextField>
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                    <TextField
-                      select
-                      fullWidth
-                      label="Préparation"
-                      placeholder="Préparation"
-                      {...getFieldProps('ColoscopiePreparation')}
-                      SelectProps={{ native: true }}
-                      error={Boolean(touched.ColoscopiePreparation && errors.ColoscopiePreparation)}
-                      helperText={touched.ColoscopiePreparation && errors.ColoscopiePreparation}
-                    >
-                      <option value="" />
-                      {['bonne', 'moyenne', 'mauvaise'].map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </TextField>
-                  </Stack>
-                  <ExploredItem
-                    labelExplored="ColoscopieIleonExplored"
-                    value="ColoscopieIleon"
-                    label="Iléon"
-                    formik={formik}
-                  />
-                  <ExploredItem
-                    labelExplored="ColoscopieBasFondCaecalExplored"
-                    value="ColoscopieBasFondCaecal"
-                    label="Bas fond caecal"
-                    formik={formik}
-                  />
-                  <ExploredItem
-                    labelExplored="ColoscopieColonDroitTextExplored"
-                    value="ColoscopieColonDroitText"
-                    label="Colon droit"
-                    formik={formik}
-                  />
-                  <ExploredItem
-                    labelExplored="ColoscopieColonTansverseTextExplored"
-                    value="ColoscopieColonTansverseText"
-                    label="Colon Transverse"
-                    formik={formik}
-                  />
-                  <ExploredItem
-                    labelExplored="ColoscopieColonGaucheTextExplored"
-                    value="ColoscopieColonGaucheText"
-                    label="Colon gauche"
-                    formik={formik}
-                  />
-                  <ExploredItem
-                    labelExplored="ColoscopieRectumExplored"
-                    value="ColoscopieRectum"
-                    label="Rectum"
-                    formik={formik}
-                  />
-                </>
-              </Stack>
-            </Card>
-          </AccordionDetails>
-        </Accordion> */}
+            </AccordionDetails>
+          </Accordion>
         </Grid>
       </Grid>
     </>

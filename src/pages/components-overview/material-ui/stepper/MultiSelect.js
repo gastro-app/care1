@@ -47,14 +47,14 @@ function MultiSelect({ label, options, limit = options.length, setFieldValue, fo
   };
   return (
     <FormControl sx={{ width: '100%' }}>
-      <InputLabel id="demo-multiple-name-label">{label ?? 'Classe'}</InputLabel>
+      <InputLabel id="demo-multiple-name-label">{label ?? ''}</InputLabel>
       <Select
         labelId="demo-multiple-name-label"
         id="demo-multiple-name"
         multiple
         value={className}
         onChange={handleChangeClassName}
-        input={<OutlinedInput label="Name" />}
+        input={<OutlinedInput label={label ?? 'La classe des anti coagulants'} />}
         MenuProps={MenuProps}
       >
         {options.map((name) => (

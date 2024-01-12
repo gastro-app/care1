@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import flashFill from '@iconify/icons-eva/flash-fill';
@@ -99,19 +100,19 @@ export default function LandingHero() {
           <ContentStyle>
             <motion.div variants={varFadeInRight}>
               <Typography variant="h1" sx={{ color: 'common.white' }}>
-                Les rapports sont devenus Plus facile <br /> avec
+                Les rapports sont devenus plus faciles <br /> avec
                 <Typography component="span" variant="h1" sx={{ color: 'primary.main' }}>
                   &nbsp;Care1
                 </Typography>
               </Typography>
             </motion.div>
 
-            <motion.div variants={varFadeInRight}>
+           {/*  <motion.div variants={varFadeInRight}>
               <Typography sx={{ color: 'common.white' }}>
                 Facilite le reportage pour le docteur et assure un bon service et des résultats détaillées pour le
                 patient.
               </Typography>
-            </motion.div>
+            </motion.div> */}
 
             <motion.div variants={varFadeInRight}>
               <Button

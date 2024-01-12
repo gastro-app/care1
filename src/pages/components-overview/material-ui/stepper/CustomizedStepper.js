@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
+/* eslint-disable */
+import PropTypes, { array } from 'prop-types';
+import React, { useState, useCallback } from 'react';
 /* eslint-disable react/button-has-type */
 /* eslint-disable new-cap */
 import jsPDF from 'jspdf';
@@ -213,6 +214,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       // autresHabitudes: currentReport?.autresHabitudes || '',
       antiThrombotique: currentReport?.antiThrombotique || false,
       antiCoagulantsClasse: currentReport?.antiCoagulantsClasse || [],
+      antiCoagulantsClasseDesc: currentReport?.antiCoagulantsClasseDesc || '',
       // antiCoagulantsDose: currentReport?.antiCoagulantsDose || '',
       // antiCoagulantsNb: currentReport?.antiCoagulantsNb || '',
       // antiCoagulantsGestionDebut: currentReport?.antiCoagulantsGestionDebut || '',
@@ -220,8 +222,8 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       antiCoagulantsGestion: currentReport?.antiCoagulantsGestion || '',
       autresTraitements: currentReport?.autresTraitements || '',
       typeIndication: currentReport?.typeIndication || false,
-      diagnostiqueIndex: currentReport?.diagnostiqueIndex || '',
-      thérapeutiqueIndex: currentReport?.thérapeutiqueIndex || '',
+      diagnostiqueIndex: currentReport?.diagnostiqueIndex || [],
+      thérapeutiqueIndex: currentReport?.thérapeutiqueIndex || [],
       // dateHD: currentReport?.dateHD || '',
       ippHD: currentReport?.ippHD || false,
       ippProtocolHD: currentReport?.ippProtocolHD || '',
@@ -235,9 +237,11 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       antibioprophylaxieJJA: currentReport?.antibioprophylaxieJJA || false,
       antibioprophylaxieDescJJA: currentReport?.antibioprophylaxieDescJJA || '',
       autresIndications: currentReport?.autresIndications || '',
-      // prémédicationIndication: currentReport?.prémédicationIndication || false,
-      // prémédicationIndicationDesc: currentReport?.prémédicationIndicationDesc || '',
 
+      surveillanceLesionDesc: currentReport?.surveillanceLesionDesc || '',
+      prémédicationIndication: currentReport?.prémédicationIndication || false,
+      // prémédicationIndicationDesc: currentReport?.prémédicationIndicationDesc || '',
+      secondTime: currentReport?.secondTime || '',
       examenPhysiqueInterrogatoire: currentReport?.examenPhysiqueInterrogatoire || false,
       délaiExamen: currentReport?.délaiExamen || '',
       dateExamen: currentReport?.dateExamen || '',
@@ -255,43 +259,51 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       // usagePince: currentReport?.usagePince || false,
       // indexPince: currentReport?.indexPince || '',
       autresMateriels: currentReport?.autresMateriels || '',
+      autresMaterielsDesc: currentReport?.autresMaterielsDesc || '',
       osophage: currentReport?.osophage || false,
       osophageDesc: currentReport?.osophageDesc || '',
       osoBiopsies: currentReport?.osoBiopsies || false,
       osoBiopsiesDesc: currentReport?.osoBiopsiesDesc || '',
+      osoNormal: currentReport?.osoNormal || false,
       osoConclusion: currentReport?.osoConclusion || '',
       cardia: currentReport?.cardia || false,
+      cardiaNormal: currentReport?.cardiaNormal || false,
       cardiaDesc: currentReport?.cardiaDesc || '',
       cardiaConclusion: currentReport?.cardiaConclusion || '',
       // estomac: currentReport?.estomac || '',
       lacMuqueux: currentReport?.lacMuqueux || '',
       lacMuqueuxDesc: currentReport?.lacMuqueuxDesc || '',
       fundus: currentReport?.fundus || false,
+      fundusNormal: currentReport?.fundusNormal || false,
       fundusDesc: currentReport?.fundusDesc || '',
       fundusConclusion: currentReport?.fundusConclusion || '',
       antre: currentReport?.antre || false,
+      antreNormal: currentReport?.antreNormal || false,
       antreDesc: currentReport?.antreDesc || '',
-
+      estoBiopsies: currentReport?.estoBiopsies || false,
+      estoBiopsiesDesc: currentReport?.estoBiopsiesDesc || '',
       pylore: currentReport?.pylore || false,
+      pyloreNormal: currentReport?.pyloreNormal || false,
       pyloreDesc: currentReport?.pyloreDesc || '',
-      pyloreConclusion: currentReport?.pyloreConclusion || '',
+      antreConclusion: currentReport?.antreConclusion || '',
       // estoBiopsies: currentReport?.estoBiopsies || false,
       // estoBiopsiesDesc: currentReport?.estoBiopsiesDesc || '',
-
       bulbe: currentReport?.bulbe || false,
+      bulbeNormal: currentReport?.bulbeNormal || false,
       bulbeDesc: currentReport?.bulbeDesc || '',
       bulbeBiopsies: currentReport?.bulbeBiopsies || false,
       bulbeBiopsiesDesc: currentReport?.bulbeBiopsiesDesc || '',
       bulbeConclusion: currentReport?.bulbeConclusion || '',
 
       duodénum: currentReport?.duodénum || false,
+      duodénumNormal: currentReport?.duodénumNormal || false,
       duodénumDesc: currentReport?.duodénumDesc || '',
       duodénumBiopsies: currentReport?.duodénumBiopsies || false,
       duodénumBiopsiesDesc: currentReport?.duodénumBiopsiesDesc || '',
       duodénumConclusion: currentReport?.duodénumConclusion || '',
 
       zoneMalExploré: currentReport?.zoneMalExploré || false,
-
+      indexZoneExploré: currentReport?.indexZoneExploré || '',
       indexZoneMalExploré: currentReport?.indexZoneMalExploré || '',
 
       images: currentReport?.images || '',
@@ -308,47 +320,17 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       biopsiesDesc: currentReport?.biopsiesDesc || '',
       conclusion: currentReport?.conclusion || '',
       CAT: currentReport?.CAT || '',
-      seniors: currentReport?.seniors || '',
-      residents: currentReport?.residents || '',
-      techniciens: currentReport?.techniciens || '',
-      ressentiPatient: currentReport?.ressentiPatient || '',
+      seniors: currentReport?.seniors || [],
+      residents: currentReport?.residents || [],
+      //techniciens: currentReport?.techniciens || [],
+      autreSeniors: currentReport?.autreSeniors || '',
+      autreResidents: currentReport?.autreResidents || '',
+      ressentiPatient: currentReport?.ressentiPatient || false,
       complicationSedation: currentReport?.complicationSedation || false,
       complicationSedationDesc: currentReport?.complicationSedationDesc || '',
       complicationEndo: currentReport?.complicationEndo || false,
       complicationEndoDesc: currentReport?.complicationEndoDesc || '',
       necessiteHospitalisation: currentReport?.necessiteHospitalisation || false
-      // FOGDmaterials: currentReport?.FOGDmaterials || '',
-      // FOGDEstomac: currentReport?.FOGDEstomac || 'Non',
-      // FOGDoesophage: currentReport?.FOGDoesophage || '',
-      // FOGDcardia: currentReport?.FOGDcardia || '',
-      // FOGDsag: currentReport?.FOGDsag || 'Non',
-      // FOGDDureExam: currentReport?.FOGDDureExam || 0,
-      // FOGDBiopsie: currentReport?.FOGDBiopsie || false,
-      // FOGDfundus: currentReport?.FOGDfundus || '',
-      // FOGDantre: currentReport?.FOGDantre || '',
-      // FOGDpyloreExplored: currentReport?.FOGDpylore || 'Non Exploré',
-      // FOGDpylore: currentReport?.FOGDpylore || '',
-      // FOGDdidii: currentReport?.FOGDdidii || '',
-      // FOGDdidiiExplored: currentReport?.FOGDdidiiExplored || 'Non Exploré',
-      // Coloscopiesag: currentReport?.Coloscopiesag || 'Non',
-      // ColoscopieDureExam: currentReport?.ColoscopieDureExam || 0,
-      // ColoscopieMaterials: currentReport?.ColoscopieMaterials || '',
-      // ColoscopieColonGauche: currentReport?.ColoscopieColonGauche || '',
-      // ColoscopieColonTansverse: currentReport?.ColoscopieColonTansverse || '',
-      // ColoscopieColonDroit: currentReport?.ColoscopieColonDroit || '',
-      // ColoscopiePreparation: currentReport?.ColoscopiePreparation || '',
-      // ColoscopieIleon: currentReport?.ColoscopieIleon || '',
-      // ColoscopieBasFondCaecal: currentReport?.ColoscopieBasFondCaecal || '',
-      // ColoscopieColonGaucheText: currentReport?.ColoscopieColonGaucheText || '',
-      // ColoscopieColonTansverseText: currentReport?.ColoscopieColonTansverseText || '',
-      // ColoscopieColonDroitText: currentReport?.ColoscopieColonDroitText || '',
-      // ColoscopieRectum: currentReport?.ColoscopieRectum || '',
-      // ColoscopieIleonExplored: currentReport?.ColoscopieIleonExplored || '',
-      // ColoscopieBasFondCaecalExplored: currentReport?.ColoscopieBasFondCaecalExplored || '',
-      // ColoscopieColonGaucheTextExplored: currentReport?.ColoscopieColonGaucheTextExplored || '',
-      // ColoscopieColonTansverseTextExplored: currentReport?.ColoscopieColonTansverseTextExplored || '',
-      // ColoscopieColonDroitTextExplored: currentReport?.ColoscopieColonDroitTextExplored || '',
-      // ColoscopieRectumExplored: currentReport?.ColoscopieRectumExplored || ''
     },
     // validationSchema: NewReportSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
@@ -391,7 +373,6 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
             }
           }
         }
-        console.log('second');
         const doc = new Document({
           creator: 'Care1',
           description: 'Compte rendu de fibroscopie oeso-gastro-duodénale ',
@@ -404,24 +385,21 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
               properties: {},
               children: [
                 new Paragraph({
-                  children: [createText('CHU Monji Slim la marsa'), createTextOnNewLine('Unité d’endoscopie')],
+                  children: [createText('CHU Mongi Slim la marsa'), createTextOnNewLine('Unité d’endoscopie')],
                   heading: HeadingLevel.HEADING_3
                 }),
                 new Paragraph({
                   children: [
                     createBreak(),
-                    createBreak(),
                     new TextRun({
                       text: 'Compte rendu de fibroscopie oeso-gastro-duodénale',
                       bold: true,
                       color: '#000000'
-                    }),
-                    createBreak(),
-                    createBreak()
+                    })
                   ],
                   alignment: AlignmentType.CENTER,
                   heading: HeadingLevel.HEADING_1,
-                  break: 2
+                  break: 1
                 }),
                 new Paragraph({
                   children: [
@@ -433,7 +411,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                     createText(values.age),
                     createBoldTextOnNewLine("Service d'origine: "),
                     createText(values.serviceOrigine),
-                    createBoldText('\t\t\tNuméro de téléphone: '),
+                    createBoldText(values.numTel !== '' ? '\tNuméro de téléphone: ' : ''),
                     createText(values.numTel),
                     createBoldTextOnNewLine('Numéro de dossier médical: '),
                     createText(values.numDoss),
@@ -443,11 +421,13 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                     createText(values.duréeExamen ?? ''),
                     createBoldTextOnNewLine('Traitements en cours: '),
                     ...getAntiCoagulant(),
+                    ...getAutreTraitement(),
                     ...getIndications(),
                     ...getHemoDigestive(),
                     ...getJJA(),
+                    ...getSurveillance(),
                     ...getConsentementPatient(),
-                    // ...getPrémédicationIndication(),
+
                     ...getPatientaJeune(),
                     ...getProtocolSédation(),
                     ...getMaterial()
@@ -461,8 +441,8 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                 }),
                 new Paragraph({
                   children: [createUnderlinedBoldTextOnNewLine('Examen: ')],
-                  heading: HeadingLevel.HEADING_3,
-                  break: 1
+                  heading: HeadingLevel.HEADING_3
+                  // break: 1
                 }),
 
                 new Paragraph({
@@ -473,14 +453,16 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                     ...getFundus(),
                     ...getAntre(),
                     ...getPylore(),
+                    ...getBiopsiesEsto(),
                     ...getBulbe(),
-                    ...getDuodénum()
+                    ...getDuodénum(),
+                    ...getSecondTime()
                   ]
                 }),
                 new Paragraph({
                   children: [createUnderlinedBoldTextOnNewLine('Conclusion: '), createBreak()],
-                  heading: HeadingLevel.HEADING_3,
-                  break: 1
+                  heading: HeadingLevel.HEADING_3
+                  // break: 1
                 }),
                 getPart1(),
                 getPart2(),
@@ -488,8 +470,25 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                 new Paragraph({
                   children: [
                     values?.images?.length > 0 ? createBoldTextOnNewLine('Photo documentations:') : createText(''),
-
                     ...images
+                    // isArray(values.images)
+                    //   ? values.images.map(
+                    //       (img) =>
+                    //         new ImageRun({
+                    //           data: img,
+                    //           transformation: {
+                    //             width: 100,
+                    //             height: 100
+                    //           }
+                    //         })
+                    //     )
+                    //   : createText('')
+                  ],
+                  break: 1
+                }),
+                new Paragraph({
+                  children: [
+                    ...getOperateurs()
                     // isArray(values.images)
                     //   ? values.images.map(
                     //       (img) =>
@@ -519,32 +518,32 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         //   type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         // });
         const blob = await Packer.toBlob(doc);
-        saveAs(blob, 'Care1.docx');
-
+        saveAs(blob, `${values.nom} ${values.prenom} ${values.numDoss !== '' ? values.numDoss : 'Care1'}.docx`);
+        // window.location.reload()
         const bodyValues = values;
         delete bodyValues.cardiaConclusion;
         delete bodyValues.osoConclusion;
         delete bodyValues.duodénumConclusion;
         delete bodyValues.fundusConclusion;
-        delete bodyValues.pyloreConclusion;
+        delete bodyValues.antreConclusion;
         delete bodyValues.bulbeConclusion;
         delete bodyValues.images;
-        // fetch('http://localhost:5000/api/reports', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   body: JSON.stringify(bodyValues)
-        // })
-        //   .then((response) => response.json())
-        //   .then(async (data) => {
-        //     console.log('data', data);
+        /* fetch('http://localhost:5000/api/reports', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyValues)
+        })
+          .then((response) => response.json())
+          .then(async (data) => {
+            console.log('data', data);
 
-        //     // generatePDF(data);
-        //   });
+            // generatePDF(data);
+          }); */
         // resetForm();
         setSubmitting(false);
-        enqueueSnackbar('Report generated', { variant: 'success' });
+        enqueueSnackbar('Génération de compte rendu', { variant: 'success' });
       } catch (error) {
         console.error(error);
         setSubmitting(false);
@@ -639,38 +638,76 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         createBoldTextOnNewLine('\tAnti thrombotique: '),
         createText(classeString),
         createBoldTextOnNewLine('\tGestion des anticoagulants: '),
-        createText(values.antiCoagulantsGestion ?? '')
+        createText(values.antiCoagulantsGestion.replace('Autres', values.antiCoagulantsClasseDesc) ?? '')
       ];
     }
     return [createBoldTextOnNewLine('\tAnti thrombotique: '), createText('Non')];
   };
+  const getAutreTraitement = () => {
+    console.log('autresTraitements', values.autresTraitements);
+
+    if (values.autresTraitements.length > 0) {
+      return [createBoldTextOnNewLine('\tAutres traitements: '), createText(values.autresTraitements)];
+    }
+    return [];
+  };
   function getIndications() {
-    if (values.thérapeutiqueIndex !== '' || values.diagnostiqueIndex !== '')
-      return [
-        createBoldTextOnNewLine(
-          `Indications: ${values.typeIndication ? 'FOGD Thérapeutique: ' : 'FOGD Diagnostique: '}`
-        ),
-        createText(
-          `${
-            values.typeIndication
-              ? FGDOthérapeutique[values.thérapeutiqueIndex] ?? "Pas d'indications"
-              : FGDOdiagnostique[values.diagnostiqueIndex] ?? "Pas d'indications"
-          }`
-        )
-      ];
-    return [createBoldTextOnNewLine("Pas d'indications")];
+    const array = [];
+    if (values.thérapeutiqueIndex.length > 0 || values.diagnostiqueIndex.length > 0) {
+      array.push(createBoldTextOnNewLine('Indications: FOGD: '));
+      if (values.typeIndication) {
+        // array.push(createBoldTextOnNewLine('Indications: FOGD Thérapeutique: '));
+        console.log('---thérapeutiqueIndex', values?.thérapeutiqueIndex);
+        values?.thérapeutiqueIndex?.forEach((e) => {
+          console.log('e', e);
+          console.log('v', FGDOthérapeutique[e]);
+          array.push(createText(FGDOthérapeutique[e] + '; '));
+        });
+      } else {
+        console.log('---diagnostiqueIndex', values?.diagnostiqueIndex);
+        //array.push(createBoldTextOnNewLine('Indications: FOGD Diagnostique: '));
+        values?.diagnostiqueIndex?.forEach((e) => {
+          console.log('e', e);
+          console.log('v', FGDOdiagnostique[e]);
+          array.push(createText(FGDOdiagnostique[e] + '; '));
+        });
+      }
+    }
+    if (values.autresIndications && values.autresIndications !== '') {
+      array.push(createTextOnNewLine(`Autres indications: ${values.autresIndications}`));
+    }
+    // return [
+    //   createBoldTextOnNewLine(`Indications: ${values.typeIndication ? 'FOGD Thérapeutique: ' : 'FOGD Diagnostique: '}`),
+    //   createText(
+    //     `${
+    //       values.typeIndication
+    //         ? FGDOthérapeutique[values.thérapeutiqueIndex] ?? ''
+    //         : FGDOdiagnostique[values.diagnostiqueIndex] ?? ''
+    //     }`
+    //   )
+    // ];
+    return array;
   }
   const getHemoDigestive = () => {
     console.log('typeIndication', values.typeIndication);
     console.log('thérapeutiqueIndex', values.thérapeutiqueIndex);
-    if (values.typeIndication && values.thérapeutiqueIndex === '0') {
+    if (values.typeIndication && checkIndiction(true, 0)) {
       return [...getIPP(), ...getSuspicion(), ...getVasoactif(), ...getAntibioprophylaxie()];
     }
     return [];
   };
   const getIPP = () => {
-    if (values.ippHD) return [createBoldTextOnNewLine('\tIPP: '), createText(values.ippProtocolHD)];
+    if (values.ippHD) return [createBoldTextOnNewLine('\tIPP: '), createText('Oui')];
     return [createBoldTextOnNewLine('\tIPP: '), createText('Non')];
+  };
+  const getSurveillance = () => {
+    if (values.surveillanceLesionDesc.length > 0 && !values.typeIndication && checkIndiction(false, 4)) {
+      return [
+        createBoldTextOnNewLine('\tSurveillance d’une lésion prénéoplasique: '),
+        createText(values.surveillanceLesionDesc)
+      ];
+    }
+    return [];
   };
   const getSuspicion = () => {
     if (values.suspicionCirrhoseHD)
@@ -679,8 +716,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
   };
   const getVasoactif = () => {
     if (values.suspicionCirrhoseHD) {
-      if (values.vasoactifHD)
-        return [createBoldTextOnNewLine('\tTraitement vasoactif: '), createText(values.vasoactifDescHD)];
+      if (values.vasoactifHD) return [createBoldTextOnNewLine('\tTraitement vasoactif: '), createText('Oui')];
       return [createBoldTextOnNewLine('\tTraitement vasoactif: '), createText('Non')];
     }
     return [];
@@ -688,15 +724,14 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
 
   const getAntibioprophylaxie = () => {
     if (values.suspicionCirrhoseHD) {
-      if (values.antibioprophylaxieHD)
-        return [createBoldTextOnNewLine('\tAntibioprophylaxie: '), createText(values.antibioprophylaxieDescHD)];
+      if (values.antibioprophylaxieHD) return [createBoldTextOnNewLine('\tAntibioprophylaxie: '), createText('Oui')];
       return [createBoldTextOnNewLine('\tAntibioprophylaxie: '), createText('Non')];
     }
     return [];
   };
 
   const getJJA = () => {
-    if (values.typeIndication && values.thérapeutiqueIndex === '6' && values.antibioprophylaxieJJA)
+    if (values.typeIndication && checkIndiction(true, 6) && values.antibioprophylaxieJJA)
       return [
         createBoldTextOnNewLine('\tSonde de gastrostomie/jéjunostomie d’alimentation: '),
         createBoldText('Antibioprophylaxie: '),
@@ -705,15 +740,12 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     return [];
   };
   const getConsentementPatient = () => {
-    if (values.consentement)
-      return [createBoldTextOnNewLine('Consentement éclairé signé par le patient: '), createText('Oui')];
-    return [createBoldTextOnNewLine('Consentement éclairé signé par le patient: '), createText('Non')];
+    if (values.consentement) return [createBoldTextOnNewLine('Consentement éclairé du patient: '), createText('Oui')];
+    return [createBoldTextOnNewLine('Consentement éclairé du patient: '), createText('Non')];
   };
-  // const getPrémédicationIndication = () => {
-  //   if (values.prémédicationIndication)
-  //     return [createBoldTextOnNewLine('Pré médication: '), createText(values.prémédicationIndicationDesc)];
-  //   return [createBoldTextOnNewLine('Pré médication: '), createText('Non')];
-  // };
+  const getPrémédicationIndication = () => {
+    return [createBoldTextOnNewLine('Pré médication: '), createText(values.prémédicationIndication ? 'Oui' : 'Non')];
+  };
   const getPatientaJeune = () => {
     console.log('jeuneExamen', values.jeuneExamen);
     if (values.jeuneExamen) return [createBoldTextOnNewLine('Patient à jeûne: '), createText('Oui')];
@@ -722,74 +754,117 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
 
   const getProtocolSédation = () => {
     if (values.sédationExamen)
-      return [createBoldTextOnNewLine('Sous sédation: '), createText(values.protocoleAvantSédation)];
-    return [createBoldTextOnNewLine('Sous sédation: '), createText('Non')];
+      return [
+        createBoldTextOnNewLine('Sous sédation '),
+        createText(values.protocoleAvantSédation !== '' ? `: ${values.protocoleAvantSédation}` : '')
+      ];
+    return [];
   };
   const getMaterial = () => {
     console.log('autresMateriels', values?.autresMateriels);
-    const materialString = values?.autresMateriels ? values.autresMateriels.join(', ') : '';
+    let materialString = values?.autresMateriels ? values.autresMateriels.join(', ') : '';
     return [
       createBoldTextOnNewLine('Matériel: '),
-      createBoldTextOnNewLine('\tEndoscope: '),
+      createBoldTextOnNewLine(values.endoscope !== '' ? '\tEndoscope: ' : ''),
       createText(values.endoscope),
-      createBoldTextOnNewLine('\tAutres: '),
-      createText(materialString)
+      createBoldTextOnNewLine(values.autresMateriels !== '' ? '\tAutres: ' : ''),
+      createText(materialString.replace('Autres', `${values.autresMaterielsDesc}`))
     ];
+  };
+  const getZoneMalExploré = () => {
+    if (values.zoneMalExploré) {
+      let string = values?.indexZoneMalExploré ? values.indexZoneMalExploré.join(', ') : '';
+      return [
+        createBoldTextOnNewLine(values.indexZoneMalExploré !== '' ? 'Zones mal explorées: ' : ''),
+        createText(string)
+      ];
+    }
+    return [createBoldTextOnNewLine('Zones mal explorées: '), createText('Non')];
   };
   const getOesophage = () => [
     createBoldTextOnNewLine('Œsophage: '),
-    createText(values.osophage ? 'Exploré: ' : 'Non exploré'),
-    createText(values.osophage ? values.osophageDesc ?? '' : ''),
-    values.osoBiopsies ? createBoldTextOnNewLine('Biopsises Œsophage: ') : createText(''),
-    createText(values.osoBiopsies ? values.osoBiopsiesDesc ?? '' : '')
+    createText(
+      values.osophage ? (values.osoNormal ? 'Aspect endoscopique normal' : values.osophageDesc ?? '') : 'Non exploré'
+    ),
+    values.osoBiopsies ? createTextOnNewLine("Biopsies de l'Œsophage: ") : createText(''),
+    values.osoBiopsies ? createText(values.osoBiopsiesDesc !== '' ? values.osoBiopsiesDesc : 'Oui') : createText('')
   ];
   const getCardia = () => [
+    createBreak(),
     createBoldTextOnNewLine('Cardia: '),
-    createText(values.cardia ? 'Exploré: ' : 'Non exploré'),
-    createText(values.cardia ? values.cardiaDesc ?? '' : '')
+    createText(
+      values.cardia ? (values.cardiaNormal ? 'Aspect endoscopique normal' : values.cardiaDesc ?? '') : 'Non exploré'
+    )
   ];
   const getEstomac = () => [
+    createBreak(),
     createBoldTextOnNewLine('Estomac: '),
-    createText(values.lacMuqueux ?? ''),
-    createText(values.lacMuqueux !== '' && values.lacMuqueuxDesc !== '' ? ', ' : 'Pas de description'),
-    createText(values.lacMuqueuxDesc ?? '')
+    createText(values.lacMuqueux !== '' ? `Lac muqueux ${values.lacMuqueux}` : ''),
+    createText(values.lacMuqueux !== '' && values.lacMuqueuxDesc !== '' ? ', ' : ''),
+    createText(values.lacMuqueuxDesc !== '' ? values.lacMuqueuxDesc : '')
   ];
   const getFundus = () => [
     createBoldTextOnNewLine('Fundus: '),
-    createText(values.fundus ? 'Exploré: ' : 'Non exploré'),
-    createText(values.fundus ? values.fundusDesc ?? '' : '')
+    createText(
+      values.fundus ? (values.fundusNormal ? 'Aspect endoscopique normal' : values.fundusDesc ?? '') : 'Non exploré'
+    )
   ];
   const getAntre = () => [
     createBoldTextOnNewLine('Antre: '),
-    createText(values.antre ? 'Exploré: ' : 'Non exploré'),
-    createText(values.antre ? values.antreDesc ?? '' : '')
+    createText(
+      values.antre ? (values.antreNormal ? 'Aspect endoscopique normal' : values.antreDesc ?? '') : 'Non exploré'
+    )
   ];
   const getPylore = () => [
     createBoldTextOnNewLine('Pylore: '),
-    createText(values.pylore ? 'Exploré: ' : 'Non exploré'),
-    createText(values.pylore ? values.pyloreDesc ?? '' : '')
+    createText(
+      values.pylore ? (values.pyloreNormal ? 'Aspect endoscopique normal' : values.pyloreDesc ?? '') : 'Non exploré'
+    )
+  ];
+  const getBiopsiesEsto = () => [
+    values.estoBiopsies ? createTextOnNewLine("Biopsies de l'estomac: ") : createText(''),
+    values.estoBiopsies ? createText(values.estoBiopsiesDesc !== '' ? values.estoBiopsiesDesc : 'Oui') : createText('')
   ];
   const getBulbe = () => [
+    createBreak(),
     createBoldTextOnNewLine('Bulbe: '),
-    createText(values.bulbe ? 'Exploré: ' : 'Non exploré'),
-    createText(values.bulbe ? values.bulbeDesc ?? '' : ''),
-    values.bulbeBiopsies ? createBoldTextOnNewLine('Biopsises Bulbe: ') : createText(''),
-    createText(values.bulbeBiopsies ? values.bulbeBiopsiesDesc ?? '' : '')
+    createText(
+      values.bulbe ? (values.bulbeNormal ? 'Aspect endoscopique normal' : values.bulbeDesc ?? '') : 'Non exploré'
+    ),
+    values.bulbeBiopsies ? createTextOnNewLine('Biopsies du bulbe: ') : createText(''),
+    values.bulbeBiopsies
+      ? createText(values.bulbeBiopsiesDesc !== '' ? values.bulbeBiopsiesDesc : 'Oui')
+      : createText('')
   ];
 
   const getDuodénum = () => [
+    createBreak(),
     createBoldTextOnNewLine('Duodénum: '),
-    createText(values.duodénum ? 'Exploré: ' : 'Non exploré'),
-    createText(values.duodénum ? values.duodénumDesc ?? '' : ''),
-    values.duodénumBiopsies ? createBoldTextOnNewLine('Biopsises Duodénum: ') : createText(''),
-    createText(values.duodénumBiopsies ? values.duodénumBiopsiesDesc ?? '' : '')
+    values.typeIndication && values.secondTime !== '' ? createText('Premier temps: Exploration: ') : createText(''),
+    createText(values.duodénum ? '' : 'Non exploré'),
+    createText(
+      values.duodénum ? (values.duodénumNormal ? 'Aspect endoscopique normal' : values.duodénumDesc ?? '') : ''
+    ),
+    values.duodénumBiopsies
+      ? createTextOnNewLine(checkIndiction(false, 9) ? 'Biopsies duodénales systématiques: ' : 'Biopsies du duodénum: ')
+      : createText(''),
+    values.duodénumBiopsies
+      ? createText(values.duodénumBiopsiesDesc !== '' ? values.duodénumBiopsiesDesc : 'Oui')
+      : createText('')
   ];
-
+  const getSecondTime = () => {
+    if (values.typeIndication && values.secondTime !== '')
+      return [createTextOnNewLine('Deuxiéme temps: '), createText(values.secondTime)];
+    return [];
+  };
   const getFOGDTotal = () => [createBoldText('FOGD Totale: '), createText(values.FOGDtotale ? 'Oui' : 'Non')];
   const getDuréeExamen = () => [createBoldTextOnNewLine("Durée de l'examen: "), createText(values.duréeExamen)];
   const getQualitéVisualisation = () => [
     createBoldTextOnNewLine('Qualité de visualisation de la muqueuse: '),
-    createText(values.qualityVisualisation)
+    createText(values.qualityVisualisation),
+    createTextOnNewLine(
+      `Qualité de la préparation selon le score de Kuo modifié par Chang :  A=1, B=2, C=3, D=4 : le score totale est la somme des scores attribués à chaque région : il varie entre 4 et 16 avec 4 pour une excellente préparation et 16 pour une très mauvaise préparation : Score : ${getScoreQV()}`
+    )
   ];
   const getChromoendoscopie = () => [
     createBoldTextOnNewLine('Utilisation de la chromoendoscopie virtuelle ou au lugol: '),
@@ -803,23 +878,42 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
   ];
 
   const getConclusionGeneral = () => [createBoldText('Conclusion: '), createText(values.conclusion ?? '')];
-  const getCAT = () => [createBoldTextOnNewLine('CAT: '), createText(values.CAT ?? '')];
+  const getCAT = () => {
+    if (values.CAT && values.CAT !== '') {
+      return [createBoldTextOnNewLine('CAT: '), createText(values.CAT ?? '')];
+    }
+    return [];
+  };
   const getOperateurs = () => {
-    const seniors = isArray(values.seniors) ? values.seniors.join(', ') : '';
-    const residents = isArray(values.residents) ? values.residents.join(', ') : '';
-    const techniciens = isArray(values.techniciens) ? values.techniciens.join(', ') : '';
+    //const seniors = isArray(values.seniors) ? values.seniors.join(', ') : '';
+    console.log('seniors', values.seniors);
+    console.log('residents', values.residents);
+
+    const seniors = values.seniors.split('\n');
+    const residents = values.residents.split('\n');
+    console.log('seniors', seniors);
+    console.log('residents', residents);
+    const seniorsText = seniors.map((s) => createTextOnNewLine(s));
+    const residentsText = residents.map((s) => createTextOnNewLine(s));
+    //const residents = isArray(values.residents) ? values.residents.join(', ') : '';
+    // const techniciens = isArray(values.techniciens) ? values.techniciens.join(', ') : '';
 
     return [
-      createBoldTextOnNewLine('Opérateurs: '),
-      createBoldTextOnNewLine('\tSéniors:'),
-      createText(seniors),
-      createBoldTextOnNewLine('\tRésidents:'),
-      createText(residents),
-      createBoldTextOnNewLine('\tTechniciens:'),
-      createText(techniciens)
+      createBoldText('Opérateurs: '),
+      createBoldTextOnNewLine('Séniors: '),
+      ...seniorsText,
+      //createText(values.seniors),
+      createBreak(),
+      //createText(seniors.replace('Autre', values.autreSeniors)),
+      createBoldTextOnNewLine('Résidents: '),
+      ...residentsText
+      //createText(values.residents)
+      // createText(residents.replace('Autre', values.autreResidents))
+      // createBoldTextOnNewLine('\tTechniciens:'),
+      // createText(techniciens)
     ];
   };
-  const getRessenti = () => [createBoldText('Ressenti du malade :'), createText(values.ressentiPatient)];
+  const getRessenti = () => [createBoldText('Examen mal toléré :'), createText(values.ressentiPatient ? 'Oui' : 'Non')];
   const getComplications = () => [
     createBoldTextOnNewLine('Complications de l’examen endoscopique: '),
     createText(values.complicationEndo ? 'Oui' : 'Non'),
@@ -859,7 +953,9 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       children: [
         ...getFOGDTotal(),
         // ...getDuréeExamen(),
+        ...getPrémédicationIndication(),
         ...getQualitéVisualisation(),
+        ...getZoneMalExploré(),
         ...getChromoendoscopie(),
         ...getBiopsies()
       ],
@@ -872,7 +968,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     });
   const getPart2 = () =>
     new Paragraph({
-      children: [...getConclusionGeneral(), ...getCAT(), ...getOperateurs()],
+      children: [...getConclusionGeneral(), ...getCAT()],
       border: {
         // bottom: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 },
         // top: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 5 },
@@ -890,6 +986,49 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         right: { style: BorderStyle.SINGLE, color: '#000000', size: 6, space: 0 }
       }
     });
+
+  const checkIndiction = useCallback(
+    (isThérapeutique, i) => {
+      if (isThérapeutique) {
+        const index = values.thérapeutiqueIndex.findIndex((e) => e === i);
+        if (index > -1) {
+          return true;
+        }
+        return false;
+      } else {
+        const index = values.diagnostiqueIndex.findIndex((e) => e === i);
+        if (index > -1) {
+          return true;
+        }
+        return false;
+      }
+    },
+    [values.thérapeutiqueIndex, values.diagnostiqueIndex]
+  );
+
+  const getScoreQV = () => {
+    const getScore = (value) => {
+      switch (value) {
+        case 'A':
+          return 1;
+        case 'B':
+          return 2;
+        case 'C':
+          return 3;
+        case 'D':
+          return 4;
+        default:
+          return 0;
+      }
+    };
+    if (values.qvFundus && values.qvPartieSup && values.qvPartieInf && values.qvAntre)
+      return (
+        getScore(values.qvFundus) +
+        getScore(values.qvPartieSup) +
+        getScore(values.qvPartieInf) +
+        getScore(values.qvAntre)
+      );
+  };
   return (
     <>
       <Box sx={{ mb: 5 }} />

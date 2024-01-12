@@ -8,12 +8,11 @@ function Task({ task, index, onSaveTask, onDeleteTask, setFieldValue, formikValu
   const [text, setText] = useState('');
   const [text2, setText2] = useState('');
   const [dropDownValue, setDropDownValue] = useState('');
+  const [dropDownValue2, setDropDownValue2] = useState('');
   const [choiceValue, setChoiceValue] = useState(false);
   const [content, setContent] = useState(task.content);
   const [firstPart, setFirstPart] = useState('');
   const [secondPart, setSecondPart] = useState('');
-  const [thirdPart, setThirdPart] = useState('');
-  const [forthPart, setForthPart] = useState('');
   const [displayFields, setDisplayFields] = useState(task.hasDropdown || task.hasTextField);
 
   useEffect(() => {
@@ -107,13 +106,15 @@ function Task({ task, index, onSaveTask, onDeleteTask, setFieldValue, formikValu
                   noLabel={task.noLabel}
                   choiceValue={choiceValue}
                   setChoiceValue={setChoiceValue}
-                />{' '}
+                />
                 <Button
                   onClick={() => {
                     const choice = choiceValue ? task.yesLabel : task.noLabel;
                     const newContent = `Varices oesophagiennes grade ${dropDownValue} ${choice}`;
+                    console.log(newContent);
                     setContent(newContent);
                     setDisplayFields(false);
+                    onSaveTask(index, newContent);
                   }}
                 >
                   <Typography>Enregister</Typography>
@@ -265,6 +266,30 @@ function Task({ task, index, onSaveTask, onDeleteTask, setFieldValue, formikValu
                     {secondPart}
                   </>
                 )}
+                {task?.hasSecondDropdown && (
+                  <>
+                    et
+                    <TextField
+                      select
+                      sx={{ width: '10vw' }}
+                      label={task.dropdownLabel}
+                      SelectProps={{ native: true }}
+                      value={dropDownValue2}
+                      onChange={(e) => {
+                        console.log(e.target.value);
+                        setDropDownValue2(e.target.value);
+                      }}
+                    >
+                      <option key="0" value="" />
+                      {task.dropdownValues.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </TextField>
+                    {secondPart}
+                  </>
+                )}
                 {task.hasChoice && (
                   <>
                     {firstPart}
@@ -307,7 +332,10 @@ function Task({ task, index, onSaveTask, onDeleteTask, setFieldValue, formikValu
                       // const newContent = content.replace(string, dropDownValue);
                       // setContent(newContent.replace('(', '').replace(')', ''));
                       // console.log('content', newContent);
-                      const newContent = `${firstPart} ${dropDownValue} ${secondPart}`;
+                      let newContent = `${firstPart} ${dropDownValue} ${secondPart}`;
+                      if (task?.hasSecondDropdown) {
+                        newContent = `${firstPart} ${dropDownValue} et ${dropDownValue2} ${secondPart}`;
+                      }
                       setContent(newContent);
                       onSaveTask(index, newContent);
                     } else if (task.hasChoice) {
