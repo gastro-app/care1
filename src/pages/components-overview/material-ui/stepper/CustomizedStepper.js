@@ -320,8 +320,8 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       biopsiesDesc: currentReport?.biopsiesDesc || '',
       conclusion: currentReport?.conclusion || '',
       CAT: currentReport?.CAT || '',
-      seniors: currentReport?.seniors || [],
-      residents: currentReport?.residents || [],
+      seniors: currentReport?.seniors || '',
+      residents: currentReport?.residents || '',
       //techniciens: currentReport?.techniciens || [],
       autreSeniors: currentReport?.autreSeniors || '',
       autreResidents: currentReport?.autreResidents || '',
@@ -674,7 +674,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       }
     }
     if (values.autresIndications && values.autresIndications !== '') {
-      array.push(createTextOnNewLine(`Autres indications: ${values.autresIndications}`));
+      array.push(createTextOnNewLine(values.autresIndications));
     }
     // return [
     //   createBoldTextOnNewLine(`Indications: ${values.typeIndication ? 'FOGD Thérapeutique: ' : 'FOGD Diagnostique: '}`),
@@ -863,7 +863,9 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     createBoldTextOnNewLine('Qualité de visualisation de la muqueuse: '),
     createText(values.qualityVisualisation),
     createTextOnNewLine(
-      `Qualité de la préparation selon le score de Kuo modifié par Chang :  A=1, B=2, C=3, D=4 : le score totale est la somme des scores attribués à chaque région : il varie entre 4 et 16 avec 4 pour une excellente préparation et 16 pour une très mauvaise préparation : Score : ${getScoreQV()}`
+      `Qualité de la préparation selon le score de Kuo modifié par Chang :  A=1, B=2, C=3, D=4 : le score totale est la somme des scores attribués à chaque région : il varie entre 4 et 16 avec 4 pour une excellente préparation et 16 pour une très mauvaise préparation : Score : ${
+        getScoreQV() ?? 4
+      }`
     )
   ];
   const getChromoendoscopie = () => [
@@ -889,8 +891,8 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
     console.log('seniors', values.seniors);
     console.log('residents', values.residents);
 
-    const seniors = values.seniors.split('\n');
-    const residents = values.residents.split('\n');
+    const seniors = values?.seniors?.split('\n') ?? [];
+    const residents = values?.residents?.split('\n') ?? [];
     console.log('seniors', seniors);
     console.log('residents', residents);
     const seniorsText = seniors.map((s) => createTextOnNewLine(s));
