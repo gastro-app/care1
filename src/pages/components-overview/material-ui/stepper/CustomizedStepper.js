@@ -427,7 +427,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                     ...getJJA(),
                     ...getSurveillance(),
                     ...getConsentementPatient(),
-
+                    ...getPrémédicationIndication(),
                     ...getPatientaJeune(),
                     ...getProtocolSédation(),
                     ...getMaterial()
@@ -440,7 +440,12 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                   }
                 }),
                 new Paragraph({
-                  children: [createUnderlinedBoldTextOnNewLine('Examen: ')],
+                  children: [
+                    values.typeIndication && values.secondTime !== ''
+                      ? createBoldText('Premier temps: Exploration: ')
+                      : createText(''),
+                    createUnderlinedBoldTextOnNewLine('Examen: ')
+                  ],
                   heading: HeadingLevel.HEADING_3
                   // break: 1
                 }),
@@ -487,6 +492,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
                   break: 1
                 }),
                 new Paragraph({
+                  alignment: AlignmentType.RIGHT,
                   children: [
                     ...getOperateurs()
                     // isArray(values.images)
@@ -840,7 +846,6 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
   const getDuodénum = () => [
     createBreak(),
     createBoldTextOnNewLine('Duodénum: '),
-    values.typeIndication && values.secondTime !== '' ? createText('Premier temps: Exploration: ') : createText(''),
     createText(values.duodénum ? '' : 'Non exploré'),
     createText(
       values.duodénum ? (values.duodénumNormal ? 'Aspect endoscopique normal' : values.duodénumDesc ?? '') : ''
@@ -854,7 +859,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
   ];
   const getSecondTime = () => {
     if (values.typeIndication && values.secondTime !== '')
-      return [createTextOnNewLine('Deuxiéme temps: '), createText(values.secondTime)];
+      return [createBoldTextOnNewLine('Deuxiéme temps: '), createText(values.secondTime)];
     return [];
   };
   const getFOGDTotal = () => [createBoldText('FOGD Totale: '), createText(values.FOGDtotale ? 'Oui' : 'Non')];
@@ -955,7 +960,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
       children: [
         ...getFOGDTotal(),
         // ...getDuréeExamen(),
-        ...getPrémédicationIndication(),
+
         ...getQualitéVisualisation(),
         ...getZoneMalExploré(),
         ...getChromoendoscopie(),
