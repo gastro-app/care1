@@ -64,7 +64,7 @@ ReactDOM.render(
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <SettingsProvider>
             <CollapseDrawerProvider>
-              <HashRouter basename="/gastro-app-front">
+              <HashRouter basename="/care1">
                 {/* <AuthProvider>
                
                 </AuthProvider> */}
