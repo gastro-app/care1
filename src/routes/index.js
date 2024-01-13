@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Navigate, useRoutes, useLocation } from 'react-router-dom';
+import { Navigate, useRoutes, useLocation, Routes, Route } from 'react-router-dom';
 // layouts
 import MainLayout from '../layouts/main';
 import DashboardLayout from '../layouts/dashboard';
@@ -34,27 +34,32 @@ const Loadable = (Component) => (props) => {
 };
 
 export default function Router() {
-  return useRoutes([
-    // Dashboard Routes
-    {
-      path: 'dashboard',
-      element: <DashboardLayout />,
-      children: [
-        // formulaire
-        { path: 'new', element: <Stepper /> },
-        // liste des rapports
-        { path: 'list', element: <UserList /> }
-      ]
-    },
+  return (
+    <Routes>
+      <Route path="/" element={<Stepper />} />
+    </Routes>
+  );
+  // return useRoutes([
+  //   // Dashboard Routes
+  //   {
+  //     path: 'dashboard',
+  //     element: <DashboardLayout />,
+  //     children: [
+  //       // formulaire
+  //       { path: 'new', element: <Stepper /> },
+  //       // liste des rapports
+  //       { path: 'list', element: <UserList /> }
+  //     ]
+  //   },
 
-    // Main Routes
-    {
-      path: '/',
-      element: <MainLayout />,
-      children: [{ element: <LandingPage /> }]
-    },
-    { path: '*', element: <Navigate to="/404" replace /> }
-  ]);
+  //   // Main Routes
+  //   {
+  //     path: '/',
+  //     element: <MainLayout />,
+  //     children: [{ element: <LandingPage /> }]
+  //   },
+  //   { path: '*', element: <Navigate to="/404" replace /> }
+  // ]);
 }
 
 const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));

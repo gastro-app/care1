@@ -12,7 +12,8 @@
     "lint": "eslint --ext .js,.jsx ./src",
     "lint:fix": "eslint --fix --ext .js,.jsx ./src",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "serve": "serve -s build"
   },
   "eslintConfig": {
     "extends": [
@@ -88,6 +89,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^4.1.17",
     "fs": "^0.0.1-security",
+    "gh-pages": "^6.1.1",
     "highlight.js": "^11.2.0",
     "history": "^5.0.1",
     "i18next": "^20.6.1",

@@ -30,7 +30,7 @@ import 'lazysizes/plugins/object-fit/ls.object-fit';
 import 'lazysizes/plugins/parent-fit/ls.parent-fit';
 
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
@@ -64,11 +64,12 @@ ReactDOM.render(
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <SettingsProvider>
             <CollapseDrawerProvider>
-              <BrowserRouter>
-                <AuthProvider>
-                  <App />
-                </AuthProvider>
-              </BrowserRouter>
+              <HashRouter basename="/gastro-app-front">
+                {/* <AuthProvider>
+               
+                </AuthProvider> */}
+                <App />
+              </HashRouter>
             </CollapseDrawerProvider>
           </SettingsProvider>
         </LocalizationProvider>
