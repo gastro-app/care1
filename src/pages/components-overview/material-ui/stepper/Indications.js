@@ -45,6 +45,7 @@ import ACG from '../../../../assets/indications/acg.pdf';
 import Fig1 from '../../../../assets/indications/fig1.pdf';
 import Fig2 from '../../../../assets/indications/fig2.pdf';
 import MultiSelect from './MultiSelect';
+import moment from 'moment';
 
 const FGDOdiagnostique = [
   'Symptômes digestifs hauts persistants malgré une épreuve thérapeutique',
@@ -145,7 +146,7 @@ UserNewForm.propTypes = {
 export default function UserNewForm({ isEdit, formik }) {
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
   //  const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
-
+  const [date, setDate] = React.useState(new Date());
   const [diagnostiqueIndex, setDiagnostiqueIndex] = useState([]);
   const [thérapeutiqueIndex, setThérapeutiqueIndex] = useState([]);
   const handleChangeRadioGroupDiagnostique = (event) => {

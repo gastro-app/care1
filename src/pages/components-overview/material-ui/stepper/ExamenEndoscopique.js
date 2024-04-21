@@ -340,7 +340,7 @@ export default function UserNewForm({ isEdit, formik }) {
   const [preview, setPreview] = useState(true);
   const [files, setFiles] = useState([]);
   // const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
-  const [date, setDate] = React.useState(new Date());
+
   const reader = new FileReader();
   const checkIndiction = (isThérapeutique, i) => {
     if (isThérapeutique) {
