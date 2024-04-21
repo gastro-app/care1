@@ -212,6 +212,16 @@ export default function UserNewForm({ isEdit, formik }) {
             field="examenPhysiqueInterrogatoire"
             label="Examen physique et interrogatoire "
           />
+          <MobileDateTimePicker
+            label="Date et heure de l'examen"
+            value={date}
+            onChange={(newDate) => {
+              console.log('newDate', moment(newDate).format('DD-MM-YYYY HH:MM'));
+              setDate(moment(newDate));
+              setFieldValue('dateExamen', moment(newDate).format('DD-MM-YYYY HH:MM'));
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
           <ExploredItem
             formik={formik}
             field="consentement"

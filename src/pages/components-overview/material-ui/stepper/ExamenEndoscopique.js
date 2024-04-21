@@ -650,20 +650,20 @@ export default function UserNewForm({ isEdit, formik }) {
             </AccordionSummary>
             <AccordionDetails>
               <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                <ExploredItem
+                {/* <ExploredItem
                   noLabel="Non"
                   yesLabel="Oui"
                   formik={formik}
                   field="examenPhysiqueInterrogatoire"
                   label="Examen physique et interrogatoire "
-                />
+                /> */}
                 {/*  <TextField
                   fullWidth
                   multiline
                   label="Délai entre la demande de l’examen et sa réalisation "
                   {...getFieldProps('délaiExamen')}
                 /> */}
-                <MobileDateTimePicker
+                {/* <MobileDateTimePicker
                   label="Date et heure de l'examen"
                   value={date}
                   onChange={(newDate) => {
@@ -672,7 +672,7 @@ export default function UserNewForm({ isEdit, formik }) {
                     setFieldValue('dateExamen', moment(newDate).format('DD-MM-YYYY HH:MM'));
                   }}
                   renderInput={(params) => <TextField {...params} />}
-                />
+                /> */}
                 <ExploredItem
                   noLabel="Non"
                   yesLabel="Oui"
