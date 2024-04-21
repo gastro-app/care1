@@ -206,6 +206,13 @@ export default function UserNewForm({ isEdit, formik }) {
       <Grid item xs={12} md={12}>
         <Stack spacing={3}>
           <ExploredItem
+            noLabel="Non"
+            yesLabel="Oui"
+            formik={formik}
+            field="examenPhysiqueInterrogatoire"
+            label="Examen physique et interrogatoire "
+          />
+          <ExploredItem
             formik={formik}
             field="consentement"
             label="Consentement éclairé du patient"
@@ -221,7 +228,7 @@ export default function UserNewForm({ isEdit, formik }) {
                 <ExploredItem
                   formik={formik}
                   field="antiThrombotique"
-                  label="Traitement anti thrombotique"
+                  label="Traitement anti coagulant"
                   yesLabel="Oui"
                   noLabel="Non"
                 />

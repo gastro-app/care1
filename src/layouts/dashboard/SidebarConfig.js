@@ -35,8 +35,8 @@ const sidebarConfig = [
         title: 'Nouveau Rapport',
         path: PATH_DASHBOARD.general.newReport,
         icon: ICONS.dashboard
-      },
-      { title: 'Liste des rapports', path: PATH_DASHBOARD.general.reportList, icon: ICONS.ecommerce }
+      }
+      // { title: 'Liste des rapports', path: PATH_DASHBOARD.general.reportList, icon: ICONS.ecommerce }
     ]
   }
 ];

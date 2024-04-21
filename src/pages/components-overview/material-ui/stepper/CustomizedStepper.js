@@ -961,7 +961,7 @@ export default function CustomizedSteppers({ isEdit, currentReport }) {
         ...getFOGDTotal(),
         // ...getDuréeExamen(),
 
-        ...getQualitéVisualisation(),
+        //...getQualitéVisualisation(),
         ...getZoneMalExploré(),
         ...getChromoendoscopie(),
         ...getBiopsies()

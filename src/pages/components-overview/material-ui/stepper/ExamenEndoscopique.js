@@ -195,9 +195,9 @@ const optionsFundus = [
   { id: '1', label: 'Aspect de métaplasie intestinale gastrique' },
   {
     id: '2',
-    label: 'Gastropathie fundique (en mosaïque/congestive/nodulaire/ulcérée/érosive/varioloforme/atrophique)',
+    label: 'Gastropathie fundique (en mosaïque/congestive/nodulaire/ulcérée/érosive/varioliforme/atrophique)',
     hasDropdown: true,
-    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'érosive', 'varioloforme', 'atrophique'],
+    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'érosive', 'varioliforme', 'atrophique'],
     dropdownLabel: 'Description'
   },
   {
@@ -238,9 +238,9 @@ const optionsAntre = [
   { id: '1', label: 'Aspect de métaplasie intestinale gastrique, Biopsies' },
   {
     id: '2',
-    label: 'Gastropathie antrale (en mosaïque,congestive,nodulaire,ulcérée,érosive,varioloforme,atrophique)',
+    label: 'Gastropathie antrale (en mosaïque,congestive,nodulaire,ulcérée,érosive,varioliforme,atrophique)',
     hasDropdown: true,
-    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'erosive', 'varioloforme', 'atrophique'],
+    dropdownValues: ['en mosaïque', 'congestive', 'nodulaire', 'ulcérée', 'erosive', 'varioliforme', 'atrophique'],
     dropdownLabel: 'Description',
     hasSecondDropdown: true
   },
@@ -693,13 +693,7 @@ export default function UserNewForm({ isEdit, formik }) {
                   field="consoTabacAvantExamen"
                   label="Patient ayant reçu les instructions appropriées du jeûne"
                 />
-                <ExploredItem
-                  noLabel="Non"
-                  yesLabel="Oui"
-                  formik={formik}
-                  field="jeuneExamen"
-                  label="Patient à jeûne"
-                />
+                <ExploredItem noLabel="Non" yesLabel="Oui" formik={formik} field="jeuneExamen" label="Patient à jeun" />
                 {/* {values.jeuneExamen && (
                 <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
@@ -838,7 +832,7 @@ export default function UserNewForm({ isEdit, formik }) {
                     {values.osoBiopsies && (
                       <TextField
                         fullWidth
-                        label="Biopsises de l'Œsophage: nombre de biopsies, nombre de tubes"
+                        label="Biopsises de l'Œsophage: nombre(), localisation (), nombre de tubes()"
                         {...getFieldProps('osoBiopsiesDesc')}
                       />
                     )}
@@ -1033,7 +1027,7 @@ export default function UserNewForm({ isEdit, formik }) {
                   {values.estoBiopsies && (
                     <TextField
                       fullWidth
-                      label="Biopsies de l'Estomac: nombre de biopsies, nombre de tubes"
+                      label="Biopsies de l'Estomac: nombre(), localisation (), nombre de tubes()"
                       {...getFieldProps('estoBiopsiesDesc')}
                     />
                   )}
@@ -1060,7 +1054,7 @@ export default function UserNewForm({ isEdit, formik }) {
                       {values.bulbeBiopsies && (
                         <TextField
                           fullWidth
-                          label="Biopsies du bulbe: nombre de biopsies, nombre de tubes "
+                          label="Biopsies du bulbe: nombre(), localisation (), nombre de tubes()"
                           {...getFieldProps('bulbeBiopsiesDesc')}
                         />
                       )}
@@ -1106,7 +1100,7 @@ export default function UserNewForm({ isEdit, formik }) {
                       {values.duodénumBiopsies && (
                         <TextField
                           fullWidth
-                          label="Biopsies du duodénum: nombre de biopsies, nombre de tubes "
+                          label="Biopsies du duodénum: nombre(), localisation (), nombre de tubes()"
                           {...getFieldProps('duodénumBiopsiesDesc')}
                         />
                       )}
@@ -1135,13 +1129,12 @@ export default function UserNewForm({ isEdit, formik }) {
             </AccordionDetails>
           </Accordion>
 
-          <Accordion>
+          {/* <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
               <Typography variant="h4">Qualité de la visualisation de la muqueuse </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Stack direction={{ xs: 'column' }} spacing={{ xs: 3, sm: 2 }}>
-                {/* <Typography variant="h4">Qualité de la visualisation de la muqueuse :</Typography> */}
                 <Typography variant="h6">Score totale de visibilité muqueuse : </Typography>
                 <Stack direction={{ xs: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
@@ -1231,7 +1224,7 @@ export default function UserNewForm({ isEdit, formik }) {
                 </TextField>
               </Stack>
             </AccordionDetails>
-          </Accordion>
+          </Accordion> */}
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
               <Typography variant="h4">Photodocumentation </Typography>

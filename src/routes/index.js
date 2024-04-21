@@ -46,9 +46,9 @@ export default function Router() {
   //     element: <DashboardLayout />,
   //     children: [
   //       // formulaire
-  //       { path: 'new', element: <Stepper /> },
+  //       { path: 'new', element: <Stepper /> }
   //       // liste des rapports
-  //       { path: 'list', element: <UserList /> }
+  //       // { path: 'list', element: <UserList /> }
   //     ]
   //   },
 

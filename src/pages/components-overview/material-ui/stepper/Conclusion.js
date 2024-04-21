@@ -186,7 +186,7 @@ export default function UserNewForm({ isEdit, formik }) {
               {values.biopsies && (
                 <TextField
                   fullWidth
-                  label="Biopsies: nombre (), nombre de tubes ()"
+                  label="Biopsies: nombre(), localisation (), nombre de tubes()"
                   {...getFieldProps('biopsiesDesc')}
                 />
               )}
