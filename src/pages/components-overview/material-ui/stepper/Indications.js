@@ -145,7 +145,7 @@ UserNewForm.propTypes = {
 export default function UserNewForm({ isEdit, formik }) {
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
   //  const [date, setDate] = React.useState(dayjs('2022-04-17T15:30'));
-
+  const [date, setDate] = React.useState(new Date());
   const [diagnostiqueIndex, setDiagnostiqueIndex] = useState([]);
   const [thérapeutiqueIndex, setThérapeutiqueIndex] = useState([]);
   const handleChangeRadioGroupDiagnostique = (event) => {
